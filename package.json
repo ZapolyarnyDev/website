@@ -12,8 +12,8 @@
     "astro": "astro",
     "check": "npm run typecheck && npm run lint && npm run format:check",
     "typecheck": "astro check",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "eslint . --ext .js,.mjs,.cjs,.ts,.mts,.cts,.astro,.mdx",
+    "lint:fix": "eslint . --fix --ext .js,.mjs,.cjs,.ts,.mts,.cts,.astro,.mdx",
     "format": "prettier . --write",
     "format:check": "prettier . --check"
   },
@@ -27,9 +27,15 @@
     "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "eslint": "^10.2.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-astro": "^1.6.0",
+    "eslint-plugin-mdx": "^3.7.0",
+    "globals": "^17.4.0",
     "prettier": "^3.8.1",
     "prettier-plugin-astro": "^0.14.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.58.0"
   }
 }
