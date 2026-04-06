@@ -13,7 +13,7 @@ const commonjsScriptFiles = ["**/*.{cjs,cts}"];
 const baseRules = {
   "no-alert": "error",
   "no-console": ["error", { allow: ["warn", "error"] }],
-  "no-debugger": "error"
+  "no-debugger": "error",
 };
 
 const typedRules = {
@@ -23,14 +23,14 @@ const typedRules = {
     "error",
     {
       argsIgnorePattern: "^_",
-      varsIgnorePattern: "^_"
-    }
-  ]
+      varsIgnorePattern: "^_",
+    },
+  ],
 };
 
 export default defineConfig([
   {
-    ignores: [".astro/**", "dist/**", "node_modules/**"]
+    ignores: [".astro/**", "dist/**", "node_modules/**"],
   },
   {
     files: moduleScriptFiles,
@@ -39,9 +39,9 @@ export default defineConfig([
       sourceType: "module",
       globals: {
         ...globals.browser,
-        ...globals.node
-      }
-    }
+        ...globals.node,
+      },
+    },
   },
   {
     files: commonjsScriptFiles,
@@ -49,33 +49,37 @@ export default defineConfig([
       ecmaVersion: "latest",
       sourceType: "commonjs",
       globals: {
-        ...globals.node
-      }
-    }
+        ...globals.node,
+      },
+    },
   },
   {
     files: scriptFiles,
     plugins: {
-      "@typescript-eslint": tseslint.plugin
+      "@typescript-eslint": tseslint.plugin,
     },
     languageOptions: {
-      parser: tseslint.parser
+      parser: tseslint.parser,
     },
-    extends: [js.configs.recommended, ...tseslint.configs.recommended, ...tseslint.configs.strict],
-    rules: typedRules
+    extends: [
+      js.configs.recommended,
+      ...tseslint.configs.recommended,
+      ...tseslint.configs.strict,
+    ],
+    rules: typedRules,
   },
   ...astro.configs.recommended,
   {
     files: ["**/*.astro"],
-    rules: baseRules
+    rules: baseRules,
   },
   {
     ...mdx.flat,
     files: ["**/*.mdx"],
     rules: {
       ...mdx.flat.rules,
-      "no-console": ["error", { allow: ["warn", "error"] }]
-    }
+      "no-console": ["error", { allow: ["warn", "error"] }],
+    },
   },
-  eslintConfigPrettier
+  eslintConfigPrettier,
 ]);
