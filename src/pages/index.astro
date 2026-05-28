@@ -1,17 +1,55 @@
 ---
+import BaseLayout from "../layouts/BaseLayout.astro";
 
+import Typography from "../components/ui/Typography.astro";
+import Button from "../components/ui/Button.astro";
+import NavButton from "../components/ui/NavButton.astro";
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Astro</title>
-  </head>
-  <body>
-    <h1>Astro</h1>
-  </body>
-</html>
+<BaseLayout title="ZapolyarnyDev">
+  <main class="brutal-page">
+      <div class="container brutal-showcase">
+        <section class="brutal-section">
+          <Typography variant="kicker" as="span">Разработчик (Пашко)</Typography>
+
+          <Typography variant="hero" as="h1">
+            Привет!
+          </Typography>
+
+          <Typography variant="lead" as="p">
+            Смотришь как зарождался мой сайт?
+            Знаешь, я мучался с дизайн системой (всё же мало годных примеров по брутализму)
+          </Typography>
+
+          <Typography variant="body" as="p">
+            Здесь я сделал первые компоненты и решил сделать демку :3
+          </Typography>
+
+          <Typography variant="mono" as="p">
+            ui (начало!!!) / брутализм / компонентики на astro
+          </Typography>
+        </section>
+
+        <section class="brutal-section">
+          <Typography variant="title" as="h2">Навигация</Typography>
+
+          <div class="brutal-row">
+            <NavButton href="/" active>Главная</NavButton>
+            <NavButton href="/research">Исследования</NavButton>
+            <NavButton href="/blog">Блог</NavButton>
+            <NavButton href="/portfolio">Портфолио</NavButton>
+          </div>
+        </section>
+
+        <section class="brutal-section">
+          <Typography variant="title" as="h2">Кнопочки</Typography>
+
+          <div class="brutal-row">
+            <Button href="/portfolio" variant="primary">Портфолио</Button>
+            <Button href="/research">Исследования</Button>
+            <Button>Обычная кнопка</Button>
+          </div>
+        </section>
+      </div>
+  </main>
+</BaseLayout>
