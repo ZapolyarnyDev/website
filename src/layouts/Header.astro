@@ -1,0 +1,60 @@
+---
+import NavButton from "../components/ui/NavButton.astro";
+
+interface Props {
+  currentPath?: string;
+}
+
+const { currentPath = "/" } = Astro.props;
+
+const links = [
+  {
+    href: "/",
+    label: "Главная",
+    icon: "home",
+  },
+  {
+    href: "/research",
+    label: "Исследования",
+    icon: "flask-conical",
+  },
+  {
+    href: "/blog",
+    label: "Блог",
+    icon: "notebook-pen",
+  },
+  {
+    href: "/portfolio",
+    label: "Портфолио",
+    icon: "briefcase-business",
+  },
+] as const;
+---
+
+<header class="header">
+  <div class="container header__inner">
+    <a class="header__brand" href="/">
+      <span class="header__brand-mark">
+        ZP
+      </span>
+
+      <span>
+        ZapolyarnyDev
+      </span>
+    </a>
+
+    <nav class="header__nav">
+      {
+        links.map((link) => (
+          <NavButton
+            href={link.href}
+            icon={link.icon}
+            active={currentPath === link.href}
+          >
+            {link.label}
+          </NavButton>
+        ))
+      }
+    </nav>
+  </div>
+</header>

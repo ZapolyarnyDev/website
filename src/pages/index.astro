@@ -1,4 +1,6 @@
 ---
+import Header from "../layouts/Header.astro";
+
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 import Typography from "../components/ui/Typography.astro";
@@ -7,6 +9,8 @@ import NavButton from "../components/ui/NavButton.astro";
 ---
 
 <BaseLayout title="ZapolyarnyDev">
+  <Header currentPath="/" />
+
   <main class="brutal-page">
       <div class="container brutal-showcase">
         <section class="brutal-section">

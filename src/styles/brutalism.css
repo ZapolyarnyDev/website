@@ -1,3 +1,7 @@
+/* ==========================================================================
+   Layout primitives
+   ========================================================================== */
+
 .brutal-page {
   min-height: 100vh;
   padding: clamp(28px, 5vw, 64px) 0;
@@ -22,6 +26,10 @@
   flex-wrap: wrap;
   gap: 12px;
 }
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
 
 .typography {
   color: var(--ink);
@@ -77,6 +85,10 @@
   text-transform: uppercase;
 }
 
+/* ==========================================================================
+   Shared interactive base
+   ========================================================================== */
+
 .brutal-button,
 .brutal-nav-button {
   display: inline-flex;
@@ -93,11 +105,20 @@
     transform var(--motion);
 }
 
+.brutal-button:focus-visible,
+.brutal-nav-button:focus-visible {
+  outline: none;
+}
+
+/* ==========================================================================
+   Button
+   ========================================================================== */
+
 .brutal-button {
   min-height: 46px;
   border: var(--border);
   background: var(--paper);
-  box-shadow: 4px 4px 0 var(--ink);
+  box-shadow: var(--shadow-sm);
   font-family: var(--font-sans);
   font-size: 13px;
   font-weight: 800;
@@ -119,9 +140,12 @@
   background: var(--ink);
   color: var(--paper);
   box-shadow: 10px 10px 0 var(--ink);
-  outline: none;
   transform: var(--lift);
 }
+
+/* ==========================================================================
+   Navigation button
+   ========================================================================== */
 
 .brutal-nav-button {
   min-height: 58px;
@@ -138,7 +162,83 @@
 .brutal-nav-button--active {
   background: var(--ink);
   color: var(--paper);
-  outline: none;
+}
+
+.brutal-nav-button__icon {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  stroke-width: 2.5;
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: var(--border-heavy);
+  background: var(--paper);
+}
+
+.header__inner {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 24px;
+  min-height: 84px;
+}
+
+.header__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--ink);
+  font-size: clamp(18px, 2vw, 24px);
+  font-weight: 800;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.header__brand-mark {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--ink);
+  background: var(--red);
+  color: var(--paper);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.header__nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  .header__inner {
+    grid-template-columns: 1fr;
+    padding: 18px 0;
+  }
+
+  .header__nav {
+    justify-content: stretch;
+  }
+
+  .header__nav > * {
+    flex: 1 1 180px;
+  }
 }
 
 @media (max-width: 680px) {
