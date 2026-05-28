@@ -1,15 +1,33 @@
 ---
+import {
+  Home,
+  FlaskConical,
+  NotebookPen,
+  BriefcaseBusiness,
+} from "lucide-astro";
+
 interface Props {
   href: string;
   active?: boolean;
+  icon?: "home" | "flask-conical" | "notebook-pen" | "briefcase-business";
   class?: string;
 }
 
 const {
   href,
   active = false,
+  icon,
   class: className = "",
 } = Astro.props;
+
+const icons = {
+  home: Home,
+  "flask-conical": FlaskConical,
+  "notebook-pen": NotebookPen,
+  "briefcase-business": BriefcaseBusiness,
+};
+
+const Icon = icon ? icons[icon] : null;
 ---
 
 <a
@@ -20,5 +38,7 @@ const {
     className,
   ]}
 >
+  {Icon && <Icon class="brutal-nav-button__icon" aria-hidden="true" />}
+
   <slot />
 </a>
