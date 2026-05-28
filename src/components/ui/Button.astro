@@ -1,0 +1,31 @@
+---
+type Variant = "primary" | "secondary";
+
+interface Props {
+  href?: string;
+  variant?: Variant;
+  class?: string;
+  target?: string;
+  rel?: string;
+}
+
+const {
+  href,
+  variant = "secondary",
+  class: className = "",
+  target,
+  rel,
+} = Astro.props;
+
+const classes = `brutal-button brutal-button--${variant} ${className}`;
+---
+
+{href ? (
+  <a href={href} class={classes} target={target} rel={rel}>
+    <slot />
+  </a>
+) : (
+  <button class={classes}>
+    <slot />
+  </button>
+)}

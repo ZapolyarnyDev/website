@@ -1,0 +1,48 @@
+@import "./brutalism.css";
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --ink: #050505;
+  --paper: #ffffff;
+  --soft: #f3f3f3;
+  --muted: #5c5c5c;
+  --red: #ef1717;
+  --blue: #1266ff;
+
+  --font-sans: "Manrope", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --border: 4px solid var(--ink);
+  --border-heavy: 5px solid var(--ink);
+  --shadow: 6px 6px 0 var(--ink);
+  --shadow-lift: 12px 12px 0 var(--ink);
+  --lift: translate(-5px, -5px);
+  --motion: 0.14s linear;
+}
+
+::selection {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+body {
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  line-height: 1.35;
+}
+
+a {
+  color: inherit;
+}
+
+.container {
+  width: min(100% - 36px, 1280px);
+  margin: 0 auto;
+}

@@ -1,0 +1,21 @@
+---
+type Variant = "hero" | "title" | "lead" | "body" | "mono" | "kicker";
+
+interface Props {
+  variant?: Variant;
+  as?: keyof HTMLElementTagNameMap;
+  class?: string;
+}
+
+const {
+  variant = "body",
+  as = "p",
+  class: className = "",
+} = Astro.props;
+
+const Tag = as;
+---
+
+<Tag class={`typography typography--${variant} ${className}`}>
+  <slot />
+</Tag>
