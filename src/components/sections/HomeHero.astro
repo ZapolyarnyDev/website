@@ -1,0 +1,136 @@
+---
+import {
+  Github,
+  GitBranch,
+  Send,
+  ExternalLink,
+  ServerCog,
+  Gamepad2,
+  Code2
+} from "lucide-astro";
+
+import avatarImage from "../../assets/images/avatar.png";
+import cristalixLogo from "../../assets/images/c7x-logo.png";
+
+import Typography from "../ui/Typography.astro";
+import Button from "../ui/Button.astro";
+
+const socials = [
+  { label: "GitHub", href: "https://github.com/ZapolyarnyDev", icon: Github },
+  { label: "GitLab", href: "https://gitlab.com/Zapolyarny", icon: GitBranch },
+  { label: "Telegram", href: "https://t.me/zapolyarny0", icon: Send },
+];
+
+const facts = [
+  { label: "Коммерческий опыт (фронтенд, игры)", icon: ServerCog },
+  { label: "Minecraft (client / server)", icon: Gamepad2 },
+  { label: "Открыт к проектам", icon: Code2 },
+];
+---
+
+<section class="home-hero">
+  <aside class="home-hero__profile" aria-label="Профиль разработчика">
+    <div class="home-hero__avatar">
+      <img src={avatarImage.src} alt="Аватар ZapolyarnyDev" />
+    </div>
+
+   <div class="home-hero__identity">
+      <p class="home-hero__real-name">Павел</p>
+      <h1 class="home-hero__name">ZapolyarnyDev</h1>
+      <p class="home-hero__role">Java backend / Minecraft server-side</p>
+    </div>
+
+    <div class="home-hero__profile-group">
+      <div class="home-hero__profile-heading">
+        <span>соц. сети</span>
+      </div>
+
+      <ul class="home-hero__socials" aria-label="Социальные ссылки">
+        {
+          socials.map((social) => {
+            const Icon = social.icon;
+
+            return (
+              <li>
+                <a href={social.href} target="_blank" rel="noreferrer">
+                  <span class="home-hero__link-main">
+                    <Icon class="home-hero__icon" aria-hidden="true" />
+                    {social.label}
+                  </span>
+
+                  <ExternalLink class="home-hero__icon home-hero__icon--external" aria-hidden="true" />
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </div>
+
+    <div class="home-hero__profile-group home-hero__profile-group--bottom">
+      <div class="home-hero__profile-heading">
+        <span>факты</span>
+      </div>
+
+      <ul class="home-hero__facts" aria-label="Ключевые направления">
+        {
+          facts.map((fact) => {
+            const Icon = fact.icon;
+
+            return (
+              <li>
+                <span class="home-hero__link-main">
+                  <Icon class="home-hero__icon" aria-hidden="true" />
+                  {fact.label}
+                </span>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </div>
+  </aside>
+
+  <div class="home-hero__content">
+    <Typography variant="kicker" as="span">
+      <span class="home-hero__kicker-content">
+        <Code2 class="home-hero__kicker-icon" aria-hidden="true" />
+        software engineer
+      </span>
+    </Typography>
+
+    <Typography variant="hero" as="h2" class="home-hero__title">
+      Серверные, веб<br />
+      и игровые <span class="text-red">системы</span>
+    </Typography>
+
+    <Typography variant="lead" as="p">
+        Серверная логика, веб-разработка и инфраструктура для игровых
+        и коммерческих систем. Интересны долгосрочные проекты,
+        исследования и сложные инженерные задачи
+    </Typography>
+
+    <div class="home-hero__actions">
+      <Button href="https://t.me/zapolyarny0" target="_blank" rel="noreferrer">
+        <Send class="button__icon" aria-hidden="true" />
+        Связаться со мной
+      </Button>
+    </div>
+
+    <a class="home-hero__work-card" href="https://cristalix.gg" target="_blank" rel="noreferrer">
+      <span class="home-hero__work-arrow">
+        <ExternalLink class="home-hero__icon" aria-hidden="true" />
+      </span>
+
+      <span class="home-hero__work-logo">
+        <img src={cristalixLogo.src} alt="Логотип Cristalix" />
+      </span>
+
+      <span class="home-hero__work-content">
+        <span class="home-hero__work-label">текущий проект</span>
+        <strong>Cristalix</strong>
+        <span>Игровые режимы. Серверные и клиентские решения</span>
+      </span>
+    </a>
+  </div>
+</section>
