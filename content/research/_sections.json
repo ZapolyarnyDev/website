@@ -1,0 +1,20 @@
+[
+  {
+    "id": "systems",
+    "title": "Системы",
+    "description": "Исследование инфраструктуры и backend.",
+    "order": 10
+  },
+  {
+    "id": "games",
+    "title": "Игровые системы",
+    "description": "Механики, сети и архитектура.",
+    "order": 20
+  },
+  {
+    "id": "ai",
+    "title": "AI / Transformers",
+    "description": "Исследования моделей и архитектур.",
+    "order": 30
+  }
+]
