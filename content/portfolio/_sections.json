@@ -1,0 +1,20 @@
+[
+  {
+    "id": "cristalix",
+    "title": "Cristalix",
+    "description": "Игровые режимы, серверные и клиентские решения",
+    "order": 10
+  },
+  {
+    "id": "commercial",
+    "title": "Коммерческий опыт",
+    "description": "Работа над коммерческими системами",
+    "order": 20
+  },
+  {
+    "id": "experiments",
+    "title": "Эксперименты",
+    "description": "Личные проекты и идеи.",
+    "order": 30
+  }
+]

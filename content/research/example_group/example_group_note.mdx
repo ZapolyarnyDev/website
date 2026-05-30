@@ -1,0 +1,32 @@
+---
+title: "Concurrent builds и SQLite"
+description: "Разбор редкого зависания concurrent-builds.sh."
+sectionId: "systems"
+groupId: "nix-concurrent-builds"
+kind: "article"
+date: "2026-05-30"
+order: 10
+tags:
+  - Nix
+  - SQLite
+  - Debugging
+draft: false
+---
+
+# Concurrent builds и SQLite
+
+Исследование редкого зависания concurrent-builds.sh
+
+## Гипотеза
+
+Проблема связана с конкурентным обновлением схемы SQLite
+
+## Наблюдения
+
+Обе сборки блокируются в `SQLite::exec`
+
+## Следующие шаги
+
+- Проверить блокировки
+- Повторить тесты
+- Посмотреть, не разобрали ли issue (НУ ПЖ ПЖ ПЖ)
