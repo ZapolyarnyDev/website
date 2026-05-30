@@ -3,18 +3,21 @@
     "id": "cristalix",
     "title": "Cristalix",
     "description": "Игровые режимы, серверные и клиентские решения",
+    "icon": "gamepad-2",
     "order": 10
   },
   {
     "id": "commercial",
     "title": "Коммерческий опыт",
     "description": "Работа над коммерческими системами",
+    "icon": "briefcase-business",
     "order": 20
   },
   {
     "id": "experiments",
     "title": "Эксперименты",
     "description": "Личные проекты и идеи.",
+    "icon": "code-2",
     "order": 30
   }
 ]

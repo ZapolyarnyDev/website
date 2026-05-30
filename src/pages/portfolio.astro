@@ -1,0 +1,99 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Header from "@layouts/Header.astro";
+import Typography from "@components/ui/Typography.astro";
+import PortfolioProjectCard from "@components/portfolio/PortfolioProjectCard.astro";
+import { getContentPageModel } from "@/content-engine";
+import { BriefcaseBusiness, Code2, Gamepad2 } from "lucide-astro";
+
+const portfolio = getContentPageModel("portfolio");
+const pageDescription =
+  "Портфолио ZapolyarnyDev: текущие проекты, результаты и материалы для сотрудничества.";
+
+const sectionIcons = {
+  "briefcase-business": BriefcaseBusiness,
+  "code-2": Code2,
+  "gamepad-2": Gamepad2,
+};
+---
+
+<BaseLayout title="Portfolio | ZapolyarnyDev" description={pageDescription}>
+  <Header currentPath="/portfolio" />
+
+  <main class="brutal-page portfolio-page">
+    <div class="container portfolio-shell">
+      <section class="portfolio-hero" aria-labelledby="portfolio-title">
+        <Typography variant="kicker" as="span">
+          <span class="home-hero__kicker-content">
+            <BriefcaseBusiness
+              class="home-hero__kicker-icon"
+              aria-hidden="true"
+            />
+            cooperation
+          </span>
+        </Typography>
+
+        <Typography variant="hero" as="h1" id="portfolio-title">
+          Портфолио
+        </Typography>
+
+        <Typography variant="lead" as="p">
+          Страница для работы и сотрудничества: текущие проекты, результаты и
+          материалы, которые можно открыть подробнее.
+        </Typography>
+      </section>
+
+      {
+        portfolio.sections.map(({ section, entries }) => {
+          const SectionIcon =
+            section.icon && section.icon in sectionIcons
+              ? sectionIcons[section.icon as keyof typeof sectionIcons]
+              : BriefcaseBusiness;
+
+          return (
+            <section
+              class="portfolio-section"
+              aria-labelledby={`portfolio-section-${section.id}`}
+            >
+              <header class="portfolio-section__header">
+                <Typography
+                  variant="mono"
+                  as="h2"
+                  class="portfolio-section__title"
+                  id={`portfolio-section-${section.id}`}
+                >
+                  <SectionIcon
+                    class="portfolio-section__icon"
+                    aria-hidden="true"
+                  />
+                  {section.title}
+                </Typography>
+              </header>
+
+              {entries.length > 0 ? (
+                <div class="portfolio-section__projects">
+                  {entries.map((project) => (
+                    <PortfolioProjectCard
+                      project={project}
+                      sectionTitle={section.title}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div class="portfolio-section__empty">
+                  <Typography variant="mono" as="span">
+                    В разработке
+                  </Typography>
+                  <p>
+                    Проекты появятся здесь, когда их можно будет показать
+                    нормально: с контекстом, результатом и материалами.
+                  </p>
+                </div>
+              )}
+            </section>
+          );
+        })
+      }
+    </div>
+  </main>
+</BaseLayout>
