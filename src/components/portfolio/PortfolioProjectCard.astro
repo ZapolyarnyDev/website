@@ -1,0 +1,50 @@
+---
+import Typography from "@components/ui/Typography.astro";
+import type { ContentEntry } from "@/content-engine";
+
+interface Props {
+  project: ContentEntry;
+  sectionTitle?: string;
+}
+
+const { project, sectionTitle } = Astro.props;
+const { title, description, tags = [], featured = false } = project.meta;
+const href = `/portfolio/${project.slug}`;
+const cardTitle =
+  title.trim().toLowerCase() === sectionTitle?.trim().toLowerCase()
+    ? "Подробнее"
+    : title;
+---
+
+<a
+  href={href}
+  class:list={["portfolio-project", featured && "portfolio-project--featured"]}
+  aria-label={`Открыть проект ${title}`}
+>
+  <div class="portfolio-project__main">
+    <Typography variant="mono" as="span" class="portfolio-project__status">
+      {featured ? "Текущий проект" : "Проект"}
+    </Typography>
+
+    <h3 class="portfolio-project__title">{cardTitle}</h3>
+
+    <p class="portfolio-project__description">{description}</p>
+  </div>
+
+  <div class="portfolio-project__meta">
+    <span class="portfolio-project__result">Результат</span>
+
+    {
+      tags.length > 0 && (
+        <ul
+          class="portfolio-project__tags"
+          aria-label={`Теги проекта ${title}`}
+        >
+          {tags.map((tag) => (
+            <li>{tag}</li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</a>

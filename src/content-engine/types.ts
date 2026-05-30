@@ -7,6 +7,7 @@ export interface ContentSection {
   title: string;
   description?: string;
   order: number;
+  icon?: string;
 }
 
 export interface ContentGroup {

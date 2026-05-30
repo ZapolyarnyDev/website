@@ -1,0 +1,100 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Header from "@layouts/Header.astro";
+import Button from "@components/ui/Button.astro";
+import Typography from "@components/ui/Typography.astro";
+import type { ContentEntryMeta } from "@/content-engine";
+import type { AstroComponentFactory } from "astro/runtime/server/index.js";
+import { ArrowLeft } from "lucide-astro";
+
+type PortfolioModule = {
+  default: AstroComponentFactory;
+  frontmatter: ContentEntryMeta;
+};
+
+interface Props {
+  Content: AstroComponentFactory;
+  meta: ContentEntryMeta;
+}
+
+export function getStaticPaths() {
+  const projectModules = import.meta.glob(
+    "../../../content/portfolio/**/*.mdx",
+    {
+      eager: true,
+    },
+  ) as Record<string, PortfolioModule>;
+
+  return Object.entries(projectModules)
+    .filter(([, module]) => !module.frontmatter.draft)
+    .map(([path, module]) => {
+      const slug = path
+        .replace("../../../content/portfolio/", "")
+        .replace(/\.mdx$/, "")
+        .replace(/\/index$/, "");
+
+      return {
+        params: { slug },
+        props: {
+          Content: module.default,
+          meta: module.frontmatter,
+        },
+      };
+    });
+}
+
+const { Content, meta } = Astro.props;
+const tags = meta.tags ?? [];
+---
+
+<BaseLayout title={`${meta.title} | Portfolio`} description={meta.description}>
+  <Header currentPath="/portfolio" />
+
+  <main class="brutal-page project-page">
+    <article class="container project-article">
+      <header class="project-article__header">
+        <div class="project-article__copy">
+          <Typography variant="kicker" as="span">
+            {meta.featured ? "Ключевой проект" : "Проект"}
+          </Typography>
+
+          <Typography variant="hero" as="h1" class="project-article__title">
+            {meta.title}
+          </Typography>
+
+          <Typography variant="lead" as="p">
+            {meta.description}
+          </Typography>
+        </div>
+
+        <aside class="project-article__meta" aria-label="Метаданные проекта">
+          <span>Статус</span>
+          <strong>{meta.featured ? "выделен" : "обычный"}</strong>
+
+          {tags.length > 0 && <span>Теги</span>}
+
+          {
+            tags.length > 0 && (
+              <ul>
+                {tags.map((tag) => (
+                  <li>{tag}</li>
+                ))}
+              </ul>
+            )
+          }
+        </aside>
+      </header>
+
+      <div class="project-article__back">
+        <Button href="/portfolio">
+          <ArrowLeft class="button__icon" aria-hidden="true" />
+          Вернуться в портфолио
+        </Button>
+      </div>
+
+      <div class="project-content">
+        <Content />
+      </div>
+    </article>
+  </main>
+</BaseLayout>
