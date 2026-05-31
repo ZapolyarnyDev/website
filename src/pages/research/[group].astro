@@ -8,7 +8,13 @@ import {
   type ContentEntryKind,
   type ContentGroupModel,
 } from "@/content-engine";
-import { ArrowLeft, ArrowUpRight, FlaskConical, Layers3 } from "lucide-astro";
+import {
+  ArrowLeft,
+  ArrowUpRight,
+  BookOpenCheck,
+  FlaskConical,
+  Layers3,
+} from "lucide-astro";
 
 interface Props {
   groupModel: ContentGroupModel;
@@ -48,13 +54,6 @@ const kindLabels: Record<ContentEntryKind, string> = {
 
   <main class="brutal-page research-page">
     <article class="container research-group-page">
-      <div class="research-group-page__back">
-        <Button href="/research">
-          <ArrowLeft class="button__icon" aria-hidden="true" />
-          К исследованиям
-        </Button>
-      </div>
-
       <header class="research-group-page__header">
         <div class="research-group-page__copy">
           <Typography variant="kicker" as="span">
@@ -85,6 +84,39 @@ const kindLabels: Record<ContentEntryKind, string> = {
         </aside>
       </header>
 
+      <div class="research-group-page__back">
+        <Button href="/research">
+          <ArrowLeft class="button__icon" aria-hidden="true" />
+          К исследованиям
+        </Button>
+      </div>
+
+      {
+        entries.length > 0 && (
+          <section class="research-reading-order" aria-label="Порядок чтения">
+            <div class="research-reading-order__label">
+              <BookOpenCheck aria-hidden="true" />
+              <span>Порядок чтения</span>
+            </div>
+
+            <ol>
+              {entries.map((entry, index) => {
+                const articleSlug = entry.slug.split("/").at(-1);
+
+                return (
+                  <li>
+                    <a href={`/research/${group.id}/${articleSlug}`}>
+                      <span>Запись №{index + 1}</span>
+                      <strong>{entry.meta.title}</strong>
+                    </a>
+                  </li>
+                );
+              })}
+            </ol>
+          </section>
+        )
+      }
+
       <section class="research-articles" aria-labelledby="research-articles">
         <header class="research-section__header">
           <Typography
@@ -101,7 +133,7 @@ const kindLabels: Record<ContentEntryKind, string> = {
         {
           entries.length > 0 ? (
             <div class="research-articles__list">
-              {entries.map((entry) => {
+              {entries.map((entry, index) => {
                 const articleSlug = entry.slug.split("/").at(-1);
 
                 return (
@@ -111,13 +143,17 @@ const kindLabels: Record<ContentEntryKind, string> = {
                     aria-label={`Открыть материал ${entry.meta.title}`}
                   >
                     <div class="research-article-card__main">
-                      <Typography
-                        variant="mono"
-                        as="span"
-                        class="research-article-card__kind"
-                      >
-                        {kindLabels[entry.meta.kind]}
-                      </Typography>
+                      <div class="research-article-card__eyebrow">
+                        <Typography
+                          variant="mono"
+                          as="span"
+                          class="research-article-card__kind"
+                        >
+                          {kindLabels[entry.meta.kind]}
+                        </Typography>
+
+                        <span>Запись №{index + 1}</span>
+                      </div>
 
                       <h3 class="research-article-card__title">
                         {entry.meta.title}
@@ -128,8 +164,10 @@ const kindLabels: Record<ContentEntryKind, string> = {
                       </p>
                     </div>
 
-                    <span class="research-article-card__open">
-                      Открыть
+                    <span
+                      class="research-article-card__open"
+                      aria-label="Открыть материал"
+                    >
                       <ArrowUpRight
                         class="research-article-card__icon"
                         aria-hidden="true"
