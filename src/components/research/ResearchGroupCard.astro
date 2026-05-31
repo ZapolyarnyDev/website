@@ -1,0 +1,45 @@
+---
+import Typography from "@components/ui/Typography.astro";
+import type { ContentGroupModel } from "@/content-engine";
+import { ArrowUpRight } from "lucide-astro";
+
+interface Props {
+  model: ContentGroupModel;
+}
+
+const { model } = Astro.props;
+const { group, entries } = model;
+const articleLabel =
+  entries.length % 10 === 1 && entries.length % 100 !== 11
+    ? "материал"
+    : "материалов";
+---
+
+<a
+  href={`/research/${group.id}`}
+  class="research-group-card"
+  aria-label={`Открыть исследовательскую группу ${group.title}`}
+>
+  <div class="research-group-card__main">
+    <Typography variant="mono" as="span" class="research-group-card__label">
+      Группа исследований
+    </Typography>
+
+    <h3 class="research-group-card__title">{group.title}</h3>
+
+    {
+      group.description && (
+        <p class="research-group-card__description">{group.description}</p>
+      )
+    }
+  </div>
+
+  <div class="research-group-card__action">
+    <span>{entries.length} {articleLabel}</span>
+
+    <span class="research-group-card__open">
+      Открыть
+      <ArrowUpRight class="research-group-card__icon" aria-hidden="true" />
+    </span>
+  </div>
+</a>

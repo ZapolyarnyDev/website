@@ -1,0 +1,105 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Header from "@layouts/Header.astro";
+import Typography from "@components/ui/Typography.astro";
+import ResearchGroupCard from "@components/research/ResearchGroupCard.astro";
+import { getContentPageModel } from "@/content-engine";
+import {
+  BrainCircuit,
+  Cpu,
+  FlaskConical,
+  Gamepad2,
+  Network,
+} from "lucide-astro";
+
+const research = getContentPageModel("research");
+const pageDescription =
+  "Каталог исследований, инженерных заметок, экспериментов и разборов технологий.";
+
+const sectionIcons = {
+  ai: BrainCircuit,
+  games: Gamepad2,
+  systems: Cpu,
+  "brain-circuit": BrainCircuit,
+  "gamepad-2": Gamepad2,
+  network: Network,
+  cpu: Cpu,
+};
+---
+
+<BaseLayout title="Research | ZapolyarnyDev" description={pageDescription}>
+  <Header currentPath="/research" />
+
+  <main class="brutal-page research-page">
+    <div class="container research-shell">
+      <section class="research-hero" aria-labelledby="research-title">
+        <Typography variant="kicker" as="span">
+          <span class="home-hero__kicker-content">
+            <FlaskConical class="home-hero__kicker-icon" aria-hidden="true" />
+            research catalog
+          </span>
+        </Typography>
+
+        <Typography variant="hero" as="h1" id="research-title">
+          Research
+        </Typography>
+
+        <Typography variant="lead" as="p">
+          Исследования, заметки, эксперименты и разборы технологий. Тут
+          систематизирую свои идеи и исследования.
+        </Typography>
+      </section>
+
+      {
+        research.sections.map(({ section, groups }) => {
+          const SectionIcon =
+            section.icon && section.icon in sectionIcons
+              ? sectionIcons[section.icon as keyof typeof sectionIcons]
+              : section.id in sectionIcons
+                ? sectionIcons[section.id as keyof typeof sectionIcons]
+                : FlaskConical;
+
+          return (
+            <section
+              class="research-section"
+              aria-labelledby={`research-section-${section.id}`}
+            >
+              <header class="research-section__header">
+                <Typography
+                  variant="mono"
+                  as="h2"
+                  class="research-section__title"
+                  id={`research-section-${section.id}`}
+                >
+                  <SectionIcon
+                    class="research-section__icon"
+                    aria-hidden="true"
+                  />
+                  {section.title}
+                </Typography>
+              </header>
+
+              {groups.length > 0 ? (
+                <div class="research-section__groups">
+                  {groups.map((groupModel) => (
+                    <ResearchGroupCard model={groupModel} />
+                  ))}
+                </div>
+              ) : (
+                <div class="research-section__empty">
+                  <Typography variant="mono" as="span">
+                    В работе
+                  </Typography>
+                  <p>
+                    Группы появятся здесь, когда направление будет оформлено как
+                    самостоятельное исследование.
+                  </p>
+                </div>
+              )}
+            </section>
+          );
+        })
+      }
+    </div>
+  </main>
+</BaseLayout>

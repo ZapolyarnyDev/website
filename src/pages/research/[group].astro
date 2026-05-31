@@ -1,0 +1,154 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Header from "@layouts/Header.astro";
+import Button from "@components/ui/Button.astro";
+import Typography from "@components/ui/Typography.astro";
+import {
+  getContentPageModel,
+  type ContentEntryKind,
+  type ContentGroupModel,
+} from "@/content-engine";
+import { ArrowLeft, ArrowUpRight, FlaskConical, Layers3 } from "lucide-astro";
+
+interface Props {
+  groupModel: ContentGroupModel;
+  sectionTitle: string;
+}
+
+export function getStaticPaths() {
+  const research = getContentPageModel("research");
+
+  return research.sections.flatMap(({ section, groups }) =>
+    groups.map((groupModel) => ({
+      params: { group: groupModel.group.id },
+      props: {
+        groupModel,
+        sectionTitle: section.title,
+      },
+    })),
+  );
+}
+
+const { groupModel, sectionTitle } = Astro.props;
+const { group, entries } = groupModel;
+const articleLabel =
+  entries.length % 10 === 1 && entries.length % 100 !== 11
+    ? "материал"
+    : "материалов";
+const kindLabels: Record<ContentEntryKind, string> = {
+  article: "Статья",
+  note: "Заметка",
+  case: "Разбор",
+  project: "Материал",
+};
+---
+
+<BaseLayout title={`${group.title} | Research`} description={group.description}>
+  <Header currentPath="/research" />
+
+  <main class="brutal-page research-page">
+    <article class="container research-group-page">
+      <div class="research-group-page__back">
+        <Button href="/research">
+          <ArrowLeft class="button__icon" aria-hidden="true" />
+          К исследованиям
+        </Button>
+      </div>
+
+      <header class="research-group-page__header">
+        <div class="research-group-page__copy">
+          <Typography variant="kicker" as="span">
+            <span class="home-hero__kicker-content">
+              <Layers3 class="home-hero__kicker-icon" aria-hidden="true" />
+              research group
+            </span>
+          </Typography>
+
+          <Typography variant="hero" as="h1" class="research-group-page__title">
+            {group.title}
+          </Typography>
+
+          {
+            group.description && (
+              <Typography variant="lead" as="p">
+                {group.description}
+              </Typography>
+            )
+          }
+        </div>
+
+        <aside class="research-group-page__meta" aria-label="Данные группы">
+          <span>Группа</span>
+          <strong>{entries.length} {articleLabel}</strong>
+          <span>Секция</span>
+          <strong>{sectionTitle}</strong>
+        </aside>
+      </header>
+
+      <section class="research-articles" aria-labelledby="research-articles">
+        <header class="research-section__header">
+          <Typography
+            variant="mono"
+            as="h2"
+            class="research-section__title"
+            id="research-articles"
+          >
+            <FlaskConical class="research-section__icon" aria-hidden="true" />
+            Материалы
+          </Typography>
+        </header>
+
+        {
+          entries.length > 0 ? (
+            <div class="research-articles__list">
+              {entries.map((entry) => {
+                const articleSlug = entry.slug.split("/").at(-1);
+
+                return (
+                  <a
+                    href={`/research/${group.id}/${articleSlug}`}
+                    class="research-article-card"
+                    aria-label={`Открыть материал ${entry.meta.title}`}
+                  >
+                    <div class="research-article-card__main">
+                      <Typography
+                        variant="mono"
+                        as="span"
+                        class="research-article-card__kind"
+                      >
+                        {kindLabels[entry.meta.kind]}
+                      </Typography>
+
+                      <h3 class="research-article-card__title">
+                        {entry.meta.title}
+                      </h3>
+
+                      <p class="research-article-card__description">
+                        {entry.meta.description}
+                      </p>
+                    </div>
+
+                    <span class="research-article-card__open">
+                      Открыть
+                      <ArrowUpRight
+                        class="research-article-card__icon"
+                        aria-hidden="true"
+                      />
+                    </span>
+                  </a>
+                );
+              })}
+            </div>
+          ) : (
+            <div class="research-section__empty">
+              <Typography variant="mono" as="span">
+                В работе
+              </Typography>
+              <p>Материалы группы появятся здесь после публикации.</p>
+            </div>
+          )
+        }
+      </section>
+    </article>
+  </main>
+</BaseLayout>
