@@ -5,7 +5,6 @@ import Button from "@components/ui/Button.astro";
 import Typography from "@components/ui/Typography.astro";
 import type { ContentEntryMeta } from "@/content-engine";
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
-import { ArrowLeft } from "lucide-astro";
 
 type PortfolioModule = {
   default: AstroComponentFactory;
@@ -86,13 +85,10 @@ const tags = meta.tags ?? [];
       </header>
 
       <div class="project-article__back">
-        <Button href="/portfolio">
-          <ArrowLeft class="button__icon" aria-hidden="true" />
-          Вернуться в портфолио
-        </Button>
+        <Button href="/portfolio"> Вернуться в портфолио </Button>
       </div>
 
-      <div class="project-content">
+      <div class="project-content markdown-content">
         <Content />
       </div>
     </article>

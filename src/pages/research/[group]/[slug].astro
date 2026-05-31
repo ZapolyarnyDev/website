@@ -171,7 +171,14 @@ const nextSlug = nextEntry?.slug.split("/").at(-1);
         </Button>
       </div>
 
-      <nav class="research-sequence-nav" aria-label="Навигация по записям">
+      <div class="research-article__content markdown-content">
+        <Content />
+      </div>
+
+      <nav
+        class="research-sequence-nav research-sequence-nav--bottom"
+        aria-label="Навигация по записям после статьи"
+      >
         {
           prevEntry && prevSlug ? (
             <a
@@ -214,10 +221,6 @@ const nextSlug = nextEntry?.slug.split("/").at(-1);
           )
         }
       </nav>
-
-      <div class="research-article__content">
-        <Content />
-      </div>
     </article>
   </main>
 </BaseLayout>
