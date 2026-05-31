@@ -1,0 +1,7 @@
+{
+  "id": "neuroacoustic-resonator",
+  "sectionId": "systems",
+  "title": "Neuroacoustic Resonator",
+  "description": "Исследование самоорганизующейся акустической среды на поле связанных осцилляторов",
+  "order": 10
+}
