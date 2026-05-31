@@ -1,7 +1,0 @@
-{
-  "id": "nix-concurrent-builds",
-  "sectionId": "systems",
-  "title": "Nix concurrent builds",
-  "description": "Исследование зависаний concurrent builds и SQLite",
-  "order": 10
-}
