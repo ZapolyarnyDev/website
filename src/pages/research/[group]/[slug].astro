@@ -5,11 +5,12 @@ import Button from "@components/ui/Button.astro";
 import Typography from "@components/ui/Typography.astro";
 import {
   getContentPageModel,
+  type ContentEntry,
   type ContentEntryMeta,
   type ContentGroup,
 } from "@/content-engine";
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
-import { ArrowLeft, FlaskConical } from "lucide-astro";
+import { ArrowLeft, ArrowRight, FlaskConical } from "lucide-astro";
 
 type ResearchModule = {
   default: AstroComponentFactory;
@@ -21,6 +22,10 @@ interface Props {
   meta: ContentEntryMeta;
   group: ContentGroup;
   sectionTitle: string;
+  entryNumber: number;
+  entryCount: number;
+  prevEntry?: ContentEntry;
+  nextEntry?: ContentEntry;
 }
 
 export function getStaticPaths() {
@@ -33,8 +38,9 @@ export function getStaticPaths() {
 
   const research = getContentPageModel("research");
   const groups = research.sections.flatMap(({ section, groups }) =>
-    groups.map(({ group }) => ({
-      group,
+    groups.map((groupModel) => ({
+      groupModel,
+      group: groupModel.group,
       sectionTitle: section.title,
     })),
   );
@@ -56,6 +62,23 @@ export function getStaticPaths() {
         return null;
       }
 
+      const entryIndex = groupData.groupModel.entries.findIndex(
+        (entry) => entry.slug.split("/").at(-1) === fileSlug,
+      );
+
+      if (entryIndex < 0) {
+        return null;
+      }
+
+      const prevEntry =
+        entryIndex > 0
+          ? groupData.groupModel.entries[entryIndex - 1]
+          : undefined;
+      const nextEntry =
+        entryIndex >= 0 && entryIndex < groupData.groupModel.entries.length - 1
+          ? groupData.groupModel.entries[entryIndex + 1]
+          : undefined;
+
       return {
         params: {
           group: module.frontmatter.groupId,
@@ -66,14 +89,29 @@ export function getStaticPaths() {
           meta: module.frontmatter,
           group: groupData.group,
           sectionTitle: groupData.sectionTitle,
+          entryNumber: entryIndex + 1,
+          entryCount: groupData.groupModel.entries.length,
+          prevEntry,
+          nextEntry,
         },
       };
     })
     .filter((path): path is Exclude<typeof path, null> => path !== null);
 }
 
-const { Content, meta, group, sectionTitle } = Astro.props;
+const {
+  Content,
+  meta,
+  group,
+  sectionTitle,
+  entryNumber,
+  entryCount,
+  prevEntry,
+  nextEntry,
+} = Astro.props;
 const tags = meta.tags ?? [];
+const prevSlug = prevEntry?.slug.split("/").at(-1);
+const nextSlug = nextEntry?.slug.split("/").at(-1);
 ---
 
 <BaseLayout title={`${meta.title} | Research`} description={meta.description}>
@@ -81,18 +119,6 @@ const tags = meta.tags ?? [];
 
   <main class="brutal-page research-article-page">
     <article class="container research-article">
-      <div class="research-article__back">
-        <Button href={`/research/${group.id}`}>
-          <ArrowLeft class="button__icon" aria-hidden="true" />
-          К группе
-        </Button>
-
-        <Button href="/research">
-          <ArrowLeft class="button__icon" aria-hidden="true" />
-          К исследованиям
-        </Button>
-      </div>
-
       <header class="research-article__header">
         <div class="research-article__copy">
           <Typography variant="kicker" as="span">
@@ -112,6 +138,8 @@ const tags = meta.tags ?? [];
         </div>
 
         <aside class="research-article__meta" aria-label="Данные материала">
+          <span>Позиция</span>
+          <strong>Запись №{entryNumber} из {entryCount}</strong>
           <span>Группа</span>
           <strong>{group.title}</strong>
           <span>Секция</span>
@@ -130,6 +158,62 @@ const tags = meta.tags ?? [];
           }
         </aside>
       </header>
+
+      <div class="research-article__back research-article__back--under-line">
+        <Button href={`/research/${group.id}`}>
+          <ArrowLeft class="button__icon" aria-hidden="true" />
+          К группе
+        </Button>
+
+        <Button href="/research">
+          <ArrowLeft class="button__icon" aria-hidden="true" />
+          К исследованиям
+        </Button>
+      </div>
+
+      <nav class="research-sequence-nav" aria-label="Навигация по записям">
+        {
+          prevEntry && prevSlug ? (
+            <a
+              href={`/research/${group.id}/${prevSlug}`}
+              class="research-sequence-nav__link"
+            >
+              <ArrowLeft aria-hidden="true" />
+              <span>Запись №{entryNumber - 1}</span>
+              <strong>{prevEntry.meta.title}</strong>
+            </a>
+          ) : (
+            <span class="research-sequence-nav__link research-sequence-nav__link--disabled">
+              <ArrowLeft aria-hidden="true" />
+              <span>Начало группы</span>
+              <strong>Предыдущей записи нет</strong>
+            </span>
+          )
+        }
+
+        <div class="research-sequence-nav__current">
+          Запись №{entryNumber} из {entryCount}
+        </div>
+
+        {
+          nextEntry && nextSlug ? (
+            <a
+              href={`/research/${group.id}/${nextSlug}`}
+              class="research-sequence-nav__link research-sequence-nav__link--next"
+            >
+              <span>Запись №{entryNumber + 1}</span>
+              <strong>{nextEntry.meta.title}</strong>
+              <ArrowRight aria-hidden="true" />
+            </a>
+          ) : (
+            <span class="research-sequence-nav__link research-sequence-nav__link--disabled research-sequence-nav__link--next">
+              <span>Конец группы</span>
+              <strong>Следующей записи нет</strong>
+              <ArrowRight aria-hidden="true" />
+            </span>
+          )
+        }
+      </nav>
 
       <div class="research-article__content">
         <Content />

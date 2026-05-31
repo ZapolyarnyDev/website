@@ -2,9 +2,11 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import Header from "@layouts/Header.astro";
 import Typography from "@components/ui/Typography.astro";
+import Button from "@components/ui/Button.astro";
 import BlogArticleCard from "@components/blog/BlogArticleCard.astro";
 import { getContentPageModel } from "@/content-engine";
 import {
+  ArrowUpRight,
   BookOpenText,
   Code2,
   GraduationCap,
@@ -15,6 +17,8 @@ import {
 const blog = getContentPageModel("blog");
 const pageDescription =
   "Заметки о разработке, исследованиях, инструментах и процессе обучения.";
+const SECTION_PREVIEW_LIMIT = 7;
+const entries = blog.sections.flatMap((section) => section.entries);
 
 const sectionIcons = {
   "book-open-text": BookOpenText,
@@ -31,22 +35,69 @@ const sectionIcons = {
   <main class="brutal-page blog-page">
     <div class="container blog-shell">
       <section class="blog-hero" aria-labelledby="blog-title">
-        <Typography variant="kicker" as="span">
-          <span class="home-hero__kicker-content">
-            <NotebookPen class="home-hero__kicker-icon" aria-hidden="true" />
-            Some thoughts, facts about me :3
-          </span>
-        </Typography>
+        <div class="blog-hero__copy">
+          <Typography variant="kicker" as="span">
+            <span class="home-hero__kicker-content">
+              <NotebookPen class="home-hero__kicker-icon" aria-hidden="true" />
+              Some thoughts, facts about me :3
+            </span>
+          </Typography>
 
-        <Typography variant="hero" as="h1" id="blog-title"> Блог </Typography>
+          <Typography variant="hero" as="h1" id="blog-title"> Блог </Typography>
 
-        <Typography variant="lead" as="p">
-          Заметки о разработке, исследованиях, инструментах и процессе обучения.
-        </Typography>
+          <Typography variant="lead" as="p">
+            Заметки о разработке, исследованиях, инструментах и процессе
+            обучения.
+          </Typography>
+        </div>
+
+        <aside
+          class="blog-hero__notice"
+          aria-label="Навигация для сотрудничества"
+        >
+          <Typography variant="mono" as="span">
+            Не для сотрудничества
+          </Typography>
+
+          <p>
+            Здесь мои личные заметки и разборы. Если необходимо узнать опыт,
+            проекты и формат работы, стоит открыть вкладку портфолио
+          </p>
+
+          <Button href="/portfolio" variant="primary">
+            Портфолио
+            <ArrowUpRight class="button__icon" aria-hidden="true" />
+          </Button>
+        </aside>
+      </section>
+
+      <section class="content-overview" aria-label="Обзор блога">
+        <div class="content-overview__item">
+          <span>Формат</span>
+          <strong>Заметки</strong>
+        </div>
+        <div class="content-overview__item">
+          <span>Разделов</span>
+          <strong>{blog.sections.length}</strong>
+        </div>
+        <div class="content-overview__item">
+          <span>Материалов</span>
+          <strong>{entries.length}</strong>
+        </div>
+        <Button
+          href="/blog/archive"
+          variant="primary"
+          class="content-overview__action content-overview__action--primary"
+        >
+          Архив блога
+          <ArrowUpRight class="button__icon" aria-hidden="true" />
+        </Button>
       </section>
 
       {
         blog.sections.map(({ section, entries }) => {
+          const previewEntries = entries.slice(0, SECTION_PREVIEW_LIMIT);
+          const hiddenCount = entries.length - previewEntries.length;
           const SectionIcon =
             section.icon && section.icon in sectionIcons
               ? sectionIcons[section.icon as keyof typeof sectionIcons]
@@ -67,13 +118,28 @@ const sectionIcons = {
                   <SectionIcon class="blog-section__icon" aria-hidden="true" />
                   {section.title}
                 </Typography>
+
+                <span class="content-section-count">
+                  {entries.length} материалов
+                </span>
               </header>
 
               {entries.length > 0 ? (
                 <div class="blog-section__articles">
-                  {entries.map((article) => (
+                  {previewEntries.map((article) => (
                     <BlogArticleCard article={article} />
                   ))}
+
+                  {hiddenCount > 0 && (
+                    <a
+                      href="/blog/archive"
+                      class="content-more"
+                      aria-label={`Открыть ещё ${hiddenCount} материалов раздела ${section.title}`}
+                    >
+                      Ещё {hiddenCount} в архиве
+                      <ArrowUpRight class="button__icon" aria-hidden="true" />
+                    </a>
+                  )}
                 </div>
               ) : (
                 <div class="blog-section__empty">

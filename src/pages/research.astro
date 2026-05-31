@@ -2,9 +2,11 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import Header from "@layouts/Header.astro";
 import Typography from "@components/ui/Typography.astro";
+import Button from "@components/ui/Button.astro";
 import ResearchGroupCard from "@components/research/ResearchGroupCard.astro";
 import { getContentPageModel } from "@/content-engine";
 import {
+  ArrowUpRight,
   BrainCircuit,
   Cpu,
   FlaskConical,
@@ -15,6 +17,11 @@ import {
 const research = getContentPageModel("research");
 const pageDescription =
   "Каталог исследований, инженерных заметок, экспериментов и разборов технологий.";
+const groups = research.sections.flatMap((section) => section.groups);
+const entries = groups.flatMap((group) => group.entries);
+const latestEntries = [...entries]
+  .sort((a, b) => (b.meta.date ?? "").localeCompare(a.meta.date ?? ""))
+  .slice(0, 3);
 
 const sectionIcons = {
   ai: BrainCircuit,
@@ -41,13 +48,36 @@ const sectionIcons = {
         </Typography>
 
         <Typography variant="hero" as="h1" id="research-title">
-          Research
+          Исследования
         </Typography>
 
         <Typography variant="lead" as="p">
           Исследования, заметки, эксперименты и разборы технологий. Тут
           систематизирую свои идеи и исследования.
         </Typography>
+      </section>
+
+      <section class="content-overview" aria-label="Обзор исследований">
+        <div class="content-overview__item">
+          <span>Секций</span>
+          <strong>{research.sections.length}</strong>
+        </div>
+        <div class="content-overview__item">
+          <span>Групп</span>
+          <strong>{groups.length}</strong>
+        </div>
+        <div class="content-overview__item">
+          <span>Материалов</span>
+          <strong>{entries.length}</strong>
+        </div>
+        <Button
+          href="/research/archive"
+          variant="primary"
+          class="content-overview__action content-overview__action--primary"
+        >
+          Все материалы
+          <ArrowUpRight class="button__icon" aria-hidden="true" />
+        </Button>
       </section>
 
       {
@@ -77,6 +107,8 @@ const sectionIcons = {
                   />
                   {section.title}
                 </Typography>
+
+                <span class="content-section-count">{groups.length} групп</span>
               </header>
 
               {groups.length > 0 ? (
@@ -99,6 +131,69 @@ const sectionIcons = {
             </section>
           );
         })
+      }
+
+      {
+        latestEntries.length > 0 && (
+          <section class="research-section" aria-labelledby="research-latest">
+            <header class="research-section__header">
+              <Typography
+                variant="mono"
+                as="h2"
+                class="research-section__title"
+                id="research-latest"
+              >
+                <FlaskConical
+                  class="research-section__icon"
+                  aria-hidden="true"
+                />
+                Последние материалы
+              </Typography>
+            </header>
+
+            <div class="research-articles__list">
+              {latestEntries.map((entry) => {
+                const articleSlug = entry.slug.split("/").at(-1);
+
+                return (
+                  <a
+                    href={`/research/${entry.meta.groupId}/${articleSlug}`}
+                    class="research-article-card research-article-card--compact"
+                    aria-label={`Открыть материал ${entry.meta.title}`}
+                  >
+                    <div class="research-article-card__main">
+                      <Typography
+                        variant="mono"
+                        as="span"
+                        class="research-article-card__kind"
+                      >
+                        Материал
+                      </Typography>
+
+                      <h3 class="research-article-card__title">
+                        {entry.meta.title}
+                      </h3>
+
+                      <p class="research-article-card__description">
+                        {entry.meta.description}
+                      </p>
+                    </div>
+
+                    <span
+                      class="research-article-card__open"
+                      aria-label="Открыть материал"
+                    >
+                      <ArrowUpRight
+                        class="research-article-card__icon"
+                        aria-hidden="true"
+                      />
+                    </span>
+                  </a>
+                );
+              })}
+            </div>
+          </section>
+        )
       }
     </div>
   </main>

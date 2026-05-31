@@ -20,6 +20,8 @@ const articleLabel =
   class="research-group-card"
   aria-label={`Открыть исследовательскую группу ${group.title}`}
 >
+  <ArrowUpRight class="research-group-card__arrow" aria-hidden="true" />
+
   <div class="research-group-card__main">
     <Typography variant="mono" as="span" class="research-group-card__label">
       Группа исследований
@@ -32,14 +34,10 @@ const articleLabel =
         <p class="research-group-card__description">{group.description}</p>
       )
     }
-  </div>
 
-  <div class="research-group-card__action">
-    <span>{entries.length} {articleLabel}</span>
-
-    <span class="research-group-card__open">
-      Открыть
-      <ArrowUpRight class="research-group-card__icon" aria-hidden="true" />
+    <span class="research-group-card__count">
+      {entries.length}
+      {articleLabel}
     </span>
   </div>
 </a>

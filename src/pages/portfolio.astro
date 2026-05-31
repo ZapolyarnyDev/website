@@ -2,13 +2,34 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import Header from "@layouts/Header.astro";
 import Typography from "@components/ui/Typography.astro";
+import Button from "@components/ui/Button.astro";
 import PortfolioProjectCard from "@components/portfolio/PortfolioProjectCard.astro";
 import { getContentPageModel } from "@/content-engine";
-import { BriefcaseBusiness, Code2, Gamepad2 } from "lucide-astro";
+import {
+  ArrowUpRight,
+  BriefcaseBusiness,
+  Code2,
+  Gamepad2,
+  Handshake,
+  ListChecks,
+} from "lucide-astro";
 
 const portfolio = getContentPageModel("portfolio");
 const pageDescription =
   "Портфолио ZapolyarnyDev: текущие проекты, результаты и материалы для сотрудничества.";
+const SECTION_PREVIEW_LIMIT = 5;
+const projects = portfolio.sections.flatMap((section) => section.entries);
+const featuredCount = projects.filter(
+  (project) => project.meta.featured,
+).length;
+const featuredProjects = projects.filter((project) => project.meta.featured);
+const portfolioSections = portfolio.sections
+  .map(({ section, entries }) => ({
+    section,
+    entries: entries.filter((project) => !project.meta.featured),
+  }))
+  .filter(({ entries }) => entries.length > 0);
+const casesAnchorOnFeatured = featuredProjects.length > 0;
 
 const sectionIcons = {
   "briefcase-business": BriefcaseBusiness,
@@ -38,13 +59,83 @@ const sectionIcons = {
         </Typography>
 
         <Typography variant="lead" as="p">
-          Страница для работы и сотрудничества: текущие проекты, результаты и
-          материалы, которые можно открыть подробнее.
+          Коммерческий и практический опыт: что делал, в каком контексте, какой
+          стек использовал и какие навыки у меня есть.
         </Typography>
       </section>
 
+      <section class="content-overview" aria-label="Обзор портфолио">
+        <div class="content-overview__item">
+          <span>Фокус</span>
+          <strong>Инженерия</strong>
+        </div>
+        <div class="content-overview__item">
+          <span>Кейсов</span>
+          <strong>{projects.length}</strong>
+        </div>
+        <div class="content-overview__item">
+          <span>Ключевых</span>
+          <strong>{featuredCount}</strong>
+        </div>
+        <Button
+          href="/portfolio/archive"
+          variant="primary"
+          class="content-overview__action content-overview__action--primary"
+        >
+          Архив проектов
+          <ArrowUpRight class="button__icon" aria-hidden="true" />
+        </Button>
+      </section>
+
+      <section class="portfolio-client-strip" aria-label="Что смотреть клиенту">
+        <div class="portfolio-client-strip__item">
+          <Handshake aria-hidden="true" />
+          <span>Для сотрудничества</span>
+          <strong>Быстро рассмотреть мой опыт</strong>
+        </div>
+
+        <div class="portfolio-client-strip__item">
+          <ListChecks aria-hidden="true" />
+          <span>Внутри кейсов</span>
+          <strong>Роль, стек и результат</strong>
+        </div>
+      </section>
+
       {
-        portfolio.sections.map(({ section, entries }) => {
+        featuredProjects.length > 0 && (
+          <section
+            class="portfolio-section portfolio-section--featured"
+            id="portfolio-cases"
+            aria-labelledby="portfolio-featured"
+          >
+            <header class="portfolio-section__header">
+              <Typography
+                variant="mono"
+                as="h2"
+                class="portfolio-section__title"
+                id="portfolio-featured"
+              >
+                <BriefcaseBusiness
+                  class="portfolio-section__icon"
+                  aria-hidden="true"
+                />
+                Ключевые кейсы
+              </Typography>
+            </header>
+
+            <div class="portfolio-section__projects">
+              {featuredProjects.map((project) => (
+                <PortfolioProjectCard project={project} />
+              ))}
+            </div>
+          </section>
+        )
+      }
+
+      {
+        portfolioSections.map(({ section, entries }, index) => {
+          const previewEntries = entries.slice(0, SECTION_PREVIEW_LIMIT);
+          const hiddenCount = entries.length - previewEntries.length;
           const SectionIcon =
             section.icon && section.icon in sectionIcons
               ? sectionIcons[section.icon as keyof typeof sectionIcons]
@@ -53,6 +144,11 @@ const sectionIcons = {
           return (
             <section
               class="portfolio-section"
+              id={
+                !casesAnchorOnFeatured && index === 0
+                  ? "portfolio-cases"
+                  : undefined
+              }
               aria-labelledby={`portfolio-section-${section.id}`}
             >
               <header class="portfolio-section__header">
@@ -68,16 +164,31 @@ const sectionIcons = {
                   />
                   {section.title}
                 </Typography>
+
+                <span class="content-section-count">
+                  {entries.length} проектов
+                </span>
               </header>
 
               {entries.length > 0 ? (
                 <div class="portfolio-section__projects">
-                  {entries.map((project) => (
+                  {previewEntries.map((project) => (
                     <PortfolioProjectCard
                       project={project}
                       sectionTitle={section.title}
                     />
                   ))}
+
+                  {hiddenCount > 0 && (
+                    <a
+                      href="/portfolio/archive"
+                      class="content-more"
+                      aria-label={`Открыть ещё ${hiddenCount} проектов раздела ${section.title}`}
+                    >
+                      Ещё {hiddenCount} в архиве
+                      <ArrowUpRight class="button__icon" aria-hidden="true" />
+                    </a>
+                  )}
                 </div>
               ) : (
                 <div class="portfolio-section__empty">

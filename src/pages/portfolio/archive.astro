@@ -1,0 +1,92 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Header from "@layouts/Header.astro";
+import Button from "@components/ui/Button.astro";
+import Typography from "@components/ui/Typography.astro";
+import PortfolioProjectCard from "@components/portfolio/PortfolioProjectCard.astro";
+import { getContentPageModel } from "@/content-engine";
+import { ArrowLeft, BriefcaseBusiness } from "lucide-astro";
+
+const portfolio = getContentPageModel("portfolio");
+const pageDescription = "Полный архив проектов портфолио.";
+---
+
+<BaseLayout
+  title="Архив проектов | ZapolyarnyDev"
+  description={pageDescription}
+>
+  <Header currentPath="/portfolio" />
+
+  <main class="brutal-page portfolio-page">
+    <div class="container portfolio-shell">
+      <section class="archive-hero" aria-labelledby="portfolio-archive-title">
+        <Typography variant="kicker" as="span">
+          <span class="home-hero__kicker-content">
+            <BriefcaseBusiness
+              class="home-hero__kicker-icon"
+              aria-hidden="true"
+            />
+            project archive
+          </span>
+        </Typography>
+
+        <Typography variant="hero" as="h1" id="portfolio-archive-title">
+          Архив проектов
+        </Typography>
+
+        <Typography variant="lead" as="p">
+          Все проекты и кейсы, сгруппированные по направлениям.
+        </Typography>
+
+        <div class="archive-hero__actions">
+          <Button href="/portfolio">
+            <ArrowLeft class="button__icon" aria-hidden="true" />
+            К портфолио
+          </Button>
+        </div>
+      </section>
+
+      {
+        portfolio.sections.map(({ section, entries }) => (
+          <section
+            class="portfolio-section"
+            aria-labelledby={`portfolio-archive-section-${section.id}`}
+          >
+            <header class="portfolio-section__header">
+              <Typography
+                variant="mono"
+                as="h2"
+                class="portfolio-section__title"
+                id={`portfolio-archive-section-${section.id}`}
+              >
+                {section.title}
+              </Typography>
+
+              <span class="content-section-count">
+                {entries.length} проектов
+              </span>
+            </header>
+
+            {entries.length > 0 ? (
+              <div class="portfolio-section__projects">
+                {entries.map((project) => (
+                  <PortfolioProjectCard
+                    project={project}
+                    sectionTitle={section.title}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div class="portfolio-section__empty">
+                <Typography variant="mono" as="span">
+                  Пусто
+                </Typography>
+                <p>В этом разделе пока нет опубликованных проектов.</p>
+              </div>
+            )}
+          </section>
+        ))
+      }
+    </div>
+  </main>
+</BaseLayout>
