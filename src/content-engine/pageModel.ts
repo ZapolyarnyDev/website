@@ -13,9 +13,12 @@ export function getContentPageModel(area: ContentArea): ContentPageModel {
   const groups = loadGroups(area);
   const entries = loadEntries(area);
 
-  const sectionModels = sections.map((section) =>
-    createSectionModel(section, groups, entries),
-  );
+  const sectionModels = sections
+    .map((section) => createSectionModel(section, groups, entries))
+    .filter(
+      (sectionModel) =>
+        sectionModel.entries.length > 0 || sectionModel.groups.length > 0,
+    );
 
   const sectionIds = new Set(sections.map((section) => section.id));
 
@@ -41,12 +44,14 @@ function createSectionModel(
 
   const groupIds = new Set(sectionGroups.map((group) => group.id));
 
-  const groupModels = sectionGroups.map((group) => ({
-    group,
-    entries: entries
-      .filter((entry) => entry.meta.groupId === group.id)
-      .sort(sortEntries),
-  }));
+  const groupModels = sectionGroups
+    .map((group) => ({
+      group,
+      entries: entries
+        .filter((entry) => entry.meta.groupId === group.id)
+        .sort(sortEntries),
+    }))
+    .filter((groupModel) => groupModel.entries.length > 0);
 
   const directEntries = entries
     .filter((entry) => entry.meta.sectionId === section.id)
