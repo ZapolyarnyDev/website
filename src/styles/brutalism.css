@@ -233,6 +233,125 @@
   flex-wrap: wrap;
 }
 
+.header__menu-toggle {
+  display: none;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border: var(--border);
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    background var(--motion),
+    color var(--motion),
+    box-shadow var(--motion),
+    transform var(--motion);
+}
+
+.header__menu-toggle:hover,
+.header__menu-toggle:focus-visible {
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: 8px 8px 0 var(--ink);
+  outline: none;
+  transform: translate(-3px, -3px);
+}
+
+.header__menu-icon {
+  width: 24px;
+  height: 24px;
+  stroke-width: 2.7;
+}
+
+.header__menu-icon--close {
+  display: none;
+}
+
+.header__menu-toggle[aria-expanded="true"] .header__menu-icon--open {
+  display: none;
+}
+
+.header__menu-toggle[aria-expanded="true"] .header__menu-icon--close {
+  display: block;
+}
+
+.header__mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  background: var(--paper);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-10px);
+  transition:
+    opacity var(--motion),
+    transform var(--motion);
+}
+
+.header__mobile-menu[data-open] {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.header__mobile-inner {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 28px;
+  min-height: 100svh;
+  padding-block: 18px 28px;
+}
+
+.header__mobile-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 58px;
+  border-bottom: var(--border-heavy);
+  padding-bottom: 16px;
+}
+
+.header__mobile-title {
+  color: var(--ink);
+  font-size: clamp(34px, 12vw, 72px);
+  font-weight: 800;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+.header__menu-toggle--inside {
+  display: grid;
+  flex: 0 0 auto;
+}
+
+.header__mobile-nav {
+  display: grid;
+  align-content: center;
+  gap: 14px;
+}
+
+.header__mobile-link.brutal-nav-button {
+  justify-content: flex-start;
+  min-height: 74px;
+  border-width: 4px;
+  box-shadow: var(--shadow);
+  font-size: clamp(20px, 7vw, 34px);
+  line-height: 1;
+  padding: 18px;
+}
+
+.header__mobile-link .brutal-nav-button__icon {
+  width: 26px;
+  height: 26px;
+}
+
+body.menu-open {
+  overflow: hidden;
+}
+
 /* ==========================================================================
    Home hero
    ========================================================================== */
@@ -2201,10 +2320,8 @@
 
 @media (max-width: 1100px) {
   .header__inner {
-    position: static;
-    flex-direction: column;
-    gap: 18px;
-    padding: 18px 0;
+    justify-content: space-between;
+    min-height: 78px;
   }
 
   .header__brand {
@@ -2212,12 +2329,11 @@
   }
 
   .header__nav {
-    width: 100%;
-    justify-content: stretch;
+    display: none;
   }
 
-  .header__nav > * {
-    flex: 1 1 180px;
+  .header__menu-toggle {
+    display: grid;
   }
 
   .home-hero__title {
