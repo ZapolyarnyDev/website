@@ -3,18 +3,21 @@
     "id": "development",
     "title": "Разработка",
     "description": "Заметки о backend, frontend и инженерии.",
-    "order": 10
+    "order": 10,
+    "icon": "code-2"
   },
   {
     "id": "learning",
     "title": "Обучение",
     "description": "Конспекты, исследования и заметки.",
-    "order": 20
+    "order": 20,
+    "icon": "graduation-cap"
   },
   {
     "id": "personal",
     "title": "Личное",
     "description": "Мысли и наблюдения.",
-    "order": 30
+    "order": 30,
+    "icon": "user-round"
   }
 ]
