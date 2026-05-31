@@ -37,10 +37,6 @@ export function getStaticPaths() {
 
 const { groupModel, sectionTitle } = Astro.props;
 const { group, entries } = groupModel;
-const articleLabel =
-  entries.length % 10 === 1 && entries.length % 100 !== 11
-    ? "материал"
-    : "материалов";
 const kindLabels: Record<ContentEntryKind, string> = {
   article: "Статья",
   note: "Заметка",
@@ -77,8 +73,8 @@ const kindLabels: Record<ContentEntryKind, string> = {
         </div>
 
         <aside class="research-group-page__meta" aria-label="Данные группы">
-          <span>Группа</span>
-          <strong>{entries.length} {articleLabel}</strong>
+          <span>Материалов:</span>
+          <strong>{entries.length}</strong>
           <span>Секция</span>
           <strong>{sectionTitle}</strong>
         </aside>
