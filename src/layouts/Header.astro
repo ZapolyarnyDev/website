@@ -1,5 +1,6 @@
 ---
 import NavButton from "@components/ui/NavButton.astro";
+import { Menu, X } from "lucide-astro";
 
 interface Props {
   currentPath?: string;
@@ -27,20 +28,16 @@ const links = [
     href: "/research",
     label: "Исследования",
     icon: "flask-conical",
-  }
+  },
 ] as const;
 ---
 
 <header class="header">
   <div class="container header__inner">
     <a class="header__brand" href="/">
-      <span class="header__brand-mark">
-        ZP
-      </span>
+      <span class="header__brand-mark"> ZP </span>
 
-      <span>
-        ZapolyarnyDev
-      </span>
+      <span> ZapolyarnyDev </span>
     </a>
 
     <nav class="header__nav">
@@ -56,5 +53,99 @@ const links = [
         ))
       }
     </nav>
+
+    <button
+      class="header__menu-toggle"
+      type="button"
+      aria-label="Открыть меню"
+      aria-expanded="false"
+      aria-controls="mobile-navigation"
+      data-menu-toggle
+    >
+      <Menu
+        class="header__menu-icon header__menu-icon--open"
+        aria-hidden="true"
+      />
+      <X
+        class="header__menu-icon header__menu-icon--close"
+        aria-hidden="true"
+      />
+    </button>
+  </div>
+
+  <div
+    class="header__mobile-menu"
+    id="mobile-navigation"
+    aria-hidden="true"
+    data-mobile-menu
+  >
+    <div class="container header__mobile-inner">
+      <div class="header__mobile-top">
+        <span class="header__mobile-title">Меню</span>
+
+        <button
+          class="header__menu-toggle header__menu-toggle--inside"
+          type="button"
+          aria-label="Закрыть меню"
+          data-menu-close
+        >
+          <X class="header__menu-icon" aria-hidden="true" />
+        </button>
+      </div>
+
+      <nav class="header__mobile-nav" aria-label="Мобильная навигация">
+        {
+          links.map((link) => (
+            <NavButton
+              href={link.href}
+              icon={link.icon}
+              active={currentPath === link.href}
+              class="header__mobile-link"
+            >
+              {link.label}
+            </NavButton>
+          ))
+        }
+      </nav>
+    </div>
   </div>
 </header>
+
+<script>
+  const toggle = document.querySelector("[data-menu-toggle]");
+  const closeButton = document.querySelector("[data-menu-close]");
+  const menu = document.querySelector("[data-mobile-menu]");
+  const links = menu?.querySelectorAll("a") ?? [];
+
+  const setMenuOpen = (isOpen) => {
+    if (
+      !(toggle instanceof HTMLButtonElement) ||
+      !(menu instanceof HTMLElement)
+    ) {
+      return;
+    }
+
+    toggle.setAttribute("aria-expanded", String(isOpen));
+    toggle.setAttribute("aria-label", isOpen ? "Закрыть меню" : "Открыть меню");
+    menu.setAttribute("aria-hidden", String(!isOpen));
+    menu.toggleAttribute("data-open", isOpen);
+    document.body.classList.toggle("menu-open", isOpen);
+  };
+
+  toggle?.addEventListener("click", () => {
+    const isOpen = toggle.getAttribute("aria-expanded") === "true";
+    setMenuOpen(!isOpen);
+  });
+
+  closeButton?.addEventListener("click", () => setMenuOpen(false));
+
+  links.forEach((link) => {
+    link.addEventListener("click", () => setMenuOpen(false));
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      setMenuOpen(false);
+    }
+  });
+</script>
