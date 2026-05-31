@@ -1,0 +1,139 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Header from "@layouts/Header.astro";
+import Button from "@components/ui/Button.astro";
+import Typography from "@components/ui/Typography.astro";
+import {
+  getContentPageModel,
+  type ContentEntryMeta,
+  type ContentGroup,
+} from "@/content-engine";
+import type { AstroComponentFactory } from "astro/runtime/server/index.js";
+import { ArrowLeft, FlaskConical } from "lucide-astro";
+
+type ResearchModule = {
+  default: AstroComponentFactory;
+  frontmatter: ContentEntryMeta;
+};
+
+interface Props {
+  Content: AstroComponentFactory;
+  meta: ContentEntryMeta;
+  group: ContentGroup;
+  sectionTitle: string;
+}
+
+export function getStaticPaths() {
+  const articleModules = import.meta.glob(
+    "../../../../content/research/**/*.mdx",
+    {
+      eager: true,
+    },
+  ) as Record<string, ResearchModule>;
+
+  const research = getContentPageModel("research");
+  const groups = research.sections.flatMap(({ section, groups }) =>
+    groups.map(({ group }) => ({
+      group,
+      sectionTitle: section.title,
+    })),
+  );
+
+  return Object.entries(articleModules)
+    .filter(([, module]) => !module.frontmatter.draft)
+    .map(([path, module]) => {
+      const fileSlug = path
+        .replace("../../../../content/research/", "")
+        .replace(/\.mdx$/, "")
+        .replace(/\/index$/, "")
+        .split("/")
+        .at(-1);
+      const groupData = groups.find(
+        ({ group }) => group.id === module.frontmatter.groupId,
+      );
+
+      if (!module.frontmatter.groupId || !fileSlug || !groupData) {
+        return null;
+      }
+
+      return {
+        params: {
+          group: module.frontmatter.groupId,
+          slug: fileSlug,
+        },
+        props: {
+          Content: module.default,
+          meta: module.frontmatter,
+          group: groupData.group,
+          sectionTitle: groupData.sectionTitle,
+        },
+      };
+    })
+    .filter((path): path is Exclude<typeof path, null> => path !== null);
+}
+
+const { Content, meta, group, sectionTitle } = Astro.props;
+const tags = meta.tags ?? [];
+---
+
+<BaseLayout title={`${meta.title} | Research`} description={meta.description}>
+  <Header currentPath="/research" />
+
+  <main class="brutal-page research-article-page">
+    <article class="container research-article">
+      <div class="research-article__back">
+        <Button href={`/research/${group.id}`}>
+          <ArrowLeft class="button__icon" aria-hidden="true" />
+          К группе
+        </Button>
+
+        <Button href="/research">
+          <ArrowLeft class="button__icon" aria-hidden="true" />
+          К исследованиям
+        </Button>
+      </div>
+
+      <header class="research-article__header">
+        <div class="research-article__copy">
+          <Typography variant="kicker" as="span">
+            <span class="home-hero__kicker-content">
+              <FlaskConical class="home-hero__kicker-icon" aria-hidden="true" />
+              research article
+            </span>
+          </Typography>
+
+          <Typography variant="hero" as="h1" class="research-article__title">
+            {meta.title}
+          </Typography>
+
+          <Typography variant="lead" as="p">
+            {meta.description}
+          </Typography>
+        </div>
+
+        <aside class="research-article__meta" aria-label="Данные материала">
+          <span>Группа</span>
+          <strong>{group.title}</strong>
+          <span>Секция</span>
+          <strong>{sectionTitle}</strong>
+
+          {tags.length > 0 && <span>Теги</span>}
+
+          {
+            tags.length > 0 && (
+              <ul>
+                {tags.map((tag) => (
+                  <li>{tag}</li>
+                ))}
+              </ul>
+            )
+          }
+        </aside>
+      </header>
+
+      <div class="research-article__content">
+        <Content />
+      </div>
+    </article>
+  </main>
+</BaseLayout>
