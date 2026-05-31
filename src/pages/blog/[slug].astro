@@ -3,9 +3,14 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import Header from "@layouts/Header.astro";
 import Button from "@components/ui/Button.astro";
 import Typography from "@components/ui/Typography.astro";
-import type { ContentEntryMeta, ContentEntryKind } from "@/content-engine";
+import {
+  loadEntries,
+  type ContentEntry,
+  type ContentEntryKind,
+  type ContentEntryMeta,
+} from "@/content-engine";
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
-import { ArrowLeft } from "lucide-astro";
+import { ArrowLeft, ArrowRight } from "lucide-astro";
 
 type BlogModule = {
   default: AstroComponentFactory;
@@ -15,12 +20,16 @@ type BlogModule = {
 interface Props {
   Content: AstroComponentFactory;
   meta: ContentEntryMeta;
+  currentEntry: ContentEntry;
+  prevEntry?: ContentEntry;
+  nextEntry?: ContentEntry;
 }
 
 export function getStaticPaths() {
   const articleModules = import.meta.glob("../../../content/blog/**/*.mdx", {
     eager: true,
   }) as Record<string, BlogModule>;
+  const entries = loadEntries("blog");
 
   return Object.entries(articleModules)
     .filter(([, module]) => !module.frontmatter.draft)
@@ -29,19 +38,36 @@ export function getStaticPaths() {
         .replace("../../../content/blog/", "")
         .replace(/\.mdx$/, "")
         .replace(/\/index$/, "");
+      const entryIndex = entries.findIndex((entry) => entry.slug === slug);
+      const currentEntry = entries[entryIndex];
+
+      if (!currentEntry) {
+        return null;
+      }
 
       return {
         params: { slug },
         props: {
           Content: module.default,
           meta: module.frontmatter,
+          currentEntry,
+          prevEntry: entryIndex > 0 ? entries[entryIndex - 1] : undefined,
+          nextEntry:
+            entryIndex < entries.length - 1
+              ? entries[entryIndex + 1]
+              : undefined,
         },
       };
-    });
+    })
+    .filter((path): path is Exclude<typeof path, null> => path !== null);
 }
 
-const { Content, meta } = Astro.props;
+const { Content, meta, currentEntry, prevEntry, nextEntry } = Astro.props;
+const blogEntries = loadEntries("blog");
 const tags = meta.tags ?? [];
+const currentNumber =
+  blogEntries.findIndex((entry) => entry.slug === currentEntry.slug) + 1;
+const entryCount = blogEntries.length;
 const kindLabels: Record<ContentEntryKind, string> = {
   article: "Статья",
   note: "Заметка",
@@ -107,9 +133,53 @@ const formattedDate = meta.date
         </Button>
       </div>
 
-      <div class="blog-post__content">
+      <div class="blog-post__content markdown-content">
         <Content />
       </div>
+
+      <nav class="article-sequence-nav" aria-label="Навигация по заметкам">
+        {
+          prevEntry ? (
+            <a
+              href={`/blog/${prevEntry.slug}`}
+              class="article-sequence-nav__link"
+            >
+              <ArrowLeft aria-hidden="true" />
+              <span>Предыдущая</span>
+              <strong>{prevEntry.meta.title}</strong>
+            </a>
+          ) : (
+            <span class="article-sequence-nav__link article-sequence-nav__link--disabled">
+              <ArrowLeft aria-hidden="true" />
+              <span>Начало</span>
+              <strong>Предыдущей заметки нет</strong>
+            </span>
+          )
+        }
+
+        <div class="article-sequence-nav__current">
+          Заметка {currentNumber} из {entryCount}
+        </div>
+
+        {
+          nextEntry ? (
+            <a
+              href={`/blog/${nextEntry.slug}`}
+              class="article-sequence-nav__link article-sequence-nav__link--next"
+            >
+              <span>Следующая</span>
+              <strong>{nextEntry.meta.title}</strong>
+              <ArrowRight aria-hidden="true" />
+            </a>
+          ) : (
+            <span class="article-sequence-nav__link article-sequence-nav__link--disabled article-sequence-nav__link--next">
+              <span>Конец</span>
+              <strong>Следующей заметки нет</strong>
+              <ArrowRight aria-hidden="true" />
+            </span>
+          )
+        }
+      </nav>
     </article>
   </main>
 </BaseLayout>
