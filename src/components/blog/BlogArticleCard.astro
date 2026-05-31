@@ -1,0 +1,59 @@
+---
+import Typography from "@components/ui/Typography.astro";
+import type { ContentEntry, ContentEntryKind } from "@/content-engine";
+
+interface Props {
+  article: ContentEntry;
+}
+
+const { article } = Astro.props;
+const { title, description, date, tags = [], kind } = article.meta;
+const href = `/blog/${article.slug}`;
+
+const kindLabels: Record<ContentEntryKind, string> = {
+  article: "Статья",
+  note: "Заметка",
+  case: "Материал",
+  project: "Материал",
+};
+
+const formattedDate = date
+  ? new Intl.DateTimeFormat("ru-RU", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    }).format(new Date(`${date}T00:00:00`))
+  : null;
+---
+
+<a href={href} class="blog-article" aria-label={`Открыть материал ${title}`}>
+  <div class="blog-article__main">
+    <Typography variant="mono" as="span" class="blog-article__kind">
+      {kindLabels[kind]}
+    </Typography>
+
+    <h3 class="blog-article__title">{title}</h3>
+
+    <p class="blog-article__description">{description}</p>
+  </div>
+
+  <div class="blog-article__meta">
+    {
+      date && formattedDate && (
+        <time class="blog-article__date" datetime={date}>
+          {formattedDate}
+        </time>
+      )
+    }
+
+    {
+      tags.length > 0 && (
+        <ul class="blog-article__tags" aria-label={`Теги материала ${title}`}>
+          {tags.map((tag) => (
+            <li>{tag}</li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</a>

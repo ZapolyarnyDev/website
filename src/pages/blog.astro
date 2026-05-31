@@ -1,0 +1,92 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Header from "@layouts/Header.astro";
+import Typography from "@components/ui/Typography.astro";
+import BlogArticleCard from "@components/blog/BlogArticleCard.astro";
+import { getContentPageModel } from "@/content-engine";
+import {
+  BookOpenText,
+  Code2,
+  GraduationCap,
+  NotebookPen,
+  UserRound,
+} from "lucide-astro";
+
+const blog = getContentPageModel("blog");
+const pageDescription =
+  "Заметки о разработке, исследованиях, инструментах и процессе обучения.";
+
+const sectionIcons = {
+  "book-open-text": BookOpenText,
+  "code-2": Code2,
+  "graduation-cap": GraduationCap,
+  "notebook-pen": NotebookPen,
+  "user-round": UserRound,
+};
+---
+
+<BaseLayout title="Blog | ZapolyarnyDev" description={pageDescription}>
+  <Header currentPath="/blog" />
+
+  <main class="brutal-page blog-page">
+    <div class="container blog-shell">
+      <section class="blog-hero" aria-labelledby="blog-title">
+        <Typography variant="kicker" as="span">
+          <span class="home-hero__kicker-content">
+            <NotebookPen class="home-hero__kicker-icon" aria-hidden="true" />
+            Some thoughts, facts about me :3
+          </span>
+        </Typography>
+
+        <Typography variant="hero" as="h1" id="blog-title"> Блог </Typography>
+
+        <Typography variant="lead" as="p">
+          Заметки о разработке, исследованиях, инструментах и процессе обучения.
+        </Typography>
+      </section>
+
+      {
+        blog.sections.map(({ section, entries }) => {
+          const SectionIcon =
+            section.icon && section.icon in sectionIcons
+              ? sectionIcons[section.icon as keyof typeof sectionIcons]
+              : NotebookPen;
+
+          return (
+            <section
+              class="blog-section"
+              aria-labelledby={`blog-section-${section.id}`}
+            >
+              <header class="blog-section__header">
+                <Typography
+                  variant="mono"
+                  as="h2"
+                  class="blog-section__title"
+                  id={`blog-section-${section.id}`}
+                >
+                  <SectionIcon class="blog-section__icon" aria-hidden="true" />
+                  {section.title}
+                </Typography>
+              </header>
+
+              {entries.length > 0 ? (
+                <div class="blog-section__articles">
+                  {entries.map((article) => (
+                    <BlogArticleCard article={article} />
+                  ))}
+                </div>
+              ) : (
+                <div class="blog-section__empty">
+                  <Typography variant="mono" as="span">
+                    В работе
+                  </Typography>
+                  <p>Материалы появятся здесь, когда их можно будет открыть.</p>
+                </div>
+              )}
+            </section>
+          );
+        })
+      }
+    </div>
+  </main>
+</BaseLayout>

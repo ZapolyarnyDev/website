@@ -1,0 +1,115 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Header from "@layouts/Header.astro";
+import Button from "@components/ui/Button.astro";
+import Typography from "@components/ui/Typography.astro";
+import type { ContentEntryMeta, ContentEntryKind } from "@/content-engine";
+import type { AstroComponentFactory } from "astro/runtime/server/index.js";
+import { ArrowLeft } from "lucide-astro";
+
+type BlogModule = {
+  default: AstroComponentFactory;
+  frontmatter: ContentEntryMeta;
+};
+
+interface Props {
+  Content: AstroComponentFactory;
+  meta: ContentEntryMeta;
+}
+
+export function getStaticPaths() {
+  const articleModules = import.meta.glob("../../../content/blog/**/*.mdx", {
+    eager: true,
+  }) as Record<string, BlogModule>;
+
+  return Object.entries(articleModules)
+    .filter(([, module]) => !module.frontmatter.draft)
+    .map(([path, module]) => {
+      const slug = path
+        .replace("../../../content/blog/", "")
+        .replace(/\.mdx$/, "")
+        .replace(/\/index$/, "");
+
+      return {
+        params: { slug },
+        props: {
+          Content: module.default,
+          meta: module.frontmatter,
+        },
+      };
+    });
+}
+
+const { Content, meta } = Astro.props;
+const tags = meta.tags ?? [];
+const kindLabels: Record<ContentEntryKind, string> = {
+  article: "Статья",
+  note: "Заметка",
+  case: "Материал",
+  project: "Материал",
+};
+
+const formattedDate = meta.date
+  ? new Intl.DateTimeFormat("ru-RU", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    }).format(new Date(`${meta.date}T00:00:00`))
+  : null;
+---
+
+<BaseLayout title={`${meta.title} | Blog`} description={meta.description}>
+  <Header currentPath="/blog" />
+
+  <main class="brutal-page blog-post-page">
+    <article class="container blog-post">
+      <header class="blog-post__header">
+        <div class="blog-post__copy">
+          <Typography variant="kicker" as="span">
+            {kindLabels[meta.kind]}
+          </Typography>
+
+          <Typography variant="hero" as="h1" class="blog-post__title">
+            {meta.title}
+          </Typography>
+
+          <Typography variant="lead" as="p">
+            {meta.description}
+          </Typography>
+        </div>
+
+        <aside class="blog-post__meta" aria-label="Данные материала">
+          {meta.date && formattedDate && <span>Дата</span>}
+          {
+            meta.date && formattedDate && (
+              <time datetime={meta.date}>{formattedDate}</time>
+            )
+          }
+
+          {tags.length > 0 && <span>Теги</span>}
+
+          {
+            tags.length > 0 && (
+              <ul>
+                {tags.map((tag) => (
+                  <li>{tag}</li>
+                ))}
+              </ul>
+            )
+          }
+        </aside>
+      </header>
+
+      <div class="blog-post__back">
+        <Button href="/blog">
+          <ArrowLeft class="button__icon" aria-hidden="true" />
+          Вернуться в блог
+        </Button>
+      </div>
+
+      <div class="blog-post__content">
+        <Content />
+      </div>
+    </article>
+  </main>
+</BaseLayout>
