@@ -19,10 +19,24 @@
 
   --border: 4px solid var(--ink);
   --border-heavy: 5px solid var(--ink);
-  --shadow: 6px 6px 0 var(--ink);
-  --shadow-lift: 12px 12px 0 var(--ink);
+  --shadow-sm: 4px 4px 0 0.5px var(--ink);
+  --shadow: 6px 6px 0 0.5px var(--ink);
+  --shadow-hover: 8px 8px 0 0.5px var(--ink);
+  --shadow-hover-strong: 10px 10px 0 0.5px var(--ink);
+  --shadow-lift: 12px 12px 0 0.5px var(--ink);
   --lift: translate(-5px, -5px);
   --motion: 0.14s linear;
+}
+
+@media (max-width: 680px) {
+  :root {
+    --shadow-sm: 3px 3px 0 0.5px var(--ink);
+    --shadow: 3px 3px 0 0.5px var(--ink);
+    --shadow-hover: 3px 3px 0 0.5px var(--ink);
+    --shadow-hover-strong: 3px 3px 0 0.5px var(--ink);
+    --shadow-lift: 3px 3px 0 0.5px var(--ink);
+    --lift: translate(-2px, -2px);
+  }
 }
 
 ::selection {
