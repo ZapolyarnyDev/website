@@ -117,7 +117,7 @@ const links = [
   const menu = document.querySelector("[data-mobile-menu]");
   const links = menu?.querySelectorAll("a") ?? [];
 
-  const setMenuOpen = (isOpen) => {
+  const setMenuOpen = (isOpen: boolean) => {
     if (
       !(toggle instanceof HTMLButtonElement) ||
       !(menu instanceof HTMLElement)

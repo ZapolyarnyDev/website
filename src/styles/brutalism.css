@@ -300,6 +300,7 @@
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   gap: 28px;
+  min-height: 100vh;
   min-height: 100svh;
   padding-block: 18px 28px;
 }
@@ -373,6 +374,7 @@ body.menu-open {
 }
 
 .home-hero__avatar {
+  aspect-ratio: 1;
   border: var(--border-heavy);
   background: var(--paper);
   box-shadow: var(--shadow);
@@ -382,7 +384,7 @@ body.menu-open {
 .home-hero__avatar img {
   display: block;
   width: 100%;
-  aspect-ratio: 1;
+  height: 100%;
   object-fit: cover;
 }
 
