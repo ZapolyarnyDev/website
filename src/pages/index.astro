@@ -2,9 +2,14 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import Header from "@layouts/Header.astro";
 import HomeHero from "@components/sections/HomeHero.astro";
+
+const pageTitle =
+  "ZapolyarnyDev - Java backend и Minecraft server-side разработчик";
+const pageDescription =
+  "Личный сайт ZapolyarnyDev: портфолио, блог, исследования, Java backend, Веб и Minecraft server-side разработка";
 ---
 
-<BaseLayout title="ZapolyarnyDev">
+<BaseLayout title={pageTitle} description={pageDescription}>
   <Header currentPath="/" />
 
   <main>

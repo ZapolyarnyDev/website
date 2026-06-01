@@ -46,7 +46,11 @@ const { Content, meta } = Astro.props;
 const tags = meta.tags ?? [];
 ---
 
-<BaseLayout title={`${meta.title} | Portfolio`} description={meta.description}>
+<BaseLayout
+  title={`${meta.title} | Портфолио ZapolyarnyDev`}
+  description={meta.description}
+  ogType="article"
+>
   <Header currentPath="/portfolio" />
 
   <main class="brutal-page project-page">

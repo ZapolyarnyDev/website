@@ -4,12 +4,20 @@ import "@styles/global.css";
 interface Props {
   title?: string;
   description?: string;
+  ogImage?: string;
+  ogType?: "website" | "article" | "profile";
 }
 
 const {
-  title = "ZapolyarnyDev",
-  description = "Personal website of ZapolyarnyDev",
+  title = "ZapolyarnyDev - Java backend и Minecraft server-side разработчик",
+  description = "Личный сайт разработчика ZapolyarnyDev: портфолио, блог, исследования, Java backend, Веб и Minecraft server-side разработка",
+  ogImage = "/og-image.png",
+  ogType = "website",
 } = Astro.props;
+
+const site = Astro.site ?? new URL("https://zapolyarnydev.ru");
+const canonicalUrl = new URL(Astro.url.pathname, site);
+const ogImageUrl = new URL(ogImage, site);
 ---
 
 <!doctype html>
@@ -24,7 +32,22 @@ const {
     <meta name="theme-color" content="#ffffff" />
     <meta name="color-scheme" content="light" />
 
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content="ZapolyarnyDev" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl.href} />
+    <meta property="og:image" content={ogImageUrl.href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl.href} />
+
     <title>{title}</title>
+
+    <link rel="canonical" href={canonicalUrl.href} />
 
     <link
       rel="preload"
