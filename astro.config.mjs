@@ -7,6 +7,7 @@ import sitemap from "@astrojs/sitemap";
 
 
 export default defineConfig({
+  site: "https://zapolyarnydev.ru",
   integrations: [mdx(), sitemap()],
   vite: {
     build: {

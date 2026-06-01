@@ -84,7 +84,11 @@ const formattedDate = meta.date
   : null;
 ---
 
-<BaseLayout title={`${meta.title} | Blog`} description={meta.description}>
+<BaseLayout
+  title={`${meta.title} | Блог ZapolyarnyDev`}
+  description={meta.description}
+  ogType="article"
+>
   <Header currentPath="/blog" />
 
   <main class="brutal-page blog-post-page">

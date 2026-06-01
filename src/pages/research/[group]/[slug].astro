@@ -114,7 +114,11 @@ const prevSlug = prevEntry?.slug.split("/").at(-1);
 const nextSlug = nextEntry?.slug.split("/").at(-1);
 ---
 
-<BaseLayout title={`${meta.title} | Research`} description={meta.description}>
+<BaseLayout
+  title={`${meta.title} | Исследования ZapolyarnyDev`}
+  description={meta.description}
+  ogType="article"
+>
   <Header currentPath="/research" />
 
   <main class="brutal-page research-article-page">
