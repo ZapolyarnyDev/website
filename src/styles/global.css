@@ -26,6 +26,14 @@
   --shadow-lift: 12px 12px 0 0.5px var(--ink);
   --lift: translate(-5px, -5px);
   --motion: 0.14s linear;
+
+  color-scheme: light;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 @media (max-width: 680px) {
@@ -50,6 +58,18 @@ body {
   color: var(--ink);
   font-family: var(--font-sans);
   line-height: 1.35;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+img,
+svg {
+  max-width: 100%;
 }
 
 a {

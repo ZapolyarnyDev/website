@@ -8,4 +8,10 @@ import sitemap from "@astrojs/sitemap";
 
 export default defineConfig({
   integrations: [mdx(), sitemap()],
+  vite: {
+    build: {
+      target: ["chrome107", "edge107", "firefox104", "safari16"],
+      cssTarget: ["chrome107", "edge107", "firefox104", "safari16"],
+    },
+  },
 });

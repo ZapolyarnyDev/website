@@ -6,7 +6,7 @@ import {
   ExternalLink,
   ServerCog,
   Gamepad2,
-  Code2
+  Code2,
 } from "lucide-astro";
 
 import avatarImage from "@assets/images/avatar.png";
@@ -31,10 +31,17 @@ const facts = [
 <section class="home-hero">
   <aside class="home-hero__profile" aria-label="Профиль разработчика">
     <div class="home-hero__avatar">
-      <img src={avatarImage.src} alt="Аватар ZapolyarnyDev" />
+      <img
+        src={avatarImage.src}
+        width={avatarImage.width}
+        height={avatarImage.height}
+        alt="Аватар ZapolyarnyDev"
+        decoding="async"
+        fetchpriority="high"
+      />
     </div>
 
-   <div class="home-hero__identity">
+    <div class="home-hero__identity">
       <p class="home-hero__real-name">Павел</p>
       <h1 class="home-hero__name">ZapolyarnyDev</h1>
       <p class="home-hero__role">Java backend / Minecraft server-side</p>
@@ -58,7 +65,10 @@ const facts = [
                     {social.label}
                   </span>
 
-                  <ExternalLink class="home-hero__icon home-hero__icon--external" aria-hidden="true" />
+                  <ExternalLink
+                    class="home-hero__icon home-hero__icon--external"
+                    aria-hidden="true"
+                  />
                 </a>
               </li>
             );
@@ -105,9 +115,9 @@ const facts = [
     </Typography>
 
     <Typography variant="lead" as="p">
-        Серверная логика, веб-разработка и инфраструктура для игровых
-        и коммерческих систем. Интересны долгосрочные проекты,
-        исследования и сложные инженерные задачи
+      Серверная логика, веб-разработка и инфраструктура для игровых и
+      коммерческих систем. Интересны долгосрочные проекты, исследования и
+      сложные инженерные задачи
     </Typography>
 
     <div class="home-hero__actions">
@@ -117,13 +127,24 @@ const facts = [
       </Button>
     </div>
 
-    <a class="home-hero__work-card" href="https://cristalix.gg" target="_blank" rel="noreferrer">
+    <a
+      class="home-hero__work-card"
+      href="https://cristalix.gg"
+      target="_blank"
+      rel="noreferrer"
+    >
       <span class="home-hero__work-arrow">
         <ExternalLink class="home-hero__icon" aria-hidden="true" />
       </span>
 
       <span class="home-hero__work-logo">
-        <img src={cristalixLogo.src} alt="Логотип Cristalix" />
+        <img
+          src={cristalixLogo.src}
+          width={cristalixLogo.width}
+          height={cristalixLogo.height}
+          alt="Логотип Cristalix"
+          decoding="async"
+        />
       </span>
 
       <span class="home-hero__work-content">
