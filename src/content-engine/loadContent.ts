@@ -6,10 +6,6 @@ import type {
   ContentSection,
 } from "./types";
 
-type MdxModule = {
-  frontmatter: ContentEntryMeta;
-};
-
 const sectionModules = import.meta.glob("../../content/*/_sections.json", {
   eager: true,
   import: "default",
@@ -20,9 +16,10 @@ const groupModules = import.meta.glob("../../content/**/_group.json", {
   import: "default",
 }) as Record<string, ContentGroup>;
 
-const entryModules = import.meta.glob("../../content/**/*.mdx", {
+const entryFrontmatters = import.meta.glob("../../content/**/*.mdx", {
   eager: true,
-}) as Record<string, MdxModule>;
+  import: "frontmatter",
+}) as Record<string, ContentEntryMeta>;
 
 export function loadSections(area: ContentArea): ContentSection[] {
   const filePath = `../../content/${area}/_sections.json`;
@@ -39,9 +36,9 @@ export function loadGroups(area: ContentArea): ContentGroup[] {
 }
 
 export function loadEntries(area: ContentArea): ContentEntry[] {
-  return Object.entries(entryModules)
+  return Object.entries(entryFrontmatters)
     .filter(([path]) => getAreaFromPath(path) === area)
-    .map(([path, module]) => {
+    .map(([path, frontmatter]) => {
       const slug = createSlugFromPath(area, path);
       const id = slug.replaceAll("/", "-");
 
@@ -50,7 +47,7 @@ export function loadEntries(area: ContentArea): ContentEntry[] {
         area,
         slug,
         path,
-        meta: module.frontmatter,
+        meta: frontmatter,
       };
     })
     .filter((entry) => !entry.meta.draft)

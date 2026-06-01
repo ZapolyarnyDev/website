@@ -7,26 +7,6 @@
   padding: clamp(28px, 5vw, 64px) 0;
 }
 
-.brutal-showcase {
-  display: grid;
-  gap: 36px;
-}
-
-.brutal-section {
-  display: grid;
-  gap: 18px;
-  border: var(--border-heavy);
-  background: var(--soft);
-  box-shadow: var(--shadow);
-  padding: clamp(20px, 3vw, 32px);
-}
-
-.brutal-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
 /* ==========================================================================
    Typography
    ========================================================================== */
@@ -43,23 +23,9 @@
   text-transform: uppercase;
 }
 
-.typography--title {
-  font-size: clamp(32px, 5vw, 64px);
-  font-weight: 800;
-  line-height: 0.92;
-  text-transform: uppercase;
-}
-
 .typography--lead {
   max-width: 760px;
   font-size: clamp(18px, 2vw, 23px);
-  font-weight: 700;
-}
-
-.typography--body {
-  max-width: 720px;
-  color: var(--muted);
-  font-size: 16px;
   font-weight: 700;
 }
 
@@ -123,11 +89,6 @@
   font-size: 13px;
   font-weight: 800;
   padding: 10px 14px;
-}
-
-.brutal-button--primary {
-  background: var(--red);
-  color: var(--paper);
 }
 
 .brutal-button--secondary {
