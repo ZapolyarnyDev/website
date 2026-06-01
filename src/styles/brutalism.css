@@ -96,6 +96,11 @@
   color: var(--ink);
 }
 
+.brutal-button--primary {
+  background: var(--red);
+  color: var(--paper);
+}
+
 .brutal-button:hover,
 .brutal-button:focus-visible {
   background: var(--ink);
