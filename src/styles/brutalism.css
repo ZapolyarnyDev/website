@@ -2148,6 +2148,13 @@ body.menu-open {
   font-size: clamp(30px, 4vw, 50px);
 }
 
+.markdown-content > h2:first-child {
+  margin-top: 0;
+  border-top: 0;
+  padding-top: 0;
+  font-size: clamp(42px, 6vw, 80px);
+}
+
 .markdown-content > :where(pre, table, img, hr) {
   max-width: 100%;
 }
