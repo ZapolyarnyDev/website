@@ -31,8 +31,8 @@
   --blue: #1266ff;
 
   --font-sans: "Manrope", Arial, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas,
-    monospace;
+  --font-mono:
+    "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
 
   --border: 4px solid var(--ink);
   --border-heavy: 5px solid var(--ink);

@@ -13,12 +13,7 @@ interface Props {
   class?: string;
 }
 
-const {
-  href,
-  active = false,
-  icon,
-  class: className = "",
-} = Astro.props;
+const { href, active = false, icon, class: className = "" } = Astro.props;
 
 const icons = {
   home: Home,
