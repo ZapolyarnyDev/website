@@ -20,12 +20,14 @@ const {
 const classes = `brutal-button brutal-button--${variant} ${className}`;
 ---
 
-{href ? (
-  <a href={href} class={classes} target={target} rel={rel}>
-    <slot />
-  </a>
-) : (
-  <button class={classes}>
-    <slot />
-  </button>
-)}
+{
+  href ? (
+    <a href={href} class={classes} target={target} rel={rel}>
+      <slot />
+    </a>
+  ) : (
+    <button class={classes}>
+      <slot />
+    </button>
+  )
+}
