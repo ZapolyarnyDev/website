@@ -3,6 +3,7 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import Header from "@layouts/Header.astro";
 import Typography from "@components/ui/Typography.astro";
 import Button from "@components/ui/Button.astro";
+import PortfolioGroupCard from "@components/portfolio/PortfolioGroupCard.astro";
 import PortfolioProjectCard from "@components/portfolio/PortfolioProjectCard.astro";
 import { getContentPageModel } from "@/content-engine";
 import {
@@ -18,17 +19,22 @@ const portfolio = getContentPageModel("portfolio");
 const pageDescription =
   "Портфолио ZapolyarnyDev: текущие проекты, результаты и материалы для сотрудничества.";
 const SECTION_PREVIEW_LIMIT = 5;
-const projects = portfolio.sections.flatMap((section) => section.entries);
+const directProjects = portfolio.sections.flatMap((section) => section.entries);
+const groupedProjects = portfolio.sections.flatMap((section) =>
+  section.groups.flatMap((group) => group.entries),
+);
+const projects = [...directProjects, ...groupedProjects];
 const featuredCount = projects.filter(
   (project) => project.meta.featured,
 ).length;
 const featuredProjects = projects.filter((project) => project.meta.featured);
 const portfolioSections = portfolio.sections
-  .map(({ section, entries }) => ({
+  .map(({ section, groups, entries }) => ({
     section,
+    groups,
     entries: entries.filter((project) => !project.meta.featured),
   }))
-  .filter(({ entries }) => entries.length > 0);
+  .filter(({ groups, entries }) => groups.length > 0 || entries.length > 0);
 const casesAnchorOnFeatured = featuredProjects.length > 0;
 
 const sectionIcons = {
@@ -136,9 +142,13 @@ const sectionIcons = {
       }
 
       {
-        portfolioSections.map(({ section, entries }, index) => {
-          const previewEntries = entries.slice(0, SECTION_PREVIEW_LIMIT);
-          const hiddenCount = entries.length - previewEntries.length;
+        portfolioSections.map(({ section, groups, entries }, index) => {
+          const visibleItems = [
+            ...groups.map((group) => ({ type: "group" as const, group })),
+            ...entries.map((entry) => ({ type: "entry" as const, entry })),
+          ];
+          const previewItems = visibleItems.slice(0, SECTION_PREVIEW_LIMIT);
+          const hiddenCount = visibleItems.length - previewItems.length;
           const SectionIcon =
             section.icon && section.icon in sectionIcons
               ? sectionIcons[section.icon as keyof typeof sectionIcons]
@@ -169,18 +179,22 @@ const sectionIcons = {
                 </Typography>
 
                 <span class="content-section-count">
-                  {entries.length} проектов
+                  {visibleItems.length} материалов
                 </span>
               </header>
 
-              {entries.length > 0 ? (
+              {visibleItems.length > 0 ? (
                 <div class="portfolio-section__projects">
-                  {previewEntries.map((project) => (
-                    <PortfolioProjectCard
-                      project={project}
-                      sectionTitle={section.title}
-                    />
-                  ))}
+                  {previewItems.map((item) =>
+                    item.type === "group" ? (
+                      <PortfolioGroupCard model={item.group} />
+                    ) : (
+                      <PortfolioProjectCard
+                        project={item.entry}
+                        sectionTitle={section.title}
+                      />
+                    ),
+                  )}
 
                   {hiddenCount > 0 && (
                     <a
