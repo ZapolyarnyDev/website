@@ -3,18 +3,38 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import Header from "@layouts/Header.astro";
 import Button from "@components/ui/Button.astro";
 import Typography from "@components/ui/Typography.astro";
-import type { ContentEntryMeta } from "@/content-engine";
+import {
+  getContentPageModel,
+  type ContentEntryKind,
+  type ContentEntryMeta,
+  type ContentGroupModel,
+} from "@/content-engine";
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
+import {
+  ArrowLeft,
+  ArrowUpRight,
+  BookOpenCheck,
+  BriefcaseBusiness,
+} from "lucide-astro";
 
 type PortfolioModule = {
   default: AstroComponentFactory;
   frontmatter: ContentEntryMeta;
 };
 
-interface Props {
+type ProjectProps = {
+  kind: "project";
   Content: AstroComponentFactory;
   meta: ContentEntryMeta;
-}
+};
+
+type GroupProps = {
+  kind: "group";
+  groupModel: ContentGroupModel;
+  sectionTitle: string;
+};
+
+type Props = ProjectProps | GroupProps;
 
 export function getStaticPaths() {
   const projectModules = import.meta.glob(
@@ -24,77 +44,269 @@ export function getStaticPaths() {
     },
   ) as Record<string, PortfolioModule>;
 
-  return Object.entries(projectModules)
+  const portfolio = getContentPageModel("portfolio");
+  const groupPaths = portfolio.sections.flatMap(({ section, groups }) =>
+    groups.map((groupModel) => ({
+      params: { slug: groupModel.group.id },
+      props: {
+        kind: "group" as const,
+        groupModel,
+        sectionTitle: section.title,
+      },
+    })),
+  );
+
+  const projectPaths = Object.entries(projectModules)
     .filter(([, module]) => !module.frontmatter.draft)
+    .filter(([, module]) => !module.frontmatter.groupId)
     .map(([path, module]) => {
       const slug = path
         .replace("../../../content/portfolio/", "")
         .replace(/\.mdx$/, "")
         .replace(/\/index$/, "");
 
+      if (slug.includes("/")) {
+        return null;
+      }
+
       return {
         params: { slug },
         props: {
+          kind: "project" as const,
           Content: module.default,
           meta: module.frontmatter,
         },
       };
-    });
+    })
+    .filter((path): path is Exclude<typeof path, null> => path !== null);
+
+  return [...groupPaths, ...projectPaths];
 }
 
-const { Content, meta } = Astro.props;
-const tags = meta.tags ?? [];
+const props = Astro.props as Props;
+const ProjectContent = props.kind === "project" ? props.Content : undefined;
+
+const kindLabels: Record<ContentEntryKind, string> = {
+  article: "Статья",
+  note: "Заметка",
+  case: "Кейс",
+  project: "Проект",
+};
 ---
 
-<BaseLayout
-  title={`${meta.title} | Портфолио ZapolyarnyDev`}
-  description={meta.description}
-  ogType="article"
->
-  <Header currentPath="/portfolio" />
+{
+  props.kind === "group" ? (
+    <BaseLayout
+      title={`${props.groupModel.group.title} | Портфолио ZapolyarnyDev`}
+      description={props.groupModel.group.description}
+    >
+      <Header currentPath="/portfolio" />
 
-  <main class="brutal-page project-page">
-    <article class="container project-article">
-      <header class="project-article__header">
-        <div class="project-article__copy">
-          <Typography variant="kicker" as="span">
-            {meta.featured ? "Ключевой проект" : "Проект"}
-          </Typography>
+      <main class="brutal-page research-page">
+        <article class="container research-group-page">
+          <header class="research-group-page__header">
+            <div class="research-group-page__copy">
+              <Typography variant="kicker" as="span">
+                <span class="home-hero__kicker-content">
+                  <BriefcaseBusiness
+                    class="home-hero__kicker-icon"
+                    aria-hidden="true"
+                  />
+                  portfolio group
+                </span>
+              </Typography>
 
-          <Typography variant="hero" as="h1" class="project-article__title">
-            {meta.title}
-          </Typography>
+              <Typography
+                variant="hero"
+                as="h1"
+                class="research-group-page__title"
+              >
+                {props.groupModel.group.title}
+              </Typography>
 
-          <Typography variant="lead" as="p">
-            {meta.description}
-          </Typography>
-        </div>
+              {props.groupModel.group.description && (
+                <Typography variant="lead" as="p">
+                  {props.groupModel.group.description}
+                </Typography>
+              )}
+            </div>
 
-        <aside class="project-article__meta" aria-label="Метаданные проекта">
-          <span>Статус</span>
-          <strong>{meta.featured ? "выделен" : "обычный"}</strong>
+            <aside
+              class="research-group-page__meta"
+              aria-label="Данные группы портфолио"
+            >
+              <span>Материалов:</span>
+              <strong>{props.groupModel.entries.length}</strong>
+              <span>Секция</span>
+              <strong>{props.sectionTitle}</strong>
+            </aside>
+          </header>
 
-          {tags.length > 0 && <span>Теги</span>}
+          <div class="research-group-page__back">
+            <Button href="/portfolio">
+              <ArrowLeft class="button__icon" aria-hidden="true" />К портфолио
+            </Button>
+          </div>
 
-          {
-            tags.length > 0 && (
-              <ul>
-                {tags.map((tag) => (
-                  <li>{tag}</li>
-                ))}
-              </ul>
-            )
-          }
-        </aside>
-      </header>
+          {props.groupModel.entries.length > 0 && (
+            <section
+              class="research-reading-order"
+              aria-label="Порядок материалов"
+            >
+              <div class="research-reading-order__label">
+                <BookOpenCheck aria-hidden="true" />
+                <span>Материалы группы</span>
+              </div>
 
-      <div class="project-article__back">
-        <Button href="/portfolio"> Вернуться в портфолио </Button>
-      </div>
+              <ol>
+                {props.groupModel.entries.map((entry, index) => {
+                  const articleSlug = entry.slug.split("/").at(-1);
 
-      <div class="project-content markdown-content">
-        <Content />
-      </div>
-    </article>
-  </main>
-</BaseLayout>
+                  return (
+                    <li>
+                      <a
+                        href={`/portfolio/${props.groupModel.group.id}/${articleSlug}`}
+                      >
+                        <span>Материал №{index + 1}</span>
+                        <strong>{entry.meta.title}</strong>
+                      </a>
+                    </li>
+                  );
+                })}
+              </ol>
+            </section>
+          )}
+
+          <section
+            class="research-articles"
+            aria-labelledby="portfolio-group-cases"
+          >
+            <header class="research-section__header">
+              <Typography
+                variant="mono"
+                as="h2"
+                class="research-section__title"
+                id="portfolio-group-cases"
+              >
+                <BriefcaseBusiness
+                  class="research-section__icon"
+                  aria-hidden="true"
+                />
+                Кейсы
+              </Typography>
+            </header>
+
+            {props.groupModel.entries.length > 0 ? (
+              <div class="research-articles__list">
+                {props.groupModel.entries.map((entry, index) => {
+                  const articleSlug = entry.slug.split("/").at(-1);
+
+                  return (
+                    <a
+                      href={`/portfolio/${props.groupModel.group.id}/${articleSlug}`}
+                      class="research-article-card"
+                      aria-label={`Открыть материал ${entry.meta.title}`}
+                    >
+                      <div class="research-article-card__main">
+                        <div class="research-article-card__eyebrow">
+                          <Typography
+                            variant="mono"
+                            as="span"
+                            class="research-article-card__kind"
+                          >
+                            {kindLabels[entry.meta.kind]}
+                          </Typography>
+
+                          <span>Материал №{index + 1}</span>
+                        </div>
+
+                        <h3 class="research-article-card__title">
+                          {entry.meta.title}
+                        </h3>
+
+                        <p class="research-article-card__description">
+                          {entry.meta.description}
+                        </p>
+                      </div>
+
+                      <span
+                        class="research-article-card__open"
+                        aria-label="Открыть материал"
+                      >
+                        <ArrowUpRight
+                          class="research-article-card__icon"
+                          aria-hidden="true"
+                        />
+                      </span>
+                    </a>
+                  );
+                })}
+              </div>
+            ) : (
+              <div class="research-section__empty">
+                <Typography variant="mono" as="span">
+                  В работе
+                </Typography>
+                <p>Материалы группы появятся здесь после публикации.</p>
+              </div>
+            )}
+          </section>
+        </article>
+      </main>
+    </BaseLayout>
+  ) : (
+    <BaseLayout
+      title={`${props.meta.title} | Портфолио ZapolyarnyDev`}
+      description={props.meta.description}
+      ogType="article"
+    >
+      <Header currentPath="/portfolio" />
+
+      <main class="brutal-page project-page">
+        <article class="container project-article">
+          <header class="project-article__header">
+            <div class="project-article__copy">
+              <Typography variant="kicker" as="span">
+                {props.meta.featured ? "Ключевой проект" : "Проект"}
+              </Typography>
+
+              <Typography variant="hero" as="h1" class="project-article__title">
+                {props.meta.title}
+              </Typography>
+
+              <Typography variant="lead" as="p">
+                {props.meta.description}
+              </Typography>
+            </div>
+
+            <aside
+              class="project-article__meta"
+              aria-label="Метаданные проекта"
+            >
+              <span>Статус</span>
+              <strong>{props.meta.featured ? "выделен" : "обычный"}</strong>
+
+              {(props.meta.tags ?? []).length > 0 && <span>Теги</span>}
+
+              {(props.meta.tags ?? []).length > 0 && (
+                <ul>
+                  {(props.meta.tags ?? []).map((tag) => (
+                    <li>{tag}</li>
+                  ))}
+                </ul>
+              )}
+            </aside>
+          </header>
+
+          <div class="project-article__back">
+            <Button href="/portfolio">Вернуться в портфолио</Button>
+          </div>
+
+          <div class="project-content markdown-content">
+            {ProjectContent && <ProjectContent />}
+          </div>
+        </article>
+      </main>
+    </BaseLayout>
+  )
+}

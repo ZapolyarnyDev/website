@@ -3,6 +3,7 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import Header from "@layouts/Header.astro";
 import Button from "@components/ui/Button.astro";
 import Typography from "@components/ui/Typography.astro";
+import PortfolioGroupCard from "@components/portfolio/PortfolioGroupCard.astro";
 import PortfolioProjectCard from "@components/portfolio/PortfolioProjectCard.astro";
 import { getContentPageModel } from "@/content-engine";
 import { ArrowLeft, BriefcaseBusiness } from "lucide-astro";
@@ -47,45 +48,56 @@ const pageDescription = "Полный архив проектов портфол
       </section>
 
       {
-        portfolio.sections.map(({ section, entries }) => (
-          <section
-            class="portfolio-section"
-            aria-labelledby={`portfolio-archive-section-${section.id}`}
-          >
-            <header class="portfolio-section__header">
-              <Typography
-                variant="mono"
-                as="h2"
-                class="portfolio-section__title"
-                id={`portfolio-archive-section-${section.id}`}
-              >
-                {section.title}
-              </Typography>
+        portfolio.sections.map(({ section, groups, entries }) => {
+          const items = [
+            ...groups.map((group) => ({ type: "group" as const, group })),
+            ...entries.map((entry) => ({ type: "entry" as const, entry })),
+          ];
 
-              <span class="content-section-count">
-                {entries.length} проектов
-              </span>
-            </header>
-
-            {entries.length > 0 ? (
-              <div class="portfolio-section__projects">
-                {entries.map((project) => (
-                  <PortfolioProjectCard
-                    project={project}
-                    sectionTitle={section.title}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div class="portfolio-section__empty">
-                <Typography variant="mono" as="span">
-                  Пусто
+          return (
+            <section
+              class="portfolio-section"
+              aria-labelledby={`portfolio-archive-section-${section.id}`}
+            >
+              <header class="portfolio-section__header">
+                <Typography
+                  variant="mono"
+                  as="h2"
+                  class="portfolio-section__title"
+                  id={`portfolio-archive-section-${section.id}`}
+                >
+                  {section.title}
                 </Typography>
-                <p>В этом разделе пока нет опубликованных проектов.</p>
-              </div>
-            )}
-          </section>
-        ))
+
+                <span class="content-section-count">
+                  {items.length} материалов
+                </span>
+              </header>
+
+              {items.length > 0 ? (
+                <div class="portfolio-section__projects">
+                  {items.map((item) =>
+                    item.type === "group" ? (
+                      <PortfolioGroupCard model={item.group} />
+                    ) : (
+                      <PortfolioProjectCard
+                        project={item.entry}
+                        sectionTitle={section.title}
+                      />
+                    ),
+                  )}
+                </div>
+              ) : (
+                <div class="portfolio-section__empty">
+                  <Typography variant="mono" as="span">
+                    Пусто
+                  </Typography>
+                  <p>В этом разделе пока нет опубликованных проектов.</p>
+                </div>
+              )}
+            </section>
+          );
+        })
       }
     </div>
   </main>
