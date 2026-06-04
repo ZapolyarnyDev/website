@@ -100,19 +100,22 @@ jobs:
           set -euo pipefail
 
           DEPLOY_TARGET="${DEPLOY_PATH%/}"
+          DEPLOY_TMP="${DEPLOY_TARGET}/.deploy-tmp"
           REMOTE_DEPLOY_PATH="$(printf '%q' "$DEPLOY_TARGET")"
+          REMOTE_DEPLOY_TMP="$(printf '%q' "$DEPLOY_TMP")"
 
           ssh -i ~/.ssh/deploy_key -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" \
-            "DEPLOY_PATH=$REMOTE_DEPLOY_PATH bash -s" <<'EOF'
+            "DEPLOY_PATH=$REMOTE_DEPLOY_PATH DEPLOY_TMP=$REMOTE_DEPLOY_TMP bash -s" <<'EOF'
           set -euo pipefail
 
-          if [ -z "$DEPLOY_PATH" ] || [ "$DEPLOY_PATH" = "/" ]; then
+          if [ -z "$DEPLOY_PATH" ] || [ "$DEPLOY_PATH" = "/" ] || [ -z "$DEPLOY_TMP" ]; then
             echo "DEPLOY_PATH must not be empty or /"
             exit 1
           fi
 
-          rm -rf "${DEPLOY_PATH}.tmp"
-          mkdir -p "${DEPLOY_PATH}.tmp"
+          mkdir -p "$DEPLOY_PATH"
+          rm -rf "$DEPLOY_TMP"
+          mkdir -p "$DEPLOY_TMP"
           EOF
 
       - name: Upload dist via SCP
@@ -120,28 +123,31 @@ jobs:
           set -euo pipefail
 
           DEPLOY_TARGET="${DEPLOY_PATH%/}"
+          DEPLOY_TMP="${DEPLOY_TARGET}/.deploy-tmp"
 
           scp -i ~/.ssh/deploy_key -P "$DEPLOY_PORT" -r dist/. \
-            "$DEPLOY_USER@$DEPLOY_HOST:${DEPLOY_TARGET}.tmp/"
+            "$DEPLOY_USER@$DEPLOY_HOST:${DEPLOY_TMP}/"
 
       - name: Publish release
         run: |
           set -euo pipefail
 
           DEPLOY_TARGET="${DEPLOY_PATH%/}"
+          DEPLOY_TMP="${DEPLOY_TARGET}/.deploy-tmp"
           REMOTE_DEPLOY_PATH="$(printf '%q' "$DEPLOY_TARGET")"
+          REMOTE_DEPLOY_TMP="$(printf '%q' "$DEPLOY_TMP")"
 
           ssh -i ~/.ssh/deploy_key -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" \
-            "DEPLOY_PATH=$REMOTE_DEPLOY_PATH bash -s" <<'EOF'
+            "DEPLOY_PATH=$REMOTE_DEPLOY_PATH DEPLOY_TMP=$REMOTE_DEPLOY_TMP bash -s" <<'EOF'
           set -euo pipefail
 
-          if [ -z "$DEPLOY_PATH" ] || [ "$DEPLOY_PATH" = "/" ]; then
+          if [ -z "$DEPLOY_PATH" ] || [ "$DEPLOY_PATH" = "/" ] || [ -z "$DEPLOY_TMP" ]; then
             echo "DEPLOY_PATH must not be empty or /"
             exit 1
           fi
 
           mkdir -p "$DEPLOY_PATH"
-          find "$DEPLOY_PATH" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
-          cp -a "${DEPLOY_PATH}.tmp/." "$DEPLOY_PATH/"
-          rm -rf "${DEPLOY_PATH}.tmp"
+          find "$DEPLOY_PATH" -mindepth 1 -maxdepth 1 ! -name ".deploy-tmp" -exec rm -rf {} +
+          cp -a "$DEPLOY_TMP/." "$DEPLOY_PATH/"
+          rm -rf "$DEPLOY_TMP"
           EOF
