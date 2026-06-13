@@ -82,6 +82,13 @@ const formattedDate = meta.date
       year: "numeric",
     }).format(new Date(`${meta.date}T00:00:00`))
   : null;
+const titleLength = meta.title.length;
+const titleSizeClass =
+  titleLength > 52
+    ? "blog-post__title--very-long"
+    : titleLength > 34
+      ? "blog-post__title--long"
+      : "";
 ---
 
 <BaseLayout
@@ -99,7 +106,11 @@ const formattedDate = meta.date
             {kindLabels[meta.kind]}
           </Typography>
 
-          <Typography variant="hero" as="h1" class="blog-post__title">
+          <Typography
+            variant="hero"
+            as="h1"
+            class={`blog-post__title ${titleSizeClass}`}
+          >
             {meta.title}
           </Typography>
 

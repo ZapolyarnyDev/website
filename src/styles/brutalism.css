@@ -1418,6 +1418,17 @@ body.menu-open {
 
 .blog-post__title {
   max-width: none;
+  overflow-wrap: anywhere;
+}
+
+.blog-post__title--long {
+  font-size: clamp(44px, 6.2vw, 82px);
+  line-height: 0.9;
+}
+
+.blog-post__title--very-long {
+  font-size: clamp(38px, 5.1vw, 68px);
+  line-height: 0.94;
 }
 
 .blog-post__meta {
@@ -2487,12 +2498,19 @@ body.menu-open {
   .portfolio-hero .typography--hero,
   .research-hero .typography--hero,
   .archive-hero .typography--hero,
+  .blog-post__title,
   .project-article__title,
   .research-group-page__title,
   .research-article__title {
     font-size: clamp(34px, 10.5vw, 46px);
     line-height: 0.94;
     overflow-wrap: anywhere;
+  }
+
+  .blog-post__title--long,
+  .blog-post__title--very-long {
+    font-size: clamp(31px, 9vw, 42px);
+    line-height: 0.98;
   }
 
   .portfolio-hero .typography--lead,
