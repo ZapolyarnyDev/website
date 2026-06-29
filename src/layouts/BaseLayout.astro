@@ -29,8 +29,16 @@ const ogImageUrl = new URL(ogImage, site);
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#ffffff" />
-    <meta name="color-scheme" content="light" />
+    <meta
+      name="theme-color"
+      content="#f7f7f8"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#0d0f12"
+      media="(prefers-color-scheme: dark)"
+    />
 
     <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content="ZapolyarnyDev" />
@@ -46,6 +54,21 @@ const ogImageUrl = new URL(ogImage, site);
     <meta name="twitter:image" content={ogImageUrl.href} />
 
     <title>{title}</title>
+
+    <script is:inline>
+      (function () {
+        try {
+          const stored = localStorage.getItem("theme");
+          const prefersDark = window.matchMedia(
+            "(prefers-color-scheme: dark)",
+          ).matches;
+          const theme = stored ?? (prefersDark ? "dark" : "light");
+          document.documentElement.dataset.theme = theme;
+        } catch {
+          document.documentElement.dataset.theme = "light";
+        }
+      })();
+    </script>
 
     <link rel="canonical" href={canonicalUrl.href} />
 
