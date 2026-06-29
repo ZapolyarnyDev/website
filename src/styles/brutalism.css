@@ -340,7 +340,7 @@
   display: block;
 }
 
-.header__mobile-menu {
+.mobile-menu {
   position: fixed;
   inset: 0;
   z-index: 200;
@@ -354,70 +354,96 @@
     transform var(--motion);
 }
 
-.header__mobile-menu[data-open] {
+.mobile-menu[data-open] {
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0);
 }
 
-.header__mobile-inner {
+.mobile-menu__inner {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  gap: 28px;
+  grid-template-rows: auto 1fr;
+  gap: clamp(16px, 4vw, 24px);
   min-height: 100vh;
   min-height: 100svh;
-  padding-block: 18px 28px;
+  padding-block: clamp(14px, 4vw, 22px) clamp(20px, 6vw, 34px);
 }
 
-.header__mobile-top {
+.mobile-menu__top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  min-height: 58px;
-  border-bottom: var(--border-soft);
-  padding-bottom: 16px;
+  gap: 12px;
+  min-height: 54px;
+  border: var(--border-soft);
+  border-radius: 14px;
+  background: var(--surface);
+  padding: 8px 10px 8px 16px;
 }
 
-.header__mobile-title {
+.mobile-menu__title {
   color: var(--ink);
-  font-size: clamp(30px, 11vw, 64px);
+  font-size: clamp(20px, 6vw, 32px);
   font-weight: 800;
-  line-height: 0.9;
+  line-height: 1;
   text-transform: uppercase;
 }
 
-.header__menu-toggle--inside {
+.mobile-menu__close {
   display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
   flex: 0 0 auto;
+  border: var(--border-soft);
+  border-radius: 10px;
+  background: var(--soft);
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    background var(--motion),
+    color var(--motion),
+    transform var(--motion-smooth);
 }
 
-.header__mobile-nav {
+.mobile-menu__close:hover,
+.mobile-menu__close:focus-visible {
+  background: var(--ink);
+  color: var(--paper);
+  outline: none;
+  transform: translateY(-2px);
+}
+
+.mobile-menu__nav {
   display: grid;
   align-content: center;
-  gap: 12px;
+  justify-items: center;
+  gap: 10px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-block: 10px;
 }
 
 /* Stagger: items fade/slide in when the menu opens */
-.header__mobile-link {
+.mobile-menu__link {
   opacity: 0;
   transform: translateY(14px);
 }
 
-.header__mobile-menu[data-open] .header__mobile-link {
+.mobile-menu[data-open] .mobile-menu__link {
   animation: header-item-in 0.34s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
 }
 
-.header__mobile-menu[data-open] .header__mobile-link:nth-child(1) {
+.mobile-menu[data-open] .mobile-menu__link:nth-child(1) {
   animation-delay: 0.06s;
 }
-.header__mobile-menu[data-open] .header__mobile-link:nth-child(2) {
+.mobile-menu[data-open] .mobile-menu__link:nth-child(2) {
   animation-delay: 0.12s;
 }
-.header__mobile-menu[data-open] .header__mobile-link:nth-child(3) {
+.mobile-menu[data-open] .mobile-menu__link:nth-child(3) {
   animation-delay: 0.18s;
 }
-.header__mobile-menu[data-open] .header__mobile-link:nth-child(4) {
+.mobile-menu[data-open] .mobile-menu__link:nth-child(4) {
   animation-delay: 0.24s;
 }
 
@@ -429,27 +455,35 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .header__mobile-link,
-  .header__mobile-menu[data-open] .header__mobile-link {
+  .mobile-menu__link,
+  .mobile-menu[data-open] .mobile-menu__link {
     animation: none;
     opacity: 1;
     transform: none;
   }
 }
 
-.header__mobile-link.brutal-nav-button {
-  justify-content: flex-start;
-  min-height: 70px;
-  border-radius: 14px;
-  box-shadow: var(--shadow-soft);
-  font-size: clamp(19px, 6.5vw, 32px);
-  line-height: 1;
-  padding: 18px;
+.mobile-menu__link.brutal-nav-button {
+  justify-content: center;
+  width: min(100%, 420px);
+  min-height: 56px;
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: none;
+  font-size: clamp(16px, 4.6vw, 21px);
+  line-height: 1.05;
+  padding: 13px 16px;
+  text-align: center;
 }
 
-.header__mobile-link .brutal-nav-button__icon {
-  width: 24px;
-  height: 24px;
+.mobile-menu__link.brutal-nav-button--active {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.mobile-menu__link .brutal-nav-button__icon {
+  width: 21px;
+  height: 21px;
 }
 
 body.menu-open {

@@ -93,17 +93,17 @@ const links = [
 </header>
 
 <div
-  class="header__mobile-menu"
+  class="mobile-menu"
   id="mobile-navigation"
   aria-hidden="true"
   data-mobile-menu
 >
-  <div class="container header__mobile-inner">
-    <div class="header__mobile-top">
-      <span class="header__mobile-title">Меню</span>
+  <div class="container mobile-menu__inner">
+    <div class="mobile-menu__top">
+      <span class="mobile-menu__title">Меню</span>
 
       <button
-        class="header__menu-toggle header__menu-toggle--inside"
+        class="mobile-menu__close"
         type="button"
         aria-label="Закрыть меню"
         data-menu-close
@@ -112,14 +112,14 @@ const links = [
       </button>
     </div>
 
-    <nav class="header__mobile-nav" aria-label="Мобильная навигация">
+    <nav class="mobile-menu__nav" aria-label="Мобильная навигация">
       {
         links.map((link) => (
           <NavButton
             href={link.href}
             icon={link.icon}
             active={currentPath === link.href}
-            class="header__mobile-link"
+            class="mobile-menu__link"
           >
             {link.label}
           </NavButton>
