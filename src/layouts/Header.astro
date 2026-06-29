@@ -1,6 +1,6 @@
 ---
 import NavButton from "@components/ui/NavButton.astro";
-import { Menu, X } from "lucide-astro";
+import { Menu, X, Sun, Moon } from "lucide-astro";
 
 interface Props {
   currentPath?: string;
@@ -54,23 +54,41 @@ const links = [
       }
     </nav>
 
-    <button
-      class="header__menu-toggle"
-      type="button"
-      aria-label="Открыть меню"
-      aria-expanded="false"
-      aria-controls="mobile-navigation"
-      data-menu-toggle
-    >
-      <Menu
-        class="header__menu-icon header__menu-icon--open"
-        aria-hidden="true"
-      />
-      <X
-        class="header__menu-icon header__menu-icon--close"
-        aria-hidden="true"
-      />
-    </button>
+    <div class="header__actions">
+      <button
+        class="header__theme-toggle"
+        type="button"
+        aria-label="Переключить тему"
+        data-theme-toggle
+      >
+        <Sun
+          class="header__theme-icon header__theme-icon--sun"
+          aria-hidden="true"
+        />
+        <Moon
+          class="header__theme-icon header__theme-icon--moon"
+          aria-hidden="true"
+        />
+      </button>
+
+      <button
+        class="header__menu-toggle"
+        type="button"
+        aria-label="Открыть меню"
+        aria-expanded="false"
+        aria-controls="mobile-navigation"
+        data-menu-toggle
+      >
+        <Menu
+          class="header__menu-icon header__menu-icon--open"
+          aria-hidden="true"
+        />
+        <X
+          class="header__menu-icon header__menu-icon--close"
+          aria-hidden="true"
+        />
+      </button>
+    </div>
   </div>
 
   <div
@@ -112,10 +130,48 @@ const links = [
 </header>
 
 <script>
+  /* ---------- Theme toggle ---------- */
+  const themeToggle = document.querySelector("[data-theme-toggle]");
+  const root = document.documentElement;
+
+  const syncThemeButton = () => {
+    if (!(themeToggle instanceof HTMLButtonElement)) return;
+    const isDark = root.dataset.theme === "dark";
+    themeToggle.setAttribute(
+      "aria-label",
+      isDark ? "Включить светлую тему" : "Включить тёмную тему",
+    );
+  };
+
+  syncThemeButton();
+
+  themeToggle?.addEventListener("click", () => {
+    const next = root.dataset.theme === "dark" ? "light" : "dark";
+    root.dataset.theme = next;
+    try {
+      localStorage.setItem("theme", next);
+    } catch {
+      /* ignore */
+    }
+    syncThemeButton();
+  });
+
+  /* ---------- Mobile menu ---------- */
   const toggle = document.querySelector("[data-menu-toggle]");
   const closeButton = document.querySelector("[data-menu-close]");
   const menu = document.querySelector("[data-mobile-menu]");
   const links = menu?.querySelectorAll("a") ?? [];
+  let lastFocused: HTMLElement | null = null;
+
+  const focusableSelector =
+    'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+  const getFocusable = (): HTMLElement[] => {
+    if (!menu) return [];
+    return Array.from(
+      menu.querySelectorAll<HTMLElement>(focusableSelector),
+    ).filter((el) => el.offsetParent !== null || el === closeButton);
+  };
 
   const setMenuOpen = (isOpen: boolean) => {
     if (
@@ -130,6 +186,19 @@ const links = [
     menu.setAttribute("aria-hidden", String(!isOpen));
     menu.toggleAttribute("data-open", isOpen);
     document.body.classList.toggle("menu-open", isOpen);
+
+    if (isOpen) {
+      lastFocused = document.activeElement as HTMLElement;
+      // Move focus into the menu shortly after the open transition begins
+      window.setTimeout(() => {
+        const first = getFocusable()[0];
+        first?.focus();
+      }, 60);
+    } else {
+      // Restore focus to the trigger on close
+      lastFocused?.focus();
+      lastFocused = null;
+    }
   };
 
   toggle?.addEventListener("click", () => {
@@ -143,9 +212,39 @@ const links = [
     link.addEventListener("click", () => setMenuOpen(false));
   });
 
+  // Focus trap inside the overlay
+  menu?.addEventListener("keydown", (event) => {
+    const keyboardEvent = event as KeyboardEvent;
+    if (keyboardEvent.key !== "Tab") return;
+    const focusable = getFocusable();
+    if (focusable.length === 0) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const active = document.activeElement as HTMLElement;
+
+    if (keyboardEvent.shiftKey) {
+      if (active === first || !menu?.contains(active)) {
+        keyboardEvent.preventDefault();
+        last.focus();
+      }
+    } else {
+      if (active === last) {
+        keyboardEvent.preventDefault();
+        first.focus();
+      }
+    }
+  });
+
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       setMenuOpen(false);
     }
+  });
+
+  // Auto-close the mobile menu when resizing up to desktop nav
+  const desktopQuery = window.matchMedia("(min-width: 1241px)");
+  desktopQuery.addEventListener("change", (event) => {
+    if (event.matches) setMenuOpen(false);
   });
 </script>

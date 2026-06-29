@@ -23,26 +23,42 @@
 }
 
 :root {
-  --ink: #050505;
-  --paper: #ffffff;
-  --soft: #f3f3f3;
-  --muted: #5c5c5c;
-  --red: #ef1717;
+  /* --- Light theme palette (softer, OLED-friendly off-white) --- */
+  --ink: #15181c;
+  --paper: #f7f7f8;
+  --soft: #ededee;
+  --surface: #f2f2f3;
+  --muted: #59616b;
+  --red: #e11d2e;
   --blue: #1266ff;
+
+  /* Translucent border color for secondary dividers */
+  --border-soft-color: rgba(21, 24, 28, 0.14);
 
   --font-sans: "Manrope", Arial, sans-serif;
   --font-mono:
     "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
 
-  --border: 4px solid var(--ink);
-  --border-heavy: 5px solid var(--ink);
+  /* Borders: thinner for a cleaner commercial feel; soft for low-noise dividers */
+  --border: 2px solid var(--ink);
+  --border-heavy: 3px solid var(--ink);
+  --border-soft: 1px solid var(--border-soft-color);
+
+  /* Hard offset shadows (brutalist signature) — used on key CTAs/cards */
   --shadow-sm: 4px 4px 0 0.5px var(--ink);
   --shadow: 6px 6px 0 0.5px var(--ink);
   --shadow-hover: 8px 8px 0 0.5px var(--ink);
   --shadow-hover-strong: 10px 10px 0 0.5px var(--ink);
   --shadow-lift: 12px 12px 0 0.5px var(--ink);
   --lift: translate(-5px, -5px);
+
+  /* Soft diffused shadows (commercial depth, less garish) — for panels/sections */
+  --shadow-soft: none;
+  --shadow-soft-lg: none;
+  --shadow-soft-hover: none;
+
   --motion: 0.14s linear;
+  --motion-smooth: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
 
   color-scheme: light;
   font-synthesis: none;
@@ -51,6 +67,33 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+}
+
+/* --- Dark theme --- */
+[data-theme="dark"] {
+  --ink: #e8e9ec;
+  --paper: #0d0f12;
+  --soft: #191d23;
+  --surface: #20252c;
+  --muted: #9aa0a8;
+  --red: #ff4d5a;
+  --blue: #5b8cff;
+
+  --border-soft-color: rgba(255, 255, 255, 0.14);
+
+  /* Hard offset shadows read poorly on dark; lighten their ink slightly */
+  --shadow-sm: 4px 4px 0 0.5px rgba(0, 0, 0, 0.6);
+  --shadow: 6px 6px 0 0.5px rgba(0, 0, 0, 0.6);
+  --shadow-hover: 8px 8px 0 0.5px rgba(0, 0, 0, 0.6);
+  --shadow-hover-strong: 10px 10px 0 0.5px rgba(0, 0, 0, 0.6);
+  --shadow-lift: 12px 12px 0 0.5px rgba(0, 0, 0, 0.6);
+
+  /* Soft shadows become heavier for depth on the dark surface */
+  --shadow-soft: 0 4px 18px rgba(0, 0, 0, 0.45);
+  --shadow-soft-lg: 0 16px 48px rgba(0, 0, 0, 0.6);
+  --shadow-soft-hover: 0 12px 36px rgba(0, 0, 0, 0.55);
+
+  color-scheme: dark;
 }
 
 @media (max-width: 680px) {
@@ -62,19 +105,30 @@
     --shadow-lift: 3px 3px 0 0.5px var(--ink);
     --lift: translate(-2px, -2px);
   }
+
+  [data-theme="dark"] {
+    --shadow-sm: 3px 3px 0 0.5px rgba(0, 0, 0, 0.6);
+    --shadow: 3px 3px 0 0.5px rgba(0, 0, 0, 0.6);
+    --shadow-hover: 3px 3px 0 0.5px rgba(0, 0, 0, 0.6);
+    --shadow-hover-strong: 3px 3px 0 0.5px rgba(0, 0, 0, 0.6);
+    --shadow-lift: 3px 3px 0 0.5px rgba(0, 0, 0, 0.6);
+  }
 }
 
 ::selection {
-  background: var(--ink);
+  background: var(--red);
   color: var(--paper);
 }
 
 body {
   min-height: 100vh;
-  background: var(--paper);
+  background: linear-gradient(180deg, var(--paper) 0, var(--soft) 100%) fixed;
   color: var(--ink);
   font-family: var(--font-sans);
   line-height: 1.35;
+  transition:
+    background var(--motion-smooth),
+    color var(--motion-smooth);
 }
 
 button,
