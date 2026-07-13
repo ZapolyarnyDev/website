@@ -278,24 +278,6 @@ const kindLabels: Record<ContentEntryKind, string> = {
                 {props.meta.description}
               </Typography>
             </div>
-
-            <aside
-              class="project-article__meta"
-              aria-label="Метаданные проекта"
-            >
-              <span>Статус</span>
-              <strong>{props.meta.featured ? "выделен" : "обычный"}</strong>
-
-              {(props.meta.tags ?? []).length > 0 && <span>Теги</span>}
-
-              {(props.meta.tags ?? []).length > 0 && (
-                <ul>
-                  {(props.meta.tags ?? []).map((tag) => (
-                    <li>{tag}</li>
-                  ))}
-                </ul>
-              )}
-            </aside>
           </header>
 
           <div class="project-article__back">

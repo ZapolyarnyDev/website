@@ -1259,7 +1259,7 @@ body.menu-open {
   position: relative;
   isolation: isolate;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(220px, 320px);
+  grid-template-columns: minmax(0, 1fr);
   gap: clamp(18px, 4vw, 44px);
   align-items: end;
   background: transparent;
@@ -1999,6 +1999,10 @@ body.menu-open {
   background: transparent;
   padding-top: clamp(24px, 4vw, 48px);
   padding-bottom: clamp(24px, 5vw, 52px);
+}
+
+.research-article__header--portfolio-case {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .research-group-page__header::before,

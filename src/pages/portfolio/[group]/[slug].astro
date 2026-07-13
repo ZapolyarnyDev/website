@@ -21,7 +21,6 @@ interface Props {
   Content: AstroComponentFactory;
   meta: ContentEntryMeta;
   group: ContentGroup;
-  sectionTitle: string;
   entryNumber: number;
   entryCount: number;
   prevEntry?: ContentEntry;
@@ -37,11 +36,10 @@ export function getStaticPaths() {
   ) as Record<string, PortfolioModule>;
 
   const portfolio = getContentPageModel("portfolio");
-  const groups = portfolio.sections.flatMap(({ section, groups }) =>
+  const groups = portfolio.sections.flatMap(({ groups }) =>
     groups.map((groupModel) => ({
       groupModel,
       group: groupModel.group,
-      sectionTitle: section.title,
     })),
   );
 
@@ -89,7 +87,6 @@ export function getStaticPaths() {
           Content: module.default,
           meta: module.frontmatter,
           group: groupData.group,
-          sectionTitle: groupData.sectionTitle,
           entryNumber: entryIndex + 1,
           entryCount: groupData.groupModel.entries.length,
           prevEntry,
@@ -100,17 +97,8 @@ export function getStaticPaths() {
     .filter((path): path is Exclude<typeof path, null> => path !== null);
 }
 
-const {
-  Content,
-  meta,
-  group,
-  sectionTitle,
-  entryNumber,
-  entryCount,
-  prevEntry,
-  nextEntry,
-} = Astro.props;
-const tags = meta.tags ?? [];
+const { Content, meta, group, entryNumber, entryCount, prevEntry, nextEntry } =
+  Astro.props;
 const prevSlug = prevEntry?.slug.split("/").at(-1);
 const nextSlug = nextEntry?.slug.split("/").at(-1);
 ---
@@ -124,7 +112,9 @@ const nextSlug = nextEntry?.slug.split("/").at(-1);
 
   <main class="brutal-page research-article-page">
     <article class="container research-article">
-      <header class="research-article__header">
+      <header
+        class="research-article__header research-article__header--portfolio-case"
+      >
         <div class="research-article__copy">
           <Typography variant="kicker" as="span">
             <span class="home-hero__kicker-content">
@@ -144,27 +134,6 @@ const nextSlug = nextEntry?.slug.split("/").at(-1);
             {meta.description}
           </Typography>
         </div>
-
-        <aside class="research-article__meta" aria-label="Данные материала">
-          <span>Позиция</span>
-          <strong>Материал №{entryNumber} из {entryCount}</strong>
-          <span>Группа</span>
-          <strong>{group.title}</strong>
-          <span>Секция</span>
-          <strong>{sectionTitle}</strong>
-
-          {tags.length > 0 && <span>Теги</span>}
-
-          {
-            tags.length > 0 && (
-              <ul>
-                {tags.map((tag) => (
-                  <li>{tag}</li>
-                ))}
-              </ul>
-            )
-          }
-        </aside>
       </header>
 
       <div class="research-article__back research-article__back--under-line">
