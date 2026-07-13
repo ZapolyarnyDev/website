@@ -55,6 +55,78 @@ const links = [
     </nav>
 
     <div class="header__actions">
+      <div class="header__accent-picker" data-accent-picker>
+        <button
+          class="header__accent-trigger"
+          type="button"
+          aria-label="Выбрать цвет интерфейса"
+          aria-expanded="false"
+          aria-controls="accent-options"
+          data-accent-trigger
+        >
+          <span class="header__accent-swatch" data-accent-swatch></span>
+          <span class="header__accent-label" data-accent-label>Выбор цвета</span
+          >
+        </button>
+
+        <div
+          class="header__accent-menu"
+          id="accent-options"
+          role="menu"
+          aria-label="Цвет интерфейса"
+          hidden
+          data-accent-menu
+        >
+          <button
+            class="header__accent-option"
+            type="button"
+            role="menuitemradio"
+            aria-checked="true"
+            data-accent-option="polar-signal"
+          >
+            <span
+              class="header__accent-swatch header__accent-swatch--polar-signal"
+            ></span>
+            <span>Сигнал Заполярья</span>
+          </button>
+          <button
+            class="header__accent-option"
+            type="button"
+            role="menuitemradio"
+            aria-checked="false"
+            data-accent-option="icy-impulse"
+          >
+            <span
+              class="header__accent-swatch header__accent-swatch--icy-impulse"
+            ></span>
+            <span>Ледяной импульс</span>
+          </button>
+          <button
+            class="header__accent-option"
+            type="button"
+            role="menuitemradio"
+            aria-checked="false"
+            data-accent-option="cold-pine"
+          >
+            <span class="header__accent-swatch header__accent-swatch--cold-pine"
+            ></span>
+            <span>Холодная хвоя</span>
+          </button>
+          <button
+            class="header__accent-option"
+            type="button"
+            role="menuitemradio"
+            aria-checked="false"
+            data-accent-option="northern-glow"
+          >
+            <span
+              class="header__accent-swatch header__accent-swatch--northern-glow"
+            ></span>
+            <span>Северное свечение</span>
+          </button>
+        </div>
+      </div>
+
       <button
         class="header__theme-toggle"
         type="button"
@@ -130,9 +202,17 @@ const links = [
 </div>
 
 <script>
-
   const themeToggle = document.querySelector("[data-theme-toggle]");
   const root = document.documentElement;
+
+  const persistPreference = (key: string, value: string) => {
+    try {
+      localStorage.setItem(key, value);
+      return true;
+    } catch {
+      return false;
+    }
+  };
 
   const syncThemeButton = () => {
     if (!(themeToggle instanceof HTMLButtonElement)) return;
@@ -148,14 +228,91 @@ const links = [
   themeToggle?.addEventListener("click", () => {
     const next = root.dataset.theme === "dark" ? "light" : "dark";
     root.dataset.theme = next;
-    try {
-      localStorage.setItem("theme", next);
-    } catch {
-
-    }
+    persistPreference("theme", next);
     syncThemeButton();
   });
 
+  const accentPicker = document.querySelector("[data-accent-picker]");
+  const accentTrigger = document.querySelector("[data-accent-trigger]");
+  const accentMenu = document.querySelector("[data-accent-menu]");
+  const accentSwatch = document.querySelector("[data-accent-swatch]");
+  const accentLabel = document.querySelector("[data-accent-label]");
+  const accentOptions = document.querySelectorAll("[data-accent-option]");
+
+  const accentNames: Record<string, string> = {
+    "polar-signal": "Сигнал Заполярья",
+    "icy-impulse": "Ледяной импульс",
+    "cold-pine": "Холодная хвоя",
+    "northern-glow": "Северное свечение",
+  };
+
+  const syncAccentPicker = () => {
+    const accent = root.dataset.accent ?? "polar-signal";
+
+    if (accentTrigger instanceof HTMLButtonElement) {
+      accentTrigger.dataset.accent = accent;
+      accentTrigger.setAttribute("aria-label", "Выбор цвета интерфейса");
+    }
+
+    if (accentSwatch instanceof HTMLElement) {
+      accentSwatch.dataset.accent = accent;
+    }
+
+    if (accentLabel instanceof HTMLElement) {
+      accentLabel.textContent = "Выбор цвета";
+    }
+
+    accentOptions.forEach((option) => {
+      option.setAttribute(
+        "aria-checked",
+        String(option.getAttribute("data-accent-option") === accent),
+      );
+    });
+  };
+
+  const setAccentMenuOpen = (isOpen: boolean) => {
+    if (
+      !(accentTrigger instanceof HTMLButtonElement) ||
+      !(accentMenu instanceof HTMLElement)
+    ) {
+      return;
+    }
+
+    accentTrigger.setAttribute("aria-expanded", String(isOpen));
+    accentMenu.hidden = !isOpen;
+  };
+
+  syncAccentPicker();
+
+  accentTrigger?.addEventListener("click", () => {
+    const isOpen = accentTrigger.getAttribute("aria-expanded") === "true";
+    setAccentMenuOpen(!isOpen);
+  });
+
+  accentOptions.forEach((option) => {
+    option.addEventListener("click", () => {
+      const accent = option.getAttribute("data-accent-option");
+      if (!accent || !(accent in accentNames)) return;
+
+      root.dataset.accent = accent;
+      persistPreference("accent", accent);
+      syncAccentPicker();
+      setAccentMenuOpen(false);
+      if (accentTrigger instanceof HTMLButtonElement) {
+        accentTrigger.focus();
+      }
+    });
+  });
+
+  document.addEventListener("click", (event) => {
+    if (
+      accentPicker instanceof HTMLElement &&
+      event.target instanceof Node &&
+      !accentPicker.contains(event.target)
+    ) {
+      setAccentMenuOpen(false);
+    }
+  });
 
   const toggle = document.querySelector("[data-menu-toggle]");
   const closeButton = document.querySelector("[data-menu-close]");
@@ -195,7 +352,6 @@ const links = [
         first?.focus();
       }, 60);
     } else {
-
       lastFocused?.focus();
       lastFocused = null;
     }
@@ -211,7 +367,6 @@ const links = [
   links.forEach((link) => {
     link.addEventListener("click", () => setMenuOpen(false));
   });
-
 
   menu?.addEventListener("keydown", (event) => {
     const keyboardEvent = event as KeyboardEvent;
@@ -238,10 +393,10 @@ const links = [
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
+      setAccentMenuOpen(false);
       setMenuOpen(false);
     }
   });
-
 
   const desktopQuery = window.matchMedia("(min-width: 1241px)");
   desktopQuery.addEventListener("change", (event) => {
