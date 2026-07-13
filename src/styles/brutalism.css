@@ -368,6 +368,11 @@
   background: #b58cff;
 }
 
+.header__accent-swatch--amber-pole,
+.header__accent-swatch[data-accent="amber-pole"] {
+  background: #f2b544;
+}
+
 .header__theme-toggle {
   display: grid;
   place-items: center;

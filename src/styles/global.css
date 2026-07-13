@@ -103,6 +103,10 @@
   --red: #7852d1;
 }
 
+[data-accent="amber-pole"] {
+  --red: #a86400;
+}
+
 [data-theme="dark"][data-accent="icy-impulse"] {
   --red: #49b6ff;
 }
@@ -113,6 +117,10 @@
 
 [data-theme="dark"][data-accent="northern-glow"] {
   --red: #b58cff;
+}
+
+[data-theme="dark"][data-accent="amber-pole"] {
+  --red: #f2b544;
 }
 
 @media (max-width: 680px) {
