@@ -2,28 +2,15 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import Header from "@layouts/Header.astro";
 import Typography from "@components/ui/Typography.astro";
-import Button from "@components/ui/Button.astro";
 import PortfolioGroupCard from "@components/portfolio/PortfolioGroupCard.astro";
 import PortfolioProjectCard from "@components/portfolio/PortfolioProjectCard.astro";
 import { getContentPageModel } from "@/content-engine";
-import {
-  ArrowUpRight,
-  BriefcaseBusiness,
-  Code2,
-  Gamepad2,
-  Handshake,
-  ListChecks,
-} from "lucide-astro";
+import { ArrowUpRight, BriefcaseBusiness, Code2, Gamepad2 } from "lucide-astro";
 
 const portfolio = getContentPageModel("portfolio");
 const pageDescription =
   "Портфолио ZapolyarnyDev: текущие проекты, результаты и материалы для сотрудничества.";
 const SECTION_PREVIEW_LIMIT = 5;
-const directProjects = portfolio.sections.flatMap((section) => section.entries);
-const groupedProjects = portfolio.sections.flatMap((section) =>
-  section.groups.flatMap((group) => group.entries),
-);
-const projects = [...directProjects, ...groupedProjects];
 const portfolioSections = portfolio.sections
   .map(({ section, groups, entries }) => {
     const visibleGroups = groups.length > 0 ? groups : [];
@@ -59,7 +46,7 @@ const sectionIcons = {
               class="home-hero__kicker-icon"
               aria-hidden="true"
             />
-            cooperation
+            portfolio
           </span>
         </Typography>
 
@@ -68,42 +55,9 @@ const sectionIcons = {
         </Typography>
 
         <Typography variant="lead" as="p">
-          Коммерческий и практический опыт: что делал, в каком контексте, какой
-          стек использовал и какие навыки у меня есть.
+          Веб-системы, Java backend и Minecraft server-side. Показываю задачу,
+          архитектурные решения и результат.
         </Typography>
-      </section>
-
-      <section class="content-overview" aria-label="Обзор портфолио">
-        <div class="content-overview__item">
-          <span>Фокус</span>
-          <strong>Инженерия</strong>
-        </div>
-        <div class="content-overview__item">
-          <span>Кейсов</span>
-          <strong>{projects.length}</strong>
-        </div>
-        <Button
-          href="/portfolio/archive"
-          variant="primary"
-          class="content-overview__action content-overview__action--primary"
-        >
-          Архив проектов
-          <ArrowUpRight class="button__icon" aria-hidden="true" />
-        </Button>
-      </section>
-
-      <section class="portfolio-client-strip" aria-label="Что смотреть клиенту">
-        <div class="portfolio-client-strip__item">
-          <Handshake aria-hidden="true" />
-          <span>Для сотрудничества</span>
-          <strong>Быстро рассмотреть мой опыт</strong>
-        </div>
-
-        <div class="portfolio-client-strip__item">
-          <ListChecks aria-hidden="true" />
-          <span>Внутри кейсов</span>
-          <strong>Роль, стек и результат</strong>
-        </div>
       </section>
 
       {
