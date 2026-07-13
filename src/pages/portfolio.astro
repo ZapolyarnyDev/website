@@ -24,18 +24,18 @@ const groupedProjects = portfolio.sections.flatMap((section) =>
   section.groups.flatMap((group) => group.entries),
 );
 const projects = [...directProjects, ...groupedProjects];
-const featuredCount = projects.filter(
-  (project) => project.meta.featured,
-).length;
-const featuredProjects = projects.filter((project) => project.meta.featured);
 const portfolioSections = portfolio.sections
-  .map(({ section, groups, entries }) => ({
-    section,
-    groups,
-    entries: entries.filter((project) => !project.meta.featured),
-  }))
+  .map(({ section, groups, entries }) => {
+    const visibleGroups = groups.length > 0 ? groups : [];
+    const visibleEntries = groups.length > 0 ? [] : entries;
+
+    return {
+      section,
+      groups: visibleGroups,
+      entries: visibleEntries,
+    };
+  })
   .filter(({ groups, entries }) => groups.length > 0 || entries.length > 0);
-const casesAnchorOnFeatured = featuredProjects.length > 0;
 
 const sectionIcons = {
   "briefcase-business": BriefcaseBusiness,
@@ -82,10 +82,6 @@ const sectionIcons = {
           <span>Кейсов</span>
           <strong>{projects.length}</strong>
         </div>
-        <div class="content-overview__item">
-          <span>Ключевых</span>
-          <strong>{featuredCount}</strong>
-        </div>
         <Button
           href="/portfolio/archive"
           variant="primary"
@@ -111,37 +107,6 @@ const sectionIcons = {
       </section>
 
       {
-        featuredProjects.length > 0 && (
-          <section
-            class="portfolio-section portfolio-section--featured"
-            id="portfolio-cases"
-            aria-labelledby="portfolio-featured"
-          >
-            <header class="portfolio-section__header">
-              <Typography
-                variant="mono"
-                as="h2"
-                class="portfolio-section__title"
-                id="portfolio-featured"
-              >
-                <BriefcaseBusiness
-                  class="portfolio-section__icon"
-                  aria-hidden="true"
-                />
-                Ключевые кейсы
-              </Typography>
-            </header>
-
-            <div class="portfolio-section__projects">
-              {featuredProjects.map((project) => (
-                <PortfolioProjectCard project={project} />
-              ))}
-            </div>
-          </section>
-        )
-      }
-
-      {
         portfolioSections.map(({ section, groups, entries }, index) => {
           const visibleItems = [
             ...groups.map((group) => ({ type: "group" as const, group })),
@@ -157,11 +122,7 @@ const sectionIcons = {
           return (
             <section
               class="portfolio-section"
-              id={
-                !casesAnchorOnFeatured && index === 0
-                  ? "portfolio-cases"
-                  : undefined
-              }
+              id={index === 0 ? "portfolio-cases" : undefined}
               aria-labelledby={`portfolio-section-${section.id}`}
             >
               <header class="portfolio-section__header">
