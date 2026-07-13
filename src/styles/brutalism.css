@@ -2246,6 +2246,11 @@ body.menu-open {
    Research article
    ========================================================================== */
 
+.project-page,
+.research-article-page {
+  overflow-x: clip;
+}
+
 .research-article-page {
   background: var(--soft);
 }
