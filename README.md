@@ -4,7 +4,7 @@ My personal website
 
 ## Stack
 
-Astro, TypeScript, MDX, CSS, npm
+Astro, TypeScript, MDX, CSS, pnpm
 
 > (Can my cat be considered part of the tech stack?)
 
@@ -13,8 +13,8 @@ Astro, TypeScript, MDX, CSS, npm
 Development and personal experimentation are permitted
 
 ```sh
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 ## License
