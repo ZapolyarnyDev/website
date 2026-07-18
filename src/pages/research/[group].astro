@@ -8,13 +8,7 @@ import {
   type ContentEntryKind,
   type ContentGroupModel,
 } from "@/content-engine";
-import {
-  ArrowLeft,
-  ArrowUpRight,
-  BookOpenCheck,
-  FlaskConical,
-  Layers3,
-} from "lucide-astro";
+import { ArrowLeft, ArrowUpRight, FlaskConical, Layers3 } from "lucide-astro";
 
 interface Props {
   groupModel: ContentGroupModel;
@@ -89,32 +83,6 @@ const kindLabels: Record<ContentEntryKind, string> = {
           К исследованиям
         </Button>
       </div>
-
-      {
-        entries.length > 0 && (
-          <section class="research-reading-order" aria-label="Порядок чтения">
-            <div class="research-reading-order__label">
-              <BookOpenCheck aria-hidden="true" />
-              <span>Порядок чтения</span>
-            </div>
-
-            <ol>
-              {entries.map((entry, index) => {
-                const articleSlug = entry.slug.split("/").at(-1);
-
-                return (
-                  <li>
-                    <a href={`/research/${group.id}/${articleSlug}`}>
-                      <span>Запись №{index + 1}</span>
-                      <strong>{entry.meta.title}</strong>
-                    </a>
-                  </li>
-                );
-              })}
-            </ol>
-          </section>
-        )
-      }
 
       <section class="research-articles" aria-labelledby="research-articles">
         <header class="research-section__header">

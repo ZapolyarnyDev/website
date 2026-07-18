@@ -2276,80 +2276,6 @@ body.menu-open {
   font-size: clamp(24px, 3vw, 32px);
 }
 
-.research-reading-order {
-  display: grid;
-  grid-template-columns: minmax(170px, 240px) minmax(0, 1fr);
-  gap: 18px;
-  border: var(--border-soft);
-  border-radius: 18px;
-  background: var(--soft);
-  box-shadow: var(--shadow-soft);
-  padding: clamp(18px, 3vw, 26px);
-}
-
-.research-reading-order__label {
-  display: flex;
-  align-items: center;
-  align-self: start;
-  gap: 10px;
-  color: var(--red);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-.research-reading-order__label svg {
-  width: 18px;
-  height: 18px;
-  flex: 0 0 auto;
-  stroke-width: 2.5;
-}
-
-.research-reading-order ol {
-  display: grid;
-  gap: 10px;
-  list-style: none;
-}
-
-.research-reading-order li {
-  border: var(--border-soft);
-  border-radius: 12px;
-  background: var(--surface);
-  padding: 12px 14px;
-}
-
-.research-reading-order a {
-  display: grid;
-  grid-template-columns: minmax(92px, auto) minmax(0, 1fr);
-  gap: 14px;
-  align-items: center;
-  color: var(--ink);
-  text-decoration: none;
-}
-
-.research-reading-order a span {
-  color: var(--red);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-.research-reading-order a strong {
-  font-size: 18px;
-  font-weight: 800;
-  line-height: 1.1;
-  text-transform: uppercase;
-  overflow-wrap: anywhere;
-}
-
-.research-reading-order a:hover,
-.research-reading-order a:focus-visible {
-  color: var(--red);
-  outline: none;
-}
-
 .research-archive-groups {
   display: grid;
   gap: 28px;
@@ -2969,8 +2895,7 @@ body.menu-open {
     flex-direction: column;
   }
 
-  .content-overview,
-  .research-reading-order {
+  .content-overview {
     grid-template-columns: 1fr;
   }
 
@@ -3058,7 +2983,6 @@ body.menu-open {
 
   .portfolio-client-strip__item,
   .research-group-card,
-  .research-reading-order,
   .research-sequence-nav,
   .article-sequence-nav {
     box-shadow: var(--shadow-soft);
@@ -3116,7 +3040,6 @@ body.menu-open {
     padding-right: 64px;
   }
 
-  .research-reading-order a,
   .research-sequence-nav,
   .article-sequence-nav {
     grid-template-columns: 1fr;
@@ -3264,8 +3187,7 @@ body.menu-open {
   .project-article__meta,
   .blog-post__meta,
   .research-group-page__meta,
-  .research-article__meta,
-  .research-reading-order {
+  .research-article__meta {
     border-radius: 14px;
   }
 
