@@ -17,8 +17,6 @@ import {
 const blog = getContentPageModel("blog");
 const pageDescription =
   "Заметки о разработке, исследованиях, инструментах и процессе обучения.";
-const SECTION_PREVIEW_LIMIT = 7;
-const entries = blog.sections.flatMap((section) => section.entries);
 
 const sectionIcons = {
   "book-open-text": BookOpenText,
@@ -74,33 +72,8 @@ const sectionIcons = {
         </aside>
       </section>
 
-      <section class="content-overview" aria-label="Обзор блога">
-        <div class="content-overview__item">
-          <span>Формат</span>
-          <strong>Заметки</strong>
-        </div>
-        <div class="content-overview__item">
-          <span>Разделов</span>
-          <strong>{blog.sections.length}</strong>
-        </div>
-        <div class="content-overview__item">
-          <span>Материалов</span>
-          <strong>{entries.length}</strong>
-        </div>
-        <Button
-          href="/blog/archive"
-          variant="primary"
-          class="content-overview__action content-overview__action--primary"
-        >
-          Архив блога
-          <ArrowUpRight class="button__icon" aria-hidden="true" />
-        </Button>
-      </section>
-
       {
         blog.sections.map(({ section, entries }) => {
-          const previewEntries = entries.slice(0, SECTION_PREVIEW_LIMIT);
-          const hiddenCount = entries.length - previewEntries.length;
           const SectionIcon =
             section.icon && section.icon in sectionIcons
               ? sectionIcons[section.icon as keyof typeof sectionIcons]
@@ -129,20 +102,9 @@ const sectionIcons = {
 
               {entries.length > 0 ? (
                 <div class="blog-section__articles">
-                  {previewEntries.map((article) => (
+                  {entries.map((article) => (
                     <BlogArticleCard article={article} />
                   ))}
-
-                  {hiddenCount > 0 && (
-                    <a
-                      href="/blog/archive"
-                      class="content-more"
-                      aria-label={`Открыть ещё ${hiddenCount} материалов раздела ${section.title}`}
-                    >
-                      Ещё {hiddenCount} в архиве
-                      <ArrowUpRight class="button__icon" aria-hidden="true" />
-                    </a>
-                  )}
                 </div>
               ) : (
                 <div class="blog-section__empty">

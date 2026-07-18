@@ -2,7 +2,6 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import Header from "@layouts/Header.astro";
 import Typography from "@components/ui/Typography.astro";
-import Button from "@components/ui/Button.astro";
 import ResearchGroupCard from "@components/research/ResearchGroupCard.astro";
 import { getContentPageModel } from "@/content-engine";
 import {
@@ -58,29 +57,6 @@ const sectionIcons = {
           Исследования, заметки, эксперименты и разборы технологий. Тут
           систематизирую свои идеи и исследования.
         </Typography>
-      </section>
-
-      <section class="content-overview" aria-label="Обзор исследований">
-        <div class="content-overview__item">
-          <span>Секций</span>
-          <strong>{research.sections.length}</strong>
-        </div>
-        <div class="content-overview__item">
-          <span>Групп</span>
-          <strong>{groups.length}</strong>
-        </div>
-        <div class="content-overview__item">
-          <span>Материалов</span>
-          <strong>{entries.length}</strong>
-        </div>
-        <Button
-          href="/research/archive"
-          variant="primary"
-          class="content-overview__action content-overview__action--primary"
-        >
-          Все материалы
-          <ArrowUpRight class="button__icon" aria-hidden="true" />
-        </Button>
       </section>
 
       {
