@@ -185,6 +185,10 @@
   min-height: 76px;
 }
 
+.container.header__inner {
+  width: min(100% - 32px, 1720px);
+}
+
 .header__brand {
   display: inline-flex;
   align-items: center;
@@ -2883,6 +2887,10 @@ body.menu-open {
   .header__inner {
     min-height: 64px;
     gap: 10px;
+  }
+
+  .container.header__inner {
+    width: min(100% - 20px, 100%);
   }
 
   .header__brand {
