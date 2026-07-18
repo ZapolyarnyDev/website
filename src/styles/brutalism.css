@@ -2266,16 +2266,6 @@ body.menu-open {
   font-weight: 800;
 }
 
-.research-article-card--compact {
-  min-height: 0;
-  background: var(--paper);
-  padding: clamp(18px, 3vw, 24px);
-}
-
-.research-article-card--compact .research-article-card__title {
-  font-size: clamp(24px, 3vw, 32px);
-}
-
 .research-archive-groups {
   display: grid;
   gap: 28px;
