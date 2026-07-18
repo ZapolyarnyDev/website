@@ -11,6 +11,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "prepare": "husky",
     "check": "pnpm run typecheck && pnpm run lint && pnpm run format:check",
     "typecheck": "astro check",
     "lint": "eslint . --ext .js,.mjs,.cjs,.ts,.mts,.cts,.astro,.mdx",
@@ -36,9 +37,14 @@
     "eslint-plugin-astro": "^1.7.0",
     "eslint-plugin-mdx": "^3.8.1",
     "globals": "^17.7.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
     "prettier": "^3.9.5",
     "prettier-plugin-astro": "^0.14.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.64.0"
+  },
+  "lint-staged": {
+    "*": "prettier --ignore-unknown --write"
   }
 }
