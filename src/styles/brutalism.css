@@ -815,7 +815,7 @@ body.menu-open {
 
   margin-top: 22px;
 
-  font-size: clamp(54px, 5.4vw, 108px);
+  font-size: clamp(48px, 4.8vw, 96px);
   line-height: 0.92;
 
   letter-spacing: -0.03em;
