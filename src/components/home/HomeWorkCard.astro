@@ -13,10 +13,16 @@ const { href, label, title, description, tags = [] } = Astro.props;
 ---
 
 <a class="home-work-card" href={href}>
-  <span class="home-work-card__label">{label}</span>
-  <ArrowUpRight class="home-work-card__arrow" aria-hidden="true" />
-  <h3>{title}</h3>
-  <p>{description}</p>
+  <div class="home-work-card__header">
+    <span class="home-work-card__label">{label}</span>
+    <ArrowUpRight class="home-work-card__arrow" aria-hidden="true" />
+  </div>
+
+  <div class="home-work-card__body">
+    <h3>{title}</h3>
+    <p class="home-work-card__description">{description}</p>
+  </div>
+
   {
     tags.length > 0 && (
       <span class="home-work-card__tags">{tags.join(" · ")}</span>

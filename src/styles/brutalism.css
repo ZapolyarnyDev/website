@@ -963,7 +963,7 @@ body.menu-open {
   display: grid;
   gap: clamp(64px, 10vw, 144px);
   background: var(--paper);
-  padding-block: clamp(64px, 10vw, 144px);
+  padding-block: clamp(48px, 6vw, 88px);
 }
 
 .home-section {
@@ -972,7 +972,7 @@ body.menu-open {
 }
 
 .container.home-section {
-  width: min(100% - 48px, 1600px);
+  width: min(100% - 40px, 1680px);
 }
 
 .home-section__header {
@@ -3021,36 +3021,44 @@ body.menu-open {
 .home-works-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
+  gap: clamp(14px, 1.25vw, 22px);
 }
 
 .home-work-card {
-  position: relative;
   display: grid;
-  grid-template-rows: auto auto auto auto;
-  align-content: start;
-  min-height: 330px;
+  grid-template-rows: auto 1fr auto;
+  min-height: 300px;
   min-width: 0;
-  border: var(--border-soft);
-  border-radius: 16px;
-  background: var(--surface);
-  box-shadow: none;
-  padding: clamp(22px, 2.5vw, 34px);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--ink) 32%, transparent);
+  border-radius: 18px;
+  background: var(--soft);
+  box-shadow: var(--shadow-soft);
   color: var(--ink);
   text-decoration: none;
   transition:
-    transform var(--motion),
     box-shadow var(--motion),
-    background var(--motion);
+    background var(--motion),
+    border-color var(--motion);
 }
 
 .home-work-card:hover,
 .home-work-card:focus-visible {
-  background: var(--paper);
-  border-color: var(--ink);
-  box-shadow: var(--shadow-sm);
+  background: var(--surface);
+  border-color: var(--red);
+  box-shadow: var(--shadow-soft-hover);
   outline: none;
-  transform: translateY(-2px);
+}
+
+.home-work-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 52px;
+  border-bottom: var(--border-soft);
+  background: transparent;
+  padding: 15px clamp(20px, 2vw, 30px);
 }
 
 .home-work-card__label {
@@ -3063,28 +3071,36 @@ body.menu-open {
 }
 
 .home-work-card__arrow {
-  position: absolute;
-  top: 26px;
-  right: 26px;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  transition: transform var(--motion);
+}
+
+.home-work-card:hover .home-work-card__arrow,
+.home-work-card:focus-visible .home-work-card__arrow {
+  transform: translate(3px, -3px);
+}
+
+.home-work-card__body {
+  display: grid;
+  grid-template-rows: minmax(2em, auto) minmax(2.9em, auto);
+  align-content: start;
+  gap: 14px;
+  padding: clamp(22px, 2.3vw, 32px) clamp(20px, 2vw, 30px);
 }
 
 .home-work-card h3 {
-  max-width: 90%;
-  min-height: 3em;
-  margin-top: 34px;
-  font-size: clamp(25px, 2.3vw, 39px);
+  max-width: 100%;
+  font-size: clamp(24px, 2.15vw, 37px);
   font-weight: 800;
   letter-spacing: -0.04em;
-  line-height: 0.98;
+  line-height: 1;
   text-transform: uppercase;
   overflow-wrap: anywhere;
 }
 
-.home-work-card p {
-  min-height: 2.9em;
-  margin-top: 14px;
+.home-work-card__description {
   color: var(--muted);
   font-size: 14px;
   font-weight: 600;
@@ -3092,14 +3108,25 @@ body.menu-open {
 }
 
 .home-work-card__tags {
-  margin-top: 18px;
   border-top: var(--border-soft);
+  background: transparent;
   font-family: var(--font-mono);
   font-size: 9px;
   font-weight: 700;
   line-height: 1.4;
-  padding-top: 12px;
+  padding: 13px clamp(20px, 2vw, 30px) 15px;
   text-transform: uppercase;
+}
+
+[data-theme="dark"] .home-work-card {
+  border-color: rgba(232, 233, 236, 0.3);
+  background: #171b20;
+}
+
+[data-theme="dark"] .home-work-card:hover,
+[data-theme="dark"] .home-work-card:focus-visible {
+  border-color: var(--red);
+  background: var(--surface);
 }
 
 @media (max-width: 1050px) {
@@ -3109,7 +3136,7 @@ body.menu-open {
 
   .home-work-card:first-child {
     grid-column: 1 / -1;
-    min-height: 270px;
+    min-height: 260px;
   }
 }
 
@@ -3123,6 +3150,6 @@ body.menu-open {
   }
 
   .home-work-card {
-    min-height: 280px;
+    min-height: 270px;
   }
 }
