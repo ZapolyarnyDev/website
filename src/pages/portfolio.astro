@@ -13,13 +13,10 @@ const pageDescription =
 const SECTION_PREVIEW_LIMIT = 5;
 const portfolioSections = portfolio.sections
   .map(({ section, groups, entries }) => {
-    const visibleGroups = groups.length > 0 ? groups : [];
-    const visibleEntries = groups.length > 0 ? [] : entries;
-
     return {
       section,
-      groups: visibleGroups,
-      entries: visibleEntries,
+      groups,
+      entries,
     };
   })
   .filter(({ groups, entries }) => groups.length > 0 || entries.length > 0);
