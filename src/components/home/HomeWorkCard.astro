@@ -1,0 +1,25 @@
+---
+import { ArrowUpRight } from "lucide-astro";
+
+interface Props {
+  href: string;
+  label: string;
+  title: string;
+  description: string;
+  tags?: string[];
+}
+
+const { href, label, title, description, tags = [] } = Astro.props;
+---
+
+<a class="home-work-card" href={href}>
+  <span class="home-work-card__label">{label}</span>
+  <ArrowUpRight class="home-work-card__arrow" aria-hidden="true" />
+  <h3>{title}</h3>
+  <p>{description}</p>
+  {
+    tags.length > 0 && (
+      <span class="home-work-card__tags">{tags.join(" · ")}</span>
+    )
+  }
+</a>

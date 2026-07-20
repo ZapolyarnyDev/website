@@ -1,24 +1,22 @@
 ---
-import Button from "@components/ui/Button.astro";
-import PortfolioGroupCard from "@components/portfolio/PortfolioGroupCard.astro";
-import PortfolioProjectCard from "@components/portfolio/PortfolioProjectCard.astro";
-import Typography from "@components/ui/Typography.astro";
-import { getContentPageModel } from "@/content-engine";
 import { ArrowUpRight } from "lucide-astro";
 
+import HomeWorkCard from "@components/home/HomeWorkCard.astro";
+import Button from "@components/ui/Button.astro";
+import Typography from "@components/ui/Typography.astro";
+import { getContentPageModel } from "@/content-engine";
+
 const portfolio = getContentPageModel("portfolio");
-const selectedGroup = portfolio.sections
+const portfolioEntries = portfolio.sections.flatMap(({ entries, groups }) => [
+  ...entries,
+  ...groups.flatMap((group) => group.entries),
+]);
+const cristalix = portfolio.sections
   .flatMap(({ groups }) => groups)
   .find(({ group }) => group.id === "cristalix");
-const selectedProjectSlugs = ["proxyvirtualizer", "medical-appointment"];
-const selectedProjects = portfolio.sections
-  .flatMap(({ entries }) => entries)
-  .filter((entry) => selectedProjectSlugs.includes(entry.slug))
-  .sort(
-    (a, b) =>
-      selectedProjectSlugs.indexOf(a.slug) -
-      selectedProjectSlugs.indexOf(b.slug),
-  );
+const selectedProjects = ["proxyvirtualizer", "medical-appointment"]
+  .map((slug) => portfolioEntries.find((entry) => entry.slug === slug))
+  .filter((entry) => entry !== undefined);
 ---
 
 <div class="home-content">
@@ -36,11 +34,28 @@ const selectedProjects = portfolio.sections
       </Button>
     </header>
 
-    <div class="home-projects">
-      {selectedGroup && <PortfolioGroupCard model={selectedGroup} />}
+    <div class="home-works-grid">
+      {
+        cristalix && (
+          <HomeWorkCard
+            href={`/portfolio/${cristalix.group.id}`}
+            label="Cristalix / кейс"
+            title="Игровые режимы"
+            description={cristalix.group.description ?? ""}
+            tags={["Minecraft", "Gamedev"]}
+          />
+        )
+      }
+
       {
         selectedProjects.map((project) => (
-          <PortfolioProjectCard project={project} />
+          <HomeWorkCard
+            href={`/portfolio/${project.slug}`}
+            label="Проект"
+            title={project.meta.title}
+            description={project.meta.description}
+            tags={project.meta.tags?.slice(0, 3)}
+          />
         ))
       }
     </div>

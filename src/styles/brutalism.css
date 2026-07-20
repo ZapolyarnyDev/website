@@ -3016,3 +3016,113 @@ body.menu-open {
     line-height: 1.48;
   }
 }
+
+/* Home-only project cards */
+.home-works-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.home-work-card {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto auto auto auto;
+  align-content: start;
+  min-height: 330px;
+  min-width: 0;
+  border: var(--border-soft);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: none;
+  padding: clamp(22px, 2.5vw, 34px);
+  color: var(--ink);
+  text-decoration: none;
+  transition:
+    transform var(--motion),
+    box-shadow var(--motion),
+    background var(--motion);
+}
+
+.home-work-card:hover,
+.home-work-card:focus-visible {
+  background: var(--paper);
+  border-color: var(--ink);
+  box-shadow: var(--shadow-sm);
+  outline: none;
+  transform: translateY(-2px);
+}
+
+.home-work-card__label {
+  color: var(--red);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.home-work-card__arrow {
+  position: absolute;
+  top: 26px;
+  right: 26px;
+  width: 20px;
+  height: 20px;
+}
+
+.home-work-card h3 {
+  max-width: 90%;
+  min-height: 3em;
+  margin-top: 34px;
+  font-size: clamp(25px, 2.3vw, 39px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 0.98;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.home-work-card p {
+  min-height: 2.9em;
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.home-work-card__tags {
+  margin-top: 18px;
+  border-top: var(--border-soft);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.4;
+  padding-top: 12px;
+  text-transform: uppercase;
+}
+
+@media (max-width: 1050px) {
+  .home-works-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home-work-card:first-child {
+    grid-column: 1 / -1;
+    min-height: 270px;
+  }
+}
+
+@media (max-width: 680px) {
+  .home-works-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-work-card:first-child {
+    grid-column: auto;
+  }
+
+  .home-work-card {
+    min-height: 280px;
+  }
+}
