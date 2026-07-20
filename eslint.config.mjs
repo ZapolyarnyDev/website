@@ -30,7 +30,14 @@ const typedRules = {
 
 export default defineConfig([
   {
-    ignores: [".astro/**", "dist/**", "node_modules/**"],
+    ignores: [
+      ".astro/**",
+      ".cache/**",
+      "coverage/**",
+      "dist/**",
+      "node_modules/**",
+      "**/*.tsbuildinfo",
+    ],
   },
   {
     files: moduleScriptFiles,
