@@ -1,0 +1,48 @@
+---
+import Button from "@components/ui/Button.astro";
+import PortfolioGroupCard from "@components/portfolio/PortfolioGroupCard.astro";
+import PortfolioProjectCard from "@components/portfolio/PortfolioProjectCard.astro";
+import Typography from "@components/ui/Typography.astro";
+import { getContentPageModel } from "@/content-engine";
+import { ArrowUpRight } from "lucide-astro";
+
+const portfolio = getContentPageModel("portfolio");
+const selectedGroup = portfolio.sections
+  .flatMap(({ groups }) => groups)
+  .find(({ group }) => group.id === "cristalix");
+const selectedProjectSlugs = ["proxyvirtualizer", "medical-appointment"];
+const selectedProjects = portfolio.sections
+  .flatMap(({ entries }) => entries)
+  .filter((entry) => selectedProjectSlugs.includes(entry.slug))
+  .sort(
+    (a, b) =>
+      selectedProjectSlugs.indexOf(a.slug) -
+      selectedProjectSlugs.indexOf(b.slug),
+  );
+---
+
+<div class="home-content">
+  <section class="container home-section" aria-labelledby="featured-projects">
+    <header class="home-section__header">
+      <div>
+        <Typography variant="kicker" as="span">избранное</Typography>
+        <Typography variant="hero" as="h2" id="featured-projects">
+          Проекты
+        </Typography>
+      </div>
+
+      <Button href="/portfolio">
+        Все проекты <ArrowUpRight class="button__icon" aria-hidden="true" />
+      </Button>
+    </header>
+
+    <div class="home-projects">
+      {selectedGroup && <PortfolioGroupCard model={selectedGroup} />}
+      {
+        selectedProjects.map((project) => (
+          <PortfolioProjectCard project={project} />
+        ))
+      }
+    </div>
+  </section>
+</div>
