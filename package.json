@@ -30,13 +30,13 @@
     "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.9",
+    "@astrojs/check": "^0.9.10",
     "@eslint/js": "^10.0.1",
-    "eslint": "^10.7.0",
+    "eslint": "^10.8.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-astro": "^1.7.0",
     "eslint-plugin-mdx": "^3.8.1",
-    "globals": "^17.7.0",
+    "globals": "^17.8.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
     "prettier": "^3.9.6",
