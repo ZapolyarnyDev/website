@@ -17,7 +17,8 @@
     "lint": "eslint . --ext .js,.mjs,.cjs,.ts,.mts,.cts,.astro,.mdx",
     "lint:fix": "eslint . --fix --ext .js,.mjs,.cjs,.ts,.mts,.cts,.astro,.mdx",
     "format": "prettier . --write",
-    "format:check": "prettier . --check"
+    "format:check": "prettier . --check",
+    "new": "node scripts/new.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.6",

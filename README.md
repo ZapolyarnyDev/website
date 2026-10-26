@@ -17,6 +17,15 @@ pnpm install
 pnpm dev
 ```
 
+New log entry (created as a draft in `content/log/`):
+
+```sh
+pnpm new devlog "Title" --project proxyvirtualizer
+pnpm new lab|essay|note|case "Title" [--project <id>] [--lang en]
+```
+
+A devlog draft lists the project's commits from the last 7 days (`--days <n>`) as MDX comments.
+
 ## License
 
 [MIT](LICENSE)
