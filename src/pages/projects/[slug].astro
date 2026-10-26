@@ -1,0 +1,116 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Header from "@layouts/Header.astro";
+import Button from "@components/ui/Button.astro";
+import Typography from "@components/ui/Typography.astro";
+import LogEntryCard from "@components/log/LogEntryCard.astro";
+import { render } from "astro:content";
+import {
+  getProjectLog,
+  getProjects,
+  projectStatusLabels,
+  type Project,
+} from "@/lib/content";
+import { ArrowLeft, ArrowUpRight } from "lucide-astro";
+
+interface Props {
+  project: Project;
+}
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { title, description, status, repo, url } = project.data;
+const { Content } = await render(project);
+const entries = await getProjectLog(project.id);
+---
+
+<BaseLayout
+  title={`${title} | Проекты ZapolyarnyDev`}
+  description={description}
+  ogType="article"
+>
+  <Header currentPath="/projects" />
+
+  <main class="brutal-page project-page">
+    <article class="container project-article">
+      <header class="project-article__header">
+        <div class="project-article__copy">
+          <Typography variant="kicker" as="span">
+            {projectStatusLabels[status]}
+          </Typography>
+
+          <Typography variant="hero" as="h1" class="project-article__title">
+            {title}
+          </Typography>
+
+          <Typography variant="lead" as="p">
+            {description}
+          </Typography>
+        </div>
+      </header>
+
+      <div class="project-article__back">
+        <Button href="/projects">
+          <ArrowLeft class="button__icon" aria-hidden="true" />К проектам
+        </Button>
+
+        {
+          repo && (
+            <Button href={repo} target="_blank" rel="noreferrer">
+              GitHub
+              <ArrowUpRight class="button__icon" aria-hidden="true" />
+            </Button>
+          )
+        }
+
+        {
+          url && (
+            <Button href={url} target="_blank" rel="noreferrer">
+              Сайт
+              <ArrowUpRight class="button__icon" aria-hidden="true" />
+            </Button>
+          )
+        }
+      </div>
+
+      <div class="project-content markdown-content">
+        <Content />
+      </div>
+
+      {
+        entries.length > 0 && (
+          <section class="blog-section" aria-labelledby="project-log">
+            <header class="blog-section__header">
+              <Typography
+                variant="mono"
+                as="h2"
+                class="blog-section__title"
+                id="project-log"
+              >
+                Записи в журнале
+              </Typography>
+
+              <span class="content-section-count">
+                {entries.length} материалов
+              </span>
+            </header>
+
+            <div class="blog-section__articles">
+              {entries.map((entry) => (
+                <LogEntryCard entry={entry} />
+              ))}
+            </div>
+          </section>
+        )
+      }
+    </article>
+  </main>
+</BaseLayout>

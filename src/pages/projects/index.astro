@@ -1,0 +1,43 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Header from "@layouts/Header.astro";
+import Typography from "@components/ui/Typography.astro";
+import HomeWorkCard from "@components/home/HomeWorkCard.astro";
+import { getProjects, projectHref, projectStatusLabels } from "@/lib/content";
+
+const projects = await getProjects();
+const pageDescription =
+  "Проекты ZapolyarnyDev: Minecraft-инфраструктура, исследования и веб-системы.";
+---
+
+<BaseLayout title="Проекты | ZapolyarnyDev" description={pageDescription}>
+  <Header currentPath="/projects" />
+
+  <main class="brutal-page blog-page">
+    <div class="container blog-shell">
+      <section class="blog-hero" aria-labelledby="projects-title">
+        <div class="blog-hero__copy">
+          <Typography variant="hero" as="h1" id="projects-title">
+            Проекты
+          </Typography>
+
+          <Typography variant="lead" as="p">{pageDescription}</Typography>
+        </div>
+      </section>
+
+      <div class="home-works-grid">
+        {
+          projects.map((project) => (
+            <HomeWorkCard
+              href={projectHref(project)}
+              label={projectStatusLabels[project.data.status]}
+              title={project.data.title}
+              description={project.data.description}
+              tags={project.data.stack.slice(0, 3)}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </main>
+</BaseLayout>

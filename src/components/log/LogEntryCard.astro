@@ -1,0 +1,49 @@
+---
+import Typography from "@components/ui/Typography.astro";
+import {
+  formatDate,
+  isoDate,
+  logHref,
+  logTypeLabels,
+  type LogEntry,
+} from "@/lib/content";
+
+interface Props {
+  entry: LogEntry;
+}
+
+const { entry } = Astro.props;
+const { title, description, date, tags, type } = entry.data;
+---
+
+<a
+  href={logHref(entry)}
+  class="blog-article"
+  aria-label={`Открыть материал ${title}`}
+>
+  <div class="blog-article__main">
+    <Typography variant="mono" as="span" class="blog-article__kind">
+      {logTypeLabels[type]}
+    </Typography>
+
+    <h3 class="blog-article__title">{title}</h3>
+
+    <p class="blog-article__description">{description}</p>
+  </div>
+
+  <div class="blog-article__meta">
+    <time class="blog-article__date" datetime={isoDate(date)}>
+      {formatDate(date)}
+    </time>
+
+    {
+      tags.length > 0 && (
+        <ul class="blog-article__tags" aria-label={`Теги материала ${title}`}>
+          {tags.map((tag) => (
+            <li>{tag}</li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</a>

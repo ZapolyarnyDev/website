@@ -4,19 +4,9 @@ import { ArrowUpRight } from "lucide-astro";
 import HomeWorkCard from "@components/home/HomeWorkCard.astro";
 import Button from "@components/ui/Button.astro";
 import Typography from "@components/ui/Typography.astro";
-import { getContentPageModel } from "@/content-engine";
+import { getProjects, projectHref, projectStatusLabels } from "@/lib/content";
 
-const portfolio = getContentPageModel("portfolio");
-const portfolioEntries = portfolio.sections.flatMap(({ entries, groups }) => [
-  ...entries,
-  ...groups.flatMap((group) => group.entries),
-]);
-const cristalix = portfolio.sections
-  .flatMap(({ groups }) => groups)
-  .find(({ group }) => group.id === "cristalix");
-const selectedProjects = ["proxyvirtualizer", "medical-appointment"]
-  .map((slug) => portfolioEntries.find((entry) => entry.slug === slug))
-  .filter((entry) => entry !== undefined);
+const projects = await getProjects();
 ---
 
 <div class="home-content">
@@ -29,32 +19,20 @@ const selectedProjects = ["proxyvirtualizer", "medical-appointment"]
         </Typography>
       </div>
 
-      <Button href="/portfolio">
+      <Button href="/projects">
         Все проекты <ArrowUpRight class="button__icon" aria-hidden="true" />
       </Button>
     </header>
 
     <div class="home-works-grid">
       {
-        cristalix && (
+        projects.map((project) => (
           <HomeWorkCard
-            href={`/portfolio/${cristalix.group.id}`}
-            label="Cristalix / кейс"
-            title="Игровые режимы"
-            description={cristalix.group.description ?? ""}
-            tags={["Minecraft", "Gamedev"]}
-          />
-        )
-      }
-
-      {
-        selectedProjects.map((project) => (
-          <HomeWorkCard
-            href={`/portfolio/${project.slug}`}
-            label="Проект"
-            title={project.meta.title}
-            description={project.meta.description}
-            tags={project.meta.tags?.slice(0, 3)}
+            href={projectHref(project)}
+            label={projectStatusLabels[project.data.status]}
+            title={project.data.title}
+            description={project.data.description}
+            tags={project.data.stack.slice(0, 3)}
           />
         ))
       }

@@ -1,0 +1,160 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Header from "@layouts/Header.astro";
+import Button from "@components/ui/Button.astro";
+import Typography from "@components/ui/Typography.astro";
+import { getEntry, render } from "astro:content";
+import {
+  formatDate,
+  getLog,
+  isoDate,
+  logHref,
+  logTypeLabels,
+  projectHref,
+  type LogEntry,
+} from "@/lib/content";
+import { ArrowLeft, ArrowRight } from "lucide-astro";
+
+interface Props {
+  entry: LogEntry;
+  olderEntry?: LogEntry;
+  newerEntry?: LogEntry;
+}
+
+export async function getStaticPaths() {
+  const entries = await getLog();
+
+  return entries.map((entry, index) => ({
+    params: { slug: entry.id },
+    props: {
+      entry,
+      olderEntry: entries[index + 1],
+      newerEntry: entries[index - 1],
+    },
+  }));
+}
+
+const { entry, olderEntry, newerEntry } = Astro.props;
+const { title, description, date, type, tags } = entry.data;
+const { Content } = await render(entry);
+const project = entry.data.project
+  ? await getEntry(entry.data.project)
+  : undefined;
+
+const titleSizeClass =
+  title.length > 52
+    ? "blog-post__title--very-long"
+    : title.length > 34
+      ? "blog-post__title--long"
+      : "";
+---
+
+<BaseLayout
+  title={`${title} | Журнал ZapolyarnyDev`}
+  description={description}
+  ogType="article"
+>
+  <Header currentPath="/log" />
+
+  <main class="brutal-page blog-post-page">
+    <article class="container blog-post">
+      <header class="blog-post__header">
+        <div class="blog-post__copy">
+          <Typography variant="kicker" as="span">
+            {logTypeLabels[type]}
+          </Typography>
+
+          <Typography
+            variant="hero"
+            as="h1"
+            class={`blog-post__title ${titleSizeClass}`}
+          >
+            {title}
+          </Typography>
+
+          <Typography variant="lead" as="p">
+            {description}
+          </Typography>
+        </div>
+
+        <aside class="blog-post__meta" aria-label="Данные материала">
+          <span>Дата</span>
+          <time datetime={isoDate(date)}>{formatDate(date)}</time>
+
+          {
+            project && (
+              <>
+                <span>Проект</span>
+                <a href={projectHref(project)}>{project.data.title}</a>
+              </>
+            )
+          }
+
+          {tags.length > 0 && <span>Теги</span>}
+
+          {
+            tags.length > 0 && (
+              <ul>
+                {tags.map((tag) => (
+                  <li>{tag}</li>
+                ))}
+              </ul>
+            )
+          }
+        </aside>
+      </header>
+
+      <div class="blog-post__back">
+        <Button href="/log">
+          <ArrowLeft class="button__icon" aria-hidden="true" />
+          Вернуться в журнал
+        </Button>
+      </div>
+
+      <div class="blog-post__content markdown-content">
+        <Content />
+      </div>
+
+      <nav class="article-sequence-nav" aria-label="Навигация по журналу">
+        {
+          olderEntry ? (
+            <a href={logHref(olderEntry)} class="article-sequence-nav__link">
+              <ArrowLeft aria-hidden="true" />
+              <span>Раньше</span>
+              <strong>{olderEntry.data.title}</strong>
+            </a>
+          ) : (
+            <span class="article-sequence-nav__link article-sequence-nav__link--disabled">
+              <ArrowLeft aria-hidden="true" />
+              <span>Начало</span>
+              <strong>Это первая запись</strong>
+            </span>
+          )
+        }
+
+        <div class="article-sequence-nav__current">
+          {formatDate(date)}
+        </div>
+
+        {
+          newerEntry ? (
+            <a
+              href={logHref(newerEntry)}
+              class="article-sequence-nav__link article-sequence-nav__link--next"
+            >
+              <span>Позже</span>
+              <strong>{newerEntry.data.title}</strong>
+              <ArrowRight aria-hidden="true" />
+            </a>
+          ) : (
+            <span class="article-sequence-nav__link article-sequence-nav__link--disabled article-sequence-nav__link--next">
+              <span>Конец</span>
+              <strong>Это последняя запись</strong>
+              <ArrowRight aria-hidden="true" />
+            </span>
+          )
+        }
+      </nav>
+    </article>
+  </main>
+</BaseLayout>

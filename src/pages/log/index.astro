@@ -1,0 +1,46 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Header from "@layouts/Header.astro";
+import Typography from "@components/ui/Typography.astro";
+import LogEntryCard from "@components/log/LogEntryCard.astro";
+import { getLog } from "@/lib/content";
+
+const entries = await getLog();
+const pageDescription =
+  "Журнал: заметки о разработке, лабораторные записи, кейсы и эссе.";
+---
+
+<BaseLayout title="Журнал | ZapolyarnyDev" description={pageDescription}>
+  <Header currentPath="/log" />
+
+  <main class="brutal-page blog-page">
+    <div class="container blog-shell">
+      <section class="blog-hero" aria-labelledby="log-title">
+        <div class="blog-hero__copy">
+          <Typography variant="hero" as="h1" id="log-title">Журнал</Typography>
+
+          <Typography variant="lead" as="p">{pageDescription}</Typography>
+        </div>
+      </section>
+
+      <section class="blog-section" aria-labelledby="log-entries">
+        <header class="blog-section__header">
+          <Typography
+            variant="mono"
+            as="h2"
+            class="blog-section__title"
+            id="log-entries"
+          >
+            Все записи
+          </Typography>
+
+          <span class="content-section-count">{entries.length} материалов</span>
+        </header>
+
+        <div class="blog-section__articles">
+          {entries.map((entry) => <LogEntryCard entry={entry} />)}
+        </div>
+      </section>
+    </div>
+  </main>
+</BaseLayout>
