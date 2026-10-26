@@ -5,17 +5,19 @@ interface Props {
   variant?: Variant;
   as?: keyof HTMLElementTagNameMap;
   class?: string;
+  id?: string;
 }
 
 const {
   variant = "body",
   as = "p",
   class: className = "",
+  id,
 } = Astro.props as Props;
 
 const Tag = as;
 ---
 
-<Tag class={`typography typography--${variant} ${className}`}>
+<Tag id={id} class={`typography typography--${variant} ${className}`}>
   <slot />
 </Tag>
