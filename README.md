@@ -17,6 +17,8 @@ pnpm install
 pnpm dev
 ```
 
+Or with [just](https://just.systems/): `just` lists recipes (`sync`, `dev`, `check`, `fmt`, `build`, `preview`, `new`, `devlog`).
+
 New log entry (created as a draft in `content/log/`):
 
 ```sh
