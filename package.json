@@ -28,12 +28,12 @@
     "lucide-astro": "^0.556.0"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.11",
+    "@astrojs/check": "^0.9.12",
     "@eslint/js": "^10.0.1",
     "eslint": "^10.13.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-astro": "^1.7.0",
-    "eslint-plugin-mdx": "^3.8.1",
+    "eslint-plugin-mdx": "^3.8.2",
     "globals": "^17.13.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
