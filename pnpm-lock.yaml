@@ -29,22 +29,22 @@ importers:
         version: 0.9.12(@emnapi/runtime@1.9.2)(prettier-plugin-astro@0.14.1)(prettier@3.9.10)(typescript@5.9.3)
       '@eslint/js':
         specifier: ^10.0.1
-        version: 10.0.1(eslint@10.13.0)
+        version: 10.0.1(eslint@10.14.0)
       eslint:
-        specifier: ^10.13.0
-        version: 10.13.0
+        specifier: ^10.14.0
+        version: 10.14.0
       eslint-config-prettier:
         specifier: ^10.1.8
-        version: 10.1.8(eslint@10.13.0)
+        version: 10.1.8(eslint@10.14.0)
       eslint-plugin-astro:
         specifier: ^1.7.0
-        version: 1.7.0(eslint@10.13.0)
+        version: 1.7.0(eslint@10.14.0)
       eslint-plugin-mdx:
-        specifier: ^3.8.2
-        version: 3.8.2(eslint@10.13.0)
+        specifier: ^3.9.1
+        version: 3.9.1(@types/estree@1.0.10)(eslint@10.14.0)
       globals:
-        specifier: ^17.13.0
-        version: 17.13.0
+        specifier: ^17.14.0
+        version: 17.14.0
       husky:
         specifier: ^9.1.7
         version: 9.1.7
@@ -62,7 +62,7 @@ importers:
         version: 5.9.3
       typescript-eslint:
         specifier: ^8.72.1
-        version: 8.72.1(eslint@10.13.0)(typescript@5.9.3)
+        version: 8.72.1(eslint@10.14.0)(typescript@5.9.3)
 
 packages:
 
@@ -845,11 +845,11 @@ packages:
   '@types/estree-jsx@1.0.5':
     resolution: {integrity: sha512-52CcUVNFyfb1A2ALocQw/Dd1BQFNmSdkuC3BkZ6iqhdMfQz7JWOFRuJFloOzjk+6WijU56m9oKXFAXc7o3Towg==}
 
+  '@types/estree@1.0.10':
+    resolution: {integrity: sha512-lTyOMnOcmRBzdCv6/4zUZCrEhV0xrqQiUZBZtVcbmLHBXKLnN8q89v/wKRF/Q0HbwVsqbIG3o5HDoFl9sduM+g==}
+
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
-
-  '@types/estree@1.0.9':
-    resolution: {integrity: sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg==}
 
   '@types/hast@3.0.4':
     resolution: {integrity: sha512-WPs+bbQw5aCj+x6laNGWLH3wviHtoCv/P3+otBhbOhJgG8qtpdAMlTCxLtsTWA7LH1Oh/bFCHsBn0TPS5m30EQ==}
@@ -1377,13 +1377,16 @@ packages:
     peerDependencies:
       eslint: '>=7.0.0'
 
-  eslint-mdx@3.8.2:
-    resolution: {integrity: sha512-mgHCDubLWobY6hMbBTSOTCn6YBw3BcnCt5Qp8OaoE9UdJHm5+d7Ai+5rY1tpsziCo+VVUrAGCfcTtapPVApkIg==}
+  eslint-mdx@3.9.1:
+    resolution: {integrity: sha512-PNO+iBG9s0ERe53glwh987Ab96gY94xX9i3hpE04fto16na1n6ilZA+3UzNTRy6LkmxYX4yObpihJbQAlEpjBQ==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
+      '@types/estree': ^1.0.10
       eslint: '>=8.0.0'
       remark-lint-file-extension: '*'
     peerDependenciesMeta:
+      '@types/estree':
+        optional: true
       remark-lint-file-extension:
         optional: true
 
@@ -1393,8 +1396,8 @@ packages:
     peerDependencies:
       eslint: '>=8.57.0'
 
-  eslint-plugin-mdx@3.8.2:
-    resolution: {integrity: sha512-A0rcLaVZTwDovNrPBCDWzcNe4Mzu9rW+C/uLeF/j7/aDOlviRlqOowCe6ntjVnlIyUGAjnKv5EW5UoQY4UlbYg==}
+  eslint-plugin-mdx@3.9.1:
+    resolution: {integrity: sha512-rekc3S2KkRna/W2gwjXtLvNo7qgbSY/7l+EnuhLzmO9iBCR9aD2mu3/8FmWh/zI9ku0bUpqP3CIlet5BWHhF6w==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       eslint: '>=8.0.0'
@@ -1419,8 +1422,8 @@ packages:
     resolution: {integrity: sha512-tD40eHxA35h0PEIZNeIjkHoDR4YjjJp34biM0mDvplBe//mB+IHCqHDGV7pxF+7MklTvighcCPPZC7ynWyjdTA==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
-  eslint@10.13.0:
-    resolution: {integrity: sha512-UohDjD4zSzEwhf58M3O7vc/ycc8O1I7dNlhtD0WxE8Px8EHNJKtUwzBqrzeGhisRuv2ag4sAYswszCJRgKXYUg==}
+  eslint@10.14.0:
+    resolution: {integrity: sha512-T0pNsxkb9IKmtQjhpK3d7nWOpFv+YHuMbTJnSVMoQblF0onvXfErrtp4V1jHtsQPan7dKaGVD0q1WCXnzMF31A==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
     hasBin: true
     peerDependencies:
@@ -1485,6 +1488,9 @@ packages:
 
   fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
+
+  fast-diff@1.3.0:
+    resolution: {integrity: sha512-VxPP4NqbUjj6MaAOafWeUn2cXWLcCtljklUtZf0Ind4XQ+QPtmA0b18zZy0jIQx+ExRVCR/ZQpBmik5lXshNsw==}
 
   fast-glob@3.3.3:
     resolution: {integrity: sha512-7MptL8U0cqcFdzIzwOTHoilX9x5BrNqye7Z/LuC7kCMRio1EMSyqRK3BEAUD7sXRq4iT4AzTVuZdhgQ2TCvYLg==}
@@ -1596,8 +1602,8 @@ packages:
     resolution: {integrity: sha512-c/c15i26VrJ4IRt5Z89DnIzCGDn9EcebibhAOjw5ibqEHsE1wLUgkPn9RDmNcUKyU87GeaL633nyJ+pplFR2ZQ==}
     engines: {node: '>=18'}
 
-  globals@17.13.0:
-    resolution: {integrity: sha512-RwMTC61u7hrG3ZJMkZQOK4JLJrKS8QtoTii63EmWvFXHqycY9FObBJQCbsLxSO8kjKhWE5kV1GC+Vb1g3RI0Zg==}
+  globals@17.14.0:
+    resolution: {integrity: sha512-UtdkTVyAJePQv0J2M9Xe4L0ruNSDV314XiIJsADI2Zf40bcdAonE/D/OhAU8AT99oij9mhLByb+NvA3QWZYgCg==}
     engines: {node: '>=18'}
 
   h3@1.15.11:
@@ -1905,8 +1911,8 @@ packages:
   mdast-util-to-hast@13.2.1:
     resolution: {integrity: sha512-cctsq2wp5vTsLIcaymblUriiTcZd0CwWtCbLvrOzYCDZoWyMNV8sZ7krj09FSnsiJi3WVsHLM4k6Dq/yaPyCXA==}
 
-  mdast-util-to-markdown@2.2.0:
-    resolution: {integrity: sha512-2Jn/ADrHFFyyniBMi0bncTbJqU78K3/TEYvzvwrWWzD9MYPUa/Gm4r3nOeKFQg/PDM5BsbDYdc8ackW4NTY6NA==}
+  mdast-util-to-markdown@2.2.1:
+    resolution: {integrity: sha512-ThatlCBxG2GE+mljhNSfZPv56d3QrGiRh97jjYgIk80IzS4uU6d7cHAaexCYSAmUCCcOs3grJ07kX3oTGsFUOw==}
 
   mdast-util-to-string@4.0.0:
     resolution: {integrity: sha512-0H44vDimn51F0YwvxSJSm0eCDOJTRlmN0R1yBh4HLj9wiV1Dn0QoXGbvFAWj2hSItVTlCmBF1hqKlIyUBVFLPg==}
@@ -2227,6 +2233,10 @@ packages:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
 
+  prettier-linter-helpers@1.0.1:
+    resolution: {integrity: sha512-SxToR7P8Y2lWmv/kTzVLC1t/GDI2WGjMwNhLLE9qtH8Q13C+aEmuRlzDst4Up4s0Wc8sF2M+J57iB3cMLqftfg==}
+    engines: {node: '>=6.0.0'}
+
   prettier-plugin-astro@0.14.1:
     resolution: {integrity: sha512-RiBETaaP9veVstE4vUwSIcdATj6dKmXljouXc/DDNwBSPTp8FRkLGDSGFClKsAFeeg+13SB0Z1JZvbD76bigJw==}
     engines: {node: ^14.15.0 || >=16.0.0}
@@ -2414,6 +2424,11 @@ packages:
 
   semver@7.8.5:
     resolution: {integrity: sha512-Y7/KDsb8LjooZpwaqGyulO6DQlksgCncchHGk+sZIY4SBvUocMBEFH5Ur1fI4dV+Jvl0w6cjvucaIi40puRioA==}
+    engines: {node: '>=10'}
+    hasBin: true
+
+  semver@7.8.6:
+    resolution: {integrity: sha512-9lpSSU4Mly3mrtruwLs1eLK6+gzbzqeBFwRNjIjE+9LuDpWdYctrQlQ3ej1Ilgi7gknpsTRnPoLP8DpCHqHIJw==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -3340,14 +3355,14 @@ snapshots:
   '@esbuild/win32-x64@0.27.7':
     optional: true
 
-  '@eslint-community/eslint-utils@4.10.1(eslint@10.13.0)':
+  '@eslint-community/eslint-utils@4.10.1(eslint@10.14.0)':
     dependencies:
-      eslint: 10.13.0
+      eslint: 10.14.0
       eslint-visitor-keys: 3.4.3
 
-  '@eslint-community/eslint-utils@4.9.1(eslint@10.13.0)':
+  '@eslint-community/eslint-utils@4.9.1(eslint@10.14.0)':
     dependencies:
-      eslint: 10.13.0
+      eslint: 10.14.0
       eslint-visitor-keys: 3.4.3
 
   '@eslint-community/regexpp@4.12.2': {}
@@ -3368,9 +3383,9 @@ snapshots:
     dependencies:
       '@types/json-schema': 7.0.15
 
-  '@eslint/js@10.0.1(eslint@10.13.0)':
+  '@eslint/js@10.0.1(eslint@10.14.0)':
     optionalDependencies:
-      eslint: 10.13.0
+      eslint: 10.14.0
 
   '@eslint/object-schema@3.0.5': {}
 
@@ -3513,7 +3528,7 @@ snapshots:
 
   '@mdx-js/mdx@3.1.1':
     dependencies:
-      '@types/estree': 1.0.9
+      '@types/estree': 1.0.10
       '@types/estree-jsx': 1.0.5
       '@types/hast': 3.0.4
       '@types/mdx': 2.0.13
@@ -3569,7 +3584,7 @@ snapshots:
       ini: 4.1.3
       nopt: 7.2.1
       proc-log: 4.2.0
-      semver: 7.8.5
+      semver: 7.8.6
       walk-up-path: 3.0.1
     transitivePeerDependencies:
       - bluebird
@@ -3583,7 +3598,7 @@ snapshots:
       proc-log: 4.2.0
       promise-inflight: 1.0.1
       promise-retry: 2.0.1
-      semver: 7.8.5
+      semver: 7.8.6
       which: 4.0.0
     transitivePeerDependencies:
       - bluebird
@@ -3605,7 +3620,7 @@ snapshots:
       json-parse-even-better-errors: 3.0.2
       normalize-package-data: 6.0.2
       proc-log: 4.2.0
-      semver: 7.8.5
+      semver: 7.8.6
     transitivePeerDependencies:
       - bluebird
 
@@ -3622,7 +3637,7 @@ snapshots:
 
   '@rollup/pluginutils@5.3.0(rollup@4.60.1)':
     dependencies:
-      '@types/estree': 1.0.9
+      '@types/estree': 1.0.10
       estree-walker: 2.0.2
       picomatch: 4.0.4
     optionalDependencies:
@@ -3759,11 +3774,11 @@ snapshots:
 
   '@types/estree-jsx@1.0.5':
     dependencies:
-      '@types/estree': 1.0.9
+      '@types/estree': 1.0.10
+
+  '@types/estree@1.0.10': {}
 
   '@types/estree@1.0.8': {}
-
-  '@types/estree@1.0.9': {}
 
   '@types/hast@3.0.4':
     dependencies:
@@ -3807,15 +3822,15 @@ snapshots:
 
   '@types/unist@3.0.3': {}
 
-  '@typescript-eslint/eslint-plugin@8.72.1(@typescript-eslint/parser@8.72.1(eslint@10.13.0)(typescript@5.9.3))(eslint@10.13.0)(typescript@5.9.3)':
+  '@typescript-eslint/eslint-plugin@8.72.1(@typescript-eslint/parser@8.72.1(eslint@10.14.0)(typescript@5.9.3))(eslint@10.14.0)(typescript@5.9.3)':
     dependencies:
       '@eslint-community/regexpp': 4.12.2
-      '@typescript-eslint/parser': 8.72.1(eslint@10.13.0)(typescript@5.9.3)
+      '@typescript-eslint/parser': 8.72.1(eslint@10.14.0)(typescript@5.9.3)
       '@typescript-eslint/scope-manager': 8.72.1
-      '@typescript-eslint/type-utils': 8.72.1(eslint@10.13.0)(typescript@5.9.3)
-      '@typescript-eslint/utils': 8.72.1(eslint@10.13.0)(typescript@5.9.3)
+      '@typescript-eslint/type-utils': 8.72.1(eslint@10.14.0)(typescript@5.9.3)
+      '@typescript-eslint/utils': 8.72.1(eslint@10.14.0)(typescript@5.9.3)
       '@typescript-eslint/visitor-keys': 8.72.1
-      eslint: 10.13.0
+      eslint: 10.14.0
       ignore: 7.0.14
       natural-compare: 1.4.0
       ts-api-utils: 2.5.0(typescript@5.9.3)
@@ -3823,14 +3838,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/parser@8.72.1(eslint@10.13.0)(typescript@5.9.3)':
+  '@typescript-eslint/parser@8.72.1(eslint@10.14.0)(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/scope-manager': 8.72.1
       '@typescript-eslint/types': 8.72.1
       '@typescript-eslint/typescript-estree': 8.72.1(typescript@5.9.3)
       '@typescript-eslint/visitor-keys': 8.72.1
       debug: 4.4.3
-      eslint: 10.13.0
+      eslint: 10.14.0
       typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
@@ -3858,13 +3873,13 @@ snapshots:
     dependencies:
       typescript: 5.9.3
 
-  '@typescript-eslint/type-utils@8.72.1(eslint@10.13.0)(typescript@5.9.3)':
+  '@typescript-eslint/type-utils@8.72.1(eslint@10.14.0)(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/types': 8.72.1
       '@typescript-eslint/typescript-estree': 8.72.1(typescript@5.9.3)
-      '@typescript-eslint/utils': 8.72.1(eslint@10.13.0)(typescript@5.9.3)
+      '@typescript-eslint/utils': 8.72.1(eslint@10.14.0)(typescript@5.9.3)
       debug: 4.4.3
-      eslint: 10.13.0
+      eslint: 10.14.0
       ts-api-utils: 2.5.0(typescript@5.9.3)
       typescript: 5.9.3
     transitivePeerDependencies:
@@ -3889,13 +3904,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/utils@8.72.1(eslint@10.13.0)(typescript@5.9.3)':
+  '@typescript-eslint/utils@8.72.1(eslint@10.14.0)(typescript@5.9.3)':
     dependencies:
-      '@eslint-community/eslint-utils': 4.10.1(eslint@10.13.0)
+      '@eslint-community/eslint-utils': 4.10.1(eslint@10.14.0)
       '@typescript-eslint/scope-manager': 8.72.1
       '@typescript-eslint/types': 8.72.1
       '@typescript-eslint/typescript-estree': 8.72.1(typescript@5.9.3)
-      eslint: 10.13.0
+      eslint: 10.14.0
       typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
@@ -4404,22 +4419,26 @@ snapshots:
 
   escape-string-regexp@5.0.0: {}
 
-  eslint-compat-utils@0.6.5(eslint@10.13.0):
+  eslint-compat-utils@0.6.5(eslint@10.14.0):
     dependencies:
-      eslint: 10.13.0
+      eslint: 10.14.0
       semver: 7.7.4
 
-  eslint-config-prettier@10.1.8(eslint@10.13.0):
+  eslint-config-prettier@10.1.8(eslint@10.14.0):
     dependencies:
-      eslint: 10.13.0
+      eslint: 10.14.0
 
-  eslint-mdx@3.8.2(eslint@10.13.0):
+  eslint-mdx@3.9.1(@types/estree@1.0.10)(eslint@10.14.0):
     dependencies:
       acorn: 8.19.0
       acorn-jsx: 5.3.2(acorn@8.19.0)
-      eslint: 10.13.0
+      devlop: 1.1.0
+      eslint: 10.14.0
+      eslint-scope: 9.1.2
+      eslint-visitor-keys: 5.0.1
       espree: 11.2.0
       estree-util-visit: 2.0.0
+      mdast-util-from-markdown: 2.1.0
       remark-mdx: 3.1.1
       remark-parse: 11.0.0
       remark-stringify: 11.0.0
@@ -4427,39 +4446,41 @@ snapshots:
       unified: 11.0.5
       unified-engine: 11.2.2
       unist-util-visit: 5.2.0
+      unist-util-visit-parents: 6.1.0
       vfile: 6.0.3
+    optionalDependencies:
+      '@types/estree': 1.0.10
     transitivePeerDependencies:
       - bluebird
       - supports-color
 
-  eslint-plugin-astro@1.7.0(eslint@10.13.0):
+  eslint-plugin-astro@1.7.0(eslint@10.14.0):
     dependencies:
-      '@eslint-community/eslint-utils': 4.9.1(eslint@10.13.0)
+      '@eslint-community/eslint-utils': 4.9.1(eslint@10.14.0)
       '@jridgewell/sourcemap-codec': 1.5.5
       '@typescript-eslint/types': 8.64.0
       astro-eslint-parser: 1.4.0
-      eslint: 10.13.0
-      eslint-compat-utils: 0.6.5(eslint@10.13.0)
+      eslint: 10.14.0
+      eslint-compat-utils: 0.6.5(eslint@10.14.0)
       globals: 16.5.0
       postcss: 8.5.15
       postcss-selector-parser: 7.1.1
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-mdx@3.8.2(eslint@10.13.0):
+  eslint-plugin-mdx@3.9.1(@types/estree@1.0.10)(eslint@10.14.0):
     dependencies:
-      eslint: 10.13.0
-      eslint-mdx: 3.8.2(eslint@10.13.0)
-      mdast-util-from-markdown: 2.1.0
+      eslint: 10.14.0
+      eslint-mdx: 3.9.1(@types/estree@1.0.10)(eslint@10.14.0)
       mdast-util-mdx: 3.0.0
-      micromark-extension-mdxjs: 3.0.0
+      prettier-linter-helpers: 1.0.1
       remark-mdx: 3.1.1
       remark-parse: 11.0.0
       remark-stringify: 11.0.0
-      synckit: 0.12.3
       unified: 11.0.5
       vfile: 6.0.3
     transitivePeerDependencies:
+      - '@types/estree'
       - bluebird
       - remark-lint-file-extension
       - supports-color
@@ -4472,7 +4493,7 @@ snapshots:
   eslint-scope@9.1.2:
     dependencies:
       '@types/esrecurse': 4.3.1
-      '@types/estree': 1.0.9
+      '@types/estree': 1.0.10
       esrecurse: 4.3.0
       estraverse: 5.3.0
 
@@ -4482,9 +4503,9 @@ snapshots:
 
   eslint-visitor-keys@5.0.1: {}
 
-  eslint@10.13.0:
+  eslint@10.14.0:
     dependencies:
-      '@eslint-community/eslint-utils': 4.10.1(eslint@10.13.0)
+      '@eslint-community/eslint-utils': 4.10.1(eslint@10.14.0)
       '@eslint-community/regexpp': 4.12.2
       '@eslint/config-array': 0.23.5
       '@eslint/config-helpers': 0.7.0
@@ -4493,7 +4514,7 @@ snapshots:
       '@humanfs/node': 0.16.8
       '@humanwhocodes/module-importer': 1.0.1
       '@humanwhocodes/retry': 0.4.3
-      '@types/estree': 1.0.9
+      '@types/estree': 1.0.10
       ajv: 6.15.0
       cross-spawn: 7.0.6
       debug: 4.4.3
@@ -4541,7 +4562,7 @@ snapshots:
 
   estree-util-attach-comments@3.0.0:
     dependencies:
-      '@types/estree': 1.0.9
+      '@types/estree': 1.0.10
 
   estree-util-build-jsx@3.0.1:
     dependencies:
@@ -4554,7 +4575,7 @@ snapshots:
 
   estree-util-scope@1.0.0:
     dependencies:
-      '@types/estree': 1.0.9
+      '@types/estree': 1.0.10
       devlop: 1.1.0
 
   estree-util-to-js@2.0.0:
@@ -4572,7 +4593,7 @@ snapshots:
 
   estree-walker@3.0.3:
     dependencies:
-      '@types/estree': 1.0.9
+      '@types/estree': 1.0.10
 
   esutils@2.0.3: {}
 
@@ -4581,6 +4602,8 @@ snapshots:
   extend@3.0.2: {}
 
   fast-deep-equal@3.1.3: {}
+
+  fast-diff@1.3.0: {}
 
   fast-glob@3.3.3:
     dependencies:
@@ -4699,7 +4722,7 @@ snapshots:
 
   globals@16.5.0: {}
 
-  globals@17.13.0: {}
+  globals@17.14.0: {}
 
   h3@1.15.11:
     dependencies:
@@ -4763,7 +4786,7 @@ snapshots:
 
   hast-util-to-estree@3.1.3:
     dependencies:
-      '@types/estree': 1.0.9
+      '@types/estree': 1.0.10
       '@types/estree-jsx': 1.0.5
       '@types/hast': 3.0.5
       comma-separated-tokens: 2.0.3
@@ -4798,7 +4821,7 @@ snapshots:
 
   hast-util-to-jsx-runtime@2.3.6:
     dependencies:
-      '@types/estree': 1.0.9
+      '@types/estree': 1.0.10
       '@types/hast': 3.0.4
       '@types/unist': 3.0.3
       comma-separated-tokens: 2.0.3
@@ -5067,7 +5090,7 @@ snapshots:
       '@types/mdast': 4.0.4
       devlop: 1.1.0
       mdast-util-from-markdown: 2.1.0
-      mdast-util-to-markdown: 2.2.0
+      mdast-util-to-markdown: 2.2.1
       micromark-util-normalize-identifier: 2.0.1
     transitivePeerDependencies:
       - supports-color
@@ -5076,7 +5099,7 @@ snapshots:
     dependencies:
       '@types/mdast': 4.0.4
       mdast-util-from-markdown: 2.1.0
-      mdast-util-to-markdown: 2.2.0
+      mdast-util-to-markdown: 2.2.1
     transitivePeerDependencies:
       - supports-color
 
@@ -5086,7 +5109,7 @@ snapshots:
       devlop: 1.1.0
       markdown-table: 3.0.4
       mdast-util-from-markdown: 2.1.0
-      mdast-util-to-markdown: 2.2.0
+      mdast-util-to-markdown: 2.2.1
     transitivePeerDependencies:
       - supports-color
 
@@ -5095,7 +5118,7 @@ snapshots:
       '@types/mdast': 4.0.4
       devlop: 1.1.0
       mdast-util-from-markdown: 2.1.0
-      mdast-util-to-markdown: 2.2.0
+      mdast-util-to-markdown: 2.2.1
     transitivePeerDependencies:
       - supports-color
 
@@ -5107,7 +5130,7 @@ snapshots:
       mdast-util-gfm-strikethrough: 2.0.0
       mdast-util-gfm-table: 2.0.0
       mdast-util-gfm-task-list-item: 2.0.0
-      mdast-util-to-markdown: 2.2.0
+      mdast-util-to-markdown: 2.2.1
     transitivePeerDependencies:
       - supports-color
 
@@ -5118,7 +5141,7 @@ snapshots:
       '@types/mdast': 4.0.4
       devlop: 1.1.0
       mdast-util-from-markdown: 2.1.0
-      mdast-util-to-markdown: 2.2.0
+      mdast-util-to-markdown: 2.2.1
     transitivePeerDependencies:
       - supports-color
 
@@ -5131,7 +5154,7 @@ snapshots:
       ccount: 2.0.1
       devlop: 1.1.0
       mdast-util-from-markdown: 2.1.0
-      mdast-util-to-markdown: 2.2.0
+      mdast-util-to-markdown: 2.2.1
       parse-entities: 4.0.2
       stringify-entities: 4.0.4
       unist-util-stringify-position: 4.0.0
@@ -5145,7 +5168,7 @@ snapshots:
       mdast-util-mdx-expression: 2.0.1
       mdast-util-mdx-jsx: 3.2.0
       mdast-util-mdxjs-esm: 2.0.1
-      mdast-util-to-markdown: 2.2.0
+      mdast-util-to-markdown: 2.2.1
     transitivePeerDependencies:
       - supports-color
 
@@ -5156,7 +5179,7 @@ snapshots:
       '@types/mdast': 4.0.4
       devlop: 1.1.0
       mdast-util-from-markdown: 2.1.0
-      mdast-util-to-markdown: 2.2.0
+      mdast-util-to-markdown: 2.2.1
     transitivePeerDependencies:
       - supports-color
 
@@ -5177,7 +5200,7 @@ snapshots:
       unist-util-visit: 5.2.0
       vfile: 6.0.3
 
-  mdast-util-to-markdown@2.2.0:
+  mdast-util-to-markdown@2.2.1:
     dependencies:
       '@types/mdast': 4.0.4
       '@types/unist': 3.0.3
@@ -5281,7 +5304,7 @@ snapshots:
 
   micromark-extension-mdx-expression@3.0.1:
     dependencies:
-      '@types/estree': 1.0.9
+      '@types/estree': 1.0.10
       devlop: 1.1.0
       micromark-factory-mdx-expression: 2.0.3
       micromark-factory-space: 2.1.0
@@ -5292,7 +5315,7 @@ snapshots:
 
   micromark-extension-mdx-jsx@3.0.2:
     dependencies:
-      '@types/estree': 1.0.9
+      '@types/estree': 1.0.10
       devlop: 1.1.0
       estree-util-is-identifier-name: 3.0.0
       micromark-factory-mdx-expression: 2.0.3
@@ -5309,7 +5332,7 @@ snapshots:
 
   micromark-extension-mdxjs-esm@3.0.0:
     dependencies:
-      '@types/estree': 1.0.9
+      '@types/estree': 1.0.10
       devlop: 1.1.0
       micromark-core-commonmark: 2.0.4
       micromark-util-character: 2.1.1
@@ -5345,7 +5368,7 @@ snapshots:
 
   micromark-factory-mdx-expression@2.0.3:
     dependencies:
-      '@types/estree': 1.0.9
+      '@types/estree': 1.0.10
       devlop: 1.1.0
       micromark-factory-space: 2.1.0
       micromark-util-character: 2.1.1
@@ -5413,7 +5436,7 @@ snapshots:
 
   micromark-util-events-to-acorn@2.0.3:
     dependencies:
-      '@types/estree': 1.0.9
+      '@types/estree': 1.0.10
       '@types/unist': 3.0.3
       devlop: 1.1.0
       estree-util-visit: 2.0.0
@@ -5515,14 +5538,14 @@ snapshots:
   normalize-package-data@6.0.2:
     dependencies:
       hosted-git-info: 7.0.2
-      semver: 7.8.5
+      semver: 7.8.6
       validate-npm-package-license: 3.0.4
 
   normalize-path@3.0.0: {}
 
   npm-install-checks@6.3.0:
     dependencies:
-      semver: 7.8.5
+      semver: 7.8.6
 
   npm-normalize-package-bin@3.0.1: {}
 
@@ -5530,7 +5553,7 @@ snapshots:
     dependencies:
       hosted-git-info: 7.0.2
       proc-log: 4.2.0
-      semver: 7.8.5
+      semver: 7.8.6
       validate-npm-package-name: 5.0.1
 
   npm-pick-manifest@9.1.0:
@@ -5538,7 +5561,7 @@ snapshots:
       npm-install-checks: 6.3.0
       npm-normalize-package-bin: 3.0.1
       npm-package-arg: 11.0.3
-      semver: 7.8.5
+      semver: 7.8.6
 
   nth-check@2.1.1:
     dependencies:
@@ -5667,6 +5690,10 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
+  prettier-linter-helpers@1.0.1:
+    dependencies:
+      fast-diff: 1.3.0
+
   prettier-plugin-astro@0.14.1:
     dependencies:
       '@astrojs/compiler': 2.13.1
@@ -5713,7 +5740,7 @@ snapshots:
 
   recma-build-jsx@1.0.0:
     dependencies:
-      '@types/estree': 1.0.9
+      '@types/estree': 1.0.10
       estree-util-build-jsx: 3.0.1
       vfile: 6.0.3
 
@@ -5728,14 +5755,14 @@ snapshots:
 
   recma-parse@1.0.0:
     dependencies:
-      '@types/estree': 1.0.9
+      '@types/estree': 1.0.10
       esast-util-from-js: 2.0.1
       unified: 11.0.5
       vfile: 6.0.3
 
   recma-stringify@1.0.0:
     dependencies:
-      '@types/estree': 1.0.9
+      '@types/estree': 1.0.10
       estree-util-to-js: 2.0.0
       unified: 11.0.5
       vfile: 6.0.3
@@ -5764,7 +5791,7 @@ snapshots:
 
   rehype-recma@1.0.0:
     dependencies:
-      '@types/estree': 1.0.9
+      '@types/estree': 1.0.10
       '@types/hast': 3.0.4
       hast-util-to-estree: 3.1.3
     transitivePeerDependencies:
@@ -5828,7 +5855,7 @@ snapshots:
   remark-stringify@11.0.0:
     dependencies:
       '@types/mdast': 4.0.4
-      mdast-util-to-markdown: 2.2.0
+      mdast-util-to-markdown: 2.2.1
       unified: 11.0.5
 
   request-light@0.5.8: {}
@@ -5925,6 +5952,8 @@ snapshots:
   semver@7.7.4: {}
 
   semver@7.8.5: {}
+
+  semver@7.8.6: {}
 
   sharp@0.34.5:
     dependencies:
@@ -6147,13 +6176,13 @@ snapshots:
     dependencies:
       semver: 7.8.5
 
-  typescript-eslint@8.72.1(eslint@10.13.0)(typescript@5.9.3):
+  typescript-eslint@8.72.1(eslint@10.14.0)(typescript@5.9.3):
     dependencies:
-      '@typescript-eslint/eslint-plugin': 8.72.1(@typescript-eslint/parser@8.72.1(eslint@10.13.0)(typescript@5.9.3))(eslint@10.13.0)(typescript@5.9.3)
-      '@typescript-eslint/parser': 8.72.1(eslint@10.13.0)(typescript@5.9.3)
+      '@typescript-eslint/eslint-plugin': 8.72.1(@typescript-eslint/parser@8.72.1(eslint@10.14.0)(typescript@5.9.3))(eslint@10.14.0)(typescript@5.9.3)
+      '@typescript-eslint/parser': 8.72.1(eslint@10.14.0)(typescript@5.9.3)
       '@typescript-eslint/typescript-estree': 8.72.1(typescript@5.9.3)
-      '@typescript-eslint/utils': 8.72.1(eslint@10.13.0)(typescript@5.9.3)
-      eslint: 10.13.0
+      '@typescript-eslint/utils': 8.72.1(eslint@10.14.0)(typescript@5.9.3)
+      eslint: 10.14.0
       typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
