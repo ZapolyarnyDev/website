@@ -1,20 +1,33 @@
 ---
-import BaseLayout from "@layouts/BaseLayout.astro";
-import Header from "@layouts/Header.astro";
-import HomeContent from "@components/sections/HomeContent.astro";
-import HomeHero from "@components/sections/HomeHero.astro";
+import SiteLayout from "@layouts/SiteLayout.astro";
+import { getLog, getProjects, logHref, projectHref } from "@/lib/content";
 
-const pageTitle =
-  "ZapolyarnyDev - Java backend и Minecraft server-side разработчик";
-const pageDescription =
-  "Личный сайт ZapolyarnyDev: портфолио, блог, исследования, Java backend, Веб и Minecraft server-side разработка";
+const projects = await getProjects();
+const latest = (await getLog()).slice(0, 4);
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription}>
-  <Header currentPath="/" />
-
-  <main class="home-page">
-    <HomeHero />
-    <HomeContent />
+<SiteLayout>
+  <main>
+    <h1>Исследователь &amp; разработчик</h1>
+    <h2>Проекты</h2>
+    <ul>
+      {
+        projects.map((project) => (
+          <li>
+            <a href={projectHref(project)}>{project.data.title}</a>
+          </li>
+        ))
+      }
+    </ul>
+    <h2>Журнал</h2>
+    <ul>
+      {
+        latest.map((entry) => (
+          <li>
+            <a href={logHref(entry)}>{entry.data.title}</a>
+          </li>
+        ))
+      }
+    </ul>
   </main>
-</BaseLayout>
+</SiteLayout>

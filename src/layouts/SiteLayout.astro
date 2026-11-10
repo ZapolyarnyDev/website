@@ -1,0 +1,60 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  ogType?: "website" | "article" | "profile";
+}
+
+const {
+  title = "@zapolyarny — исследователь и разработчик",
+  description = "Личный сайт Павла, также известного как zapolyarny: Minecraft-инфраструктура, JVM-бэкенд, исследования.",
+  ogImage = "/og-image.png",
+  ogType = "website",
+} = Astro.props;
+
+const site = Astro.site ?? new URL("https://zapolyarnydev.ru");
+const canonicalUrl = new URL(Astro.url.pathname, site);
+const ogImageUrl = new URL(ogImage, site);
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#fdfffb" />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content="@zapolyarny" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl.href} />
+    <meta property="og:image" content={ogImageUrl.href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl.href} />
+
+    <title>{title}</title>
+
+    <link rel="canonical" href={canonicalUrl.href} />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="@zapolyarny — журнал"
+      href="/rss.xml"
+    />
+    <link rel="icon" href="/logo-universal.png?v=4" type="image/png" />
+    <link rel="shortcut icon" href="/logo-universal.png?v=4" type="image/png" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

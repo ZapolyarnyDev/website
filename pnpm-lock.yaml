@@ -20,9 +20,6 @@ importers:
       astro:
         specifier: ^6.4.8
         version: 6.4.8(@types/node@24.13.3)(rollup@4.60.1)(yaml@2.9.1)
-      lucide-astro:
-        specifier: ^0.556.0
-        version: 0.556.0(astro@6.4.8(@types/node@24.13.3)(rollup@4.60.1)(yaml@2.9.1))
       sharp:
         specifier: 0.34.5
         version: 0.34.5
@@ -1849,12 +1846,6 @@ packages:
   lru-cache@11.2.7:
     resolution: {integrity: sha512-aY/R+aEsRelme17KGQa/1ZSIpLpNYYrhcrepKTZgE+W3WM16YMCaPwOHLHsmopZHELU0Ojin1lPVxKR0MihncA==}
     engines: {node: 20 || >=22}
-
-  lucide-astro@0.556.0:
-    resolution: {integrity: sha512-ugMjPb45AMfkLCaduNSbyy5NQEKvB1TxVVMmUS4S6L807PMESnX0Qp+DIKHjbyjJmPXOyLRbrzvR3YikTK7brg==}
-    deprecated: 'Deprecated: Use `@lucide/astro`'
-    peerDependencies:
-      astro: '>=2.7.1'
 
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
@@ -5029,10 +5020,6 @@ snapshots:
   lru-cache@10.4.3: {}
 
   lru-cache@11.2.7: {}
-
-  lucide-astro@0.556.0(astro@6.4.8(@types/node@24.13.3)(rollup@4.60.1)(yaml@2.9.1)):
-    dependencies:
-      astro: 6.4.8(@types/node@24.13.3)(rollup@4.60.1)(yaml@2.9.1)
 
   magic-string@0.30.21:
     dependencies:
