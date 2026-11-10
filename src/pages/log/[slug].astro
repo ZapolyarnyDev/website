@@ -1,36 +1,306 @@
 ---
-import { render } from "astro:content";
+import { getEntry, render } from "astro:content";
 import SiteLayout from "@layouts/SiteLayout.astro";
-import { formatDate, getLog, isoDate, type LogEntry } from "@/lib/content";
+import {
+  formatDate,
+  getLog,
+  isoDate,
+  logTypeLabels,
+  type LogEntry,
+} from "@/lib/content";
 
 interface Props {
   entry: LogEntry;
+  olderEntry?: LogEntry;
+  newerEntry?: LogEntry;
 }
 
 export async function getStaticPaths() {
   const entries = await getLog();
 
-  return entries.map((entry) => ({
+  return entries.map((entry, index) => ({
     params: { slug: entry.id },
-    props: { entry },
+    props: {
+      entry,
+      olderEntry: entries[index + 1],
+      newerEntry: entries[index - 1],
+    },
   }));
 }
 
-const { entry } = Astro.props;
-const { title, description, date } = entry.data;
-const { Content } = await render(entry);
+const { entry, olderEntry, newerEntry } = Astro.props;
+const { title, description, date, updated, type, tags } = entry.data;
+const { Content, headings } = await render(entry);
+const project = entry.data.project
+  ? await getEntry(entry.data.project)
+  : undefined;
+
+const toc = headings.filter((heading) => heading.depth === 2);
+const words = entry.body?.split(/\s+/).filter(Boolean).length ?? 0;
+const minutes = Math.max(1, Math.round(words / 180));
 ---
 
 <SiteLayout
   title={`${title} — Журнал @zapolyarny`}
   description={description}
   ogType="article"
+  current="log"
+  contacts={false}
 >
-  <main>
-    <article>
-      <h1>{title}</h1>
-      <time datetime={isoDate(date)}>{formatDate(date)}</time>
-      <Content />
-    </article>
+  <main class="article">
+    <header class="page-head wrap article__head">
+      <a class="back" href="/log" data-reveal>← Журнал</a>
+      <p class="meta" data-reveal>
+        <time datetime={isoDate(date)}>{formatDate(date)}</time>
+        <span>{logTypeLabels[type]}</span>
+        <span>{minutes} мин чтения</span>
+        {
+          project && (
+            <a href={`/projects/${project.id}`}>{project.data.title}</a>
+          )
+        }
+      </p>
+      <h1 class="page-title article__title" data-reveal>{title}</h1>
+      <p class="lead" data-reveal>{description}</p>
+    </header>
+
+    <div class="wrap article__body">
+      {
+        toc.length > 2 && (
+          <nav class="toc" aria-label="Оглавление" data-reveal>
+            <p class="toc__label">Оглавление</p>
+            <ol>
+              {toc.map((heading) => (
+                <li>
+                  <a href={`#${heading.slug}`} data-toc={heading.slug}>
+                    {heading.text}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )
+      }
+      <div class="prose" data-reveal>
+        <Content />
+      </div>
+    </div>
+
+    <footer class="wrap article__foot">
+      <div class="article__tags">
+        {tags.map((tag) => <span>#{tag}</span>)}
+        {
+          updated && (
+            <span>
+              Обновлено{" "}
+              <time datetime={isoDate(updated)}>{formatDate(updated)}</time>
+            </span>
+          )
+        }
+      </div>
+      <nav class="pager" aria-label="Другие записи">
+        {
+          newerEntry ? (
+            <a class="pager__link" href={`/log/${newerEntry.id}`}>
+              <span>← Новее</span>
+              <strong>{newerEntry.data.title}</strong>
+            </a>
+          ) : (
+            <span />
+          )
+        }
+        {
+          olderEntry && (
+            <a
+              class="pager__link pager__link--next"
+              href={`/log/${olderEntry.id}`}
+            >
+              <span>Раньше →</span>
+              <strong>{olderEntry.data.title}</strong>
+            </a>
+          )
+        }
+      </nav>
+    </footer>
   </main>
+
+  <script>
+    const links = new Map(
+      [...document.querySelectorAll<HTMLAnchorElement>("[data-toc]")].map(
+        (link) => [link.dataset.toc ?? "", link],
+      ),
+    );
+
+    if (links.size) {
+      const targets = [...links.keys()]
+        .map((id) => document.getElementById(id))
+        .filter((node): node is HTMLElement => node !== null);
+
+      const mark = () => {
+        const line = innerHeight * 0.3;
+        let active = targets[0];
+        for (const target of targets) {
+          if (target.getBoundingClientRect().top <= line) active = target;
+        }
+        for (const [id, link] of links) {
+          if (id === active?.id) link.setAttribute("aria-current", "true");
+          else link.removeAttribute("aria-current");
+        }
+      };
+
+      let ticking = false;
+      addEventListener(
+        "scroll",
+        () => {
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(() => {
+            ticking = false;
+            mark();
+          });
+        },
+        { passive: true },
+      );
+      mark();
+    }
+  </script>
+
+  <style is:global>
+    .article__head .meta {
+      margin-bottom: 24px;
+    }
+
+    .article__title {
+      max-width: 22ch;
+      font-size: clamp(38px, 5.6vw, 80px);
+    }
+
+    .article__body {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 48px;
+      padding-top: clamp(32px, 4vw, 56px);
+      padding-bottom: clamp(64px, 8vw, 112px);
+      border-top: 1px solid var(--line);
+    }
+
+    .toc {
+      font-size: 15px;
+    }
+
+    .toc__label {
+      margin-bottom: 14px;
+      color: var(--soft);
+    }
+
+    .toc ol {
+      display: grid;
+      gap: 2px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .toc a {
+      display: block;
+      padding: 6px 0 6px 16px;
+      border-left: 1px solid var(--line);
+      color: var(--muted);
+      line-height: 1.35;
+      transition:
+        color 0.3s var(--ease),
+        border-color 0.3s var(--ease);
+    }
+
+    .toc a:hover {
+      color: var(--ink);
+    }
+
+    .toc a[aria-current="true"] {
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    @media (min-width: 1100px) {
+      .article__body {
+        grid-template-columns: 240px minmax(0, 1fr);
+        gap: 80px;
+      }
+
+      .toc {
+        position: sticky;
+        top: 104px;
+        align-self: start;
+      }
+
+      .article__body > .prose:only-child {
+        grid-column: 2;
+      }
+    }
+
+    @media (max-width: 1099px) {
+      .toc {
+        padding: 20px 0;
+        border-bottom: 1px solid var(--line);
+      }
+    }
+
+    .article__foot {
+      display: grid;
+      gap: 40px;
+    }
+
+    .article__tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 20px;
+      color: var(--soft);
+      font-size: 15px;
+    }
+
+    .pager {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      border-top: 1px solid var(--line);
+    }
+
+    .pager__link {
+      display: grid;
+      gap: 8px;
+      padding: 28px 0;
+      transition: color 0.3s var(--ease);
+    }
+
+    .pager__link--next {
+      grid-column: 2;
+      text-align: right;
+    }
+
+    .pager__link span {
+      color: var(--soft);
+      font-size: 15px;
+    }
+
+    .pager__link strong {
+      font-size: clamp(19px, 2vw, 24px);
+      font-weight: 500;
+      line-height: 1.25;
+      letter-spacing: -0.015em;
+    }
+
+    .pager__link:hover strong {
+      color: var(--blue);
+    }
+
+    @media (max-width: 640px) {
+      .pager {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .pager__link--next {
+        grid-column: 1;
+        text-align: left;
+        border-top: 1px solid var(--line);
+      }
+    }
+  </style>
 </SiteLayout>
