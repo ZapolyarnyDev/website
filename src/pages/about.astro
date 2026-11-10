@@ -1,0 +1,390 @@
+---
+import { Image } from "astro:assets";
+import SiteLayout from "@layouts/SiteLayout.astro";
+import portrait from "@assets/images/portrait.png";
+import cristalixLogo from "@assets/images/c7x-logo.png";
+
+const directions = [
+  {
+    title: "Minecraft-инфраструктура",
+    text: "Прокси на Velocity, сетевой протокол, плагины и игровые режимы. Отсюда ProxyVirtualizer: виртуальные серверы прямо внутри прокси.",
+  },
+  {
+    title: "JVM-бэкенд",
+    text: "Java и Kotlin, Spring, PostgreSQL, Redis, Kafka, Docker. Делаю сервисы, которые понятно читать и удобно поддерживать.",
+  },
+  {
+    title: "Исследования",
+    text: "Neuroacoustic Resonator — поле связанных осцилляторов, которое отвечает на живой звук. Учу математику и иду в ИИ.",
+  },
+  {
+    title: "Open source",
+    text: "Читаю и правлю код Paper, OpenTelemetry и Nix. Свой NixOS собран декларативно и лежит на GitHub.",
+  },
+];
+
+const stack = [
+  {
+    label: "Языки",
+    items: [
+      "Java",
+      "Kotlin",
+      "Go",
+      "TypeScript",
+      "Python",
+      "C",
+      "Elixir",
+      "Nix",
+    ],
+  },
+  {
+    label: "Бэкенд",
+    items: [
+      "Spring Boot",
+      "Spring Security",
+      "OAuth2",
+      "Spring Data JPA",
+      "Hibernate",
+      "jOOQ",
+      "Flyway",
+      "MapStruct",
+      "Lombok",
+      "Keycloak",
+      "Phoenix",
+    ],
+  },
+  {
+    label: "Данные",
+    items: ["PostgreSQL", "Redis", "Kafka", "Caffeine"],
+  },
+  {
+    label: "Тесты",
+    items: ["JUnit 5", "Mockito", "AssertJ", "Testcontainers", "Vitest"],
+  },
+  {
+    label: "Фронтенд",
+    items: ["Astro", "React", "Vue", "Pinia", "Tailwind CSS", "Vite"],
+  },
+  {
+    label: "Android",
+    items: ["Jetpack Compose", "Room", "Ktor", "Coroutines"],
+  },
+  {
+    label: "Minecraft",
+    items: ["Paper", "Velocity", "Adventure", "Netty", "сетевой протокол"],
+  },
+  {
+    label: "Инфраструктура",
+    items: ["Docker", "Docker Compose", "GitHub Actions", "NixOS", "Gradle"],
+  },
+  {
+    label: "Исследования",
+    items: ["NumPy", "SciPy", "Matplotlib", "Pydantic"],
+  },
+];
+---
+
+<SiteLayout
+  title="Обо мне — @zapolyarny"
+  description="Павел, также известный как zapolyarny: разработчик с исследовательским складом ума."
+  ogType="profile"
+  current="about"
+>
+  <main>
+    <header class="wrap profile">
+      <figure class="profile__portrait">
+        <Image
+          src={portrait}
+          alt="Портрет Павла"
+          width={640}
+          height={640}
+          loading="eager"
+          fetchpriority="high"
+        />
+      </figure>
+      <div class="profile__text">
+        <h1 class="profile__name">Павел</h1>
+        <p class="profile__aka">также известный как zapolyarny &lt;3</p>
+        <div class="profile__bio">
+          <p>
+            Привет! Я являюсь программистом с 2022 года. В данный момент работаю
+            на игровом проекте Cristalix: автор таких режимов, как <a
+              href="/log/battleship">«Морской бой»</a
+            > и <a href="/log/colonist">«Колонисты»</a>. Имею сильные навыки в
+            областях фронтенд- и бэкенд-разработки, имею опыт автоматизации
+            выгрузки приложений.
+          </p>
+          <p>
+            Но ограничен не только работой! В последнее время активно изучаю:
+          </p>
+          <ul>
+            <li>матанализ;</li>
+            <li>линейную алгебру;</li>
+            <li>обучение LLM и инфраструктуру вокруг них.</li>
+          </ul>
+          <p>
+            А ещё я обладатель самой классной кошки на всём белом свете! (Соня,
+            привет!)
+          </p>
+        </div>
+        <div class="profile__current">
+          <span class="current__label">Сейчас работаю в:</span>
+          <a
+            class="current__link"
+            href="https://cristalix.gg"
+            target="_blank"
+            rel="noopener"
+          >
+            <Image
+              class="current__logo"
+              src={cristalixLogo}
+              alt=""
+              width={44}
+              height={44}
+            />
+            Cristalix
+            <span class="current__arrow" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <section class="wrap about-block" aria-labelledby="about-stack">
+      <h2 id="about-stack" data-reveal>Стек</h2>
+      <dl class="stack">
+        {
+          stack.map((group, i) => (
+            <div data-reveal style={`--i: ${i}`}>
+              <dt>{group.label}</dt>
+              <dd>
+                <ul>
+                  {group.items.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section class="wrap about-block" aria-labelledby="about-what">
+      <h2 id="about-what" data-reveal>Чем занимаюсь</h2>
+      <ul class="rows">
+        {
+          directions.map((item, i) => (
+            <li class="row" data-reveal style={`--i: ${i}`}>
+              <div>
+                <span class="row__aside">{String(i + 1).padStart(2, "0")}</span>
+                <span class="row__title">{item.title}</span>
+                <span class="row__text">{item.text}</span>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </main>
+
+  <style is:global>
+    .profile {
+      display: grid;
+      grid-template-columns: minmax(200px, 400px) minmax(0, 1fr);
+      gap: 40px clamp(40px, 6vw, 112px);
+      align-items: center;
+      padding-top: clamp(120px, 18vh, 200px);
+      padding-bottom: clamp(56px, 7vw, 104px);
+    }
+
+    .profile > * > *,
+    .profile__portrait {
+      opacity: 0;
+      transform: translateY(8px);
+      animation: rise 0.5s var(--ease) forwards;
+    }
+
+    .profile__name {
+      animation-delay: 0.06s !important;
+    }
+
+    .profile__aka {
+      animation-delay: 0.12s !important;
+    }
+
+    .profile__bio {
+      animation-delay: 0.18s !important;
+    }
+
+    .profile__current {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: clamp(28px, 3vw, 40px);
+      animation-delay: 0.24s !important;
+    }
+
+    .profile__portrait img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-radius: 28px;
+    }
+
+    .profile__name {
+      font-size: clamp(56px, 8vw, 120px);
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .profile__aka {
+      margin-top: 14px;
+      color: rgb(11 18 32 / 0.84);
+      font-size: clamp(18px, 1.7vw, 22px);
+    }
+
+    .profile__bio {
+      max-width: 58ch;
+      margin-top: clamp(28px, 3vw, 44px);
+      color: var(--muted);
+      font-size: clamp(17px, 1.4vw, 19px);
+      line-height: 1.65;
+    }
+
+    .profile__bio > * + * {
+      margin-top: 1em;
+    }
+
+    .profile__bio p + ul {
+      margin-top: 0.5em;
+    }
+
+    .profile__bio ul {
+      display: grid;
+      gap: 4px;
+      padding-left: 1.2em;
+    }
+
+    .profile__bio li::marker {
+      color: var(--blue);
+    }
+
+    .profile__bio a {
+      color: var(--blue);
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+      text-decoration-color: rgb(47 91 255 / 0.35);
+      transition: text-decoration-color 0.2s var(--ease);
+    }
+
+    .profile__bio a:hover {
+      text-decoration-color: currentColor;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .profile > * > *,
+      .profile__portrait {
+        opacity: 1;
+        transform: none;
+        animation: none;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .profile {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .profile__portrait {
+        width: min(280px, 72vw);
+      }
+    }
+
+    .about-block {
+      display: grid;
+      grid-template-columns: minmax(0, 240px) minmax(0, 1fr);
+      gap: 24px 80px;
+      padding-block: clamp(40px, 5vw, 72px);
+      border-top: 1px solid var(--line);
+    }
+
+    .about-block h2 {
+      color: var(--blue);
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    .about-block .rows {
+      border-top: 0;
+    }
+
+    .about-block .row:first-child > a,
+    .about-block .row:first-child > div {
+      padding-top: 0;
+    }
+
+    .about-block .row > a,
+    .about-block .row > div {
+      grid-template-columns: 64px minmax(0, 1fr) 40px;
+    }
+
+    .stack {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 36px 48px;
+    }
+
+    .stack dt {
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+      color: var(--blue);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .stack ul {
+      display: grid;
+      gap: 6px;
+      margin-top: 12px;
+      padding: 0;
+      list-style: none;
+      font-size: 18px;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 1100px) {
+      .stack {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 860px) {
+      .about-block {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 720px) {
+      .about-block .row > a,
+      .about-block .row > div {
+        grid-template-columns: minmax(0, 1fr) 28px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .stack {
+        gap: 28px 20px;
+      }
+
+      .stack ul {
+        gap: 4px;
+        font-size: 16px;
+      }
+    }
+  </style>
+</SiteLayout>

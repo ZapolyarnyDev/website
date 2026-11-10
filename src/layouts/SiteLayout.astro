@@ -6,7 +6,7 @@ interface Props {
   description?: string;
   ogImage?: string;
   ogType?: "website" | "article" | "profile";
-  current?: "log" | "projects";
+  current?: "log" | "projects" | "about";
   contacts?: boolean;
 }
 
@@ -26,6 +26,7 @@ const ogImageUrl = new URL(ogImage, site);
 const links = [
   { id: "log", href: "/log", label: "Журнал" },
   { id: "projects", href: "/projects", label: "Портфолио" },
+  { id: "about", href: "/about", label: "Обо мне" },
 ] as const;
 
 const year = new Date().getFullYear();
