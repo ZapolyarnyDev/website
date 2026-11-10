@@ -2,9 +2,12 @@
 import { render } from "astro:content";
 import SiteLayout from "@layouts/SiteLayout.astro";
 import {
+  formatDate,
   getProjectLog,
   getProjects,
-  logHref,
+  isoDate,
+  logTypeLabels,
+  projectStatusLabels,
   type Project,
 } from "@/lib/content";
 
@@ -22,27 +25,171 @@ export async function getStaticPaths() {
 }
 
 const { project } = Astro.props;
-const { title, description } = project.data;
+const { title, description, status, repo, url, stack } = project.data;
 const { Content } = await render(project);
 const entries = await getProjectLog(project.id);
+const hasBody = (project.body ?? "").trim().length > 0;
+
+const host = (href: string) => new URL(href).host.replace(/^www\./, "");
 ---
 
 <SiteLayout
   title={`${title} — Портфолио @zapolyarny`}
   description={description}
+  current="projects"
 >
   <main>
-    <h1>{title}</h1>
-    <p>{description}</p>
-    <Content />
-    <ul>
+    <header class="page-head wrap">
+      <a class="back" href="/projects" data-reveal>← Портфолио</a>
+      <h1 class="page-title" data-reveal>{title}</h1>
+      <p class="lead" data-reveal>{description}</p>
+      <div class="project-links" data-reveal>
+        {
+          repo && (
+            <a class="button" href={repo} target="_blank" rel="noopener">
+              Репозиторий{" "}
+              <span class="arrow" aria-hidden="true">
+                ↗
+              </span>
+            </a>
+          )
+        }
+        {
+          url && (
+            <a class="button" href={url} target="_blank" rel="noopener">
+              {host(url)}{" "}
+              <span class="arrow" aria-hidden="true">
+                ↗
+              </span>
+            </a>
+          )
+        }
+      </div>
+    </header>
+
+    <section class="wrap project-body" aria-label="О проекте">
+      <dl class="facts" data-reveal>
+        <div>
+          <dt>Статус</dt>
+          <dd>{projectStatusLabels[status]}</dd>
+        </div>
+        {
+          stack.length > 0 && (
+            <div>
+              <dt>Стек</dt>
+              <dd>{stack.join(", ")}</dd>
+            </div>
+          )
+        }
+        {
+          entries.length > 0 && (
+            <div>
+              <dt>Записей в журнале</dt>
+              <dd>{entries.length}</dd>
+            </div>
+          )
+        }
+      </dl>
       {
-        entries.map((entry) => (
-          <li>
-            <a href={logHref(entry)}>{entry.data.title}</a>
-          </li>
-        ))
+        hasBody && (
+          <div class="prose" data-reveal>
+            <Content />
+          </div>
+        )
       }
-    </ul>
+    </section>
+
+    {
+      entries.length > 0 && (
+        <section class="section" aria-labelledby="project-log">
+          <div class="wrap">
+            <div class="section__head">
+              <div>
+                <p class="eyebrow" data-reveal>
+                  Журнал
+                </p>
+                <h2 class="section__title" id="project-log" data-reveal>
+                  Записи по проекту
+                </h2>
+              </div>
+            </div>
+            <ol class="rows">
+              {entries.map((entry, i) => (
+                <li class="row" data-reveal style={`--i: ${i}`}>
+                  <a href={`/log/${entry.id}`}>
+                    <time
+                      class="row__aside"
+                      datetime={isoDate(entry.data.date)}
+                    >
+                      {formatDate(entry.data.date)}
+                    </time>
+                    <span class="row__title">{entry.data.title}</span>
+                    <span class="row__text">{entry.data.description}</span>
+                    <span class="row__meta">
+                      {logTypeLabels[entry.data.type]}
+                    </span>
+                    <span class="row__arrow" aria-hidden="true">
+                      →
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+      )
+    }
   </main>
+
+  <style is:global>
+    .project-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 36px;
+    }
+
+    .project-links:empty {
+      display: none;
+    }
+
+    .project-body {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 48px;
+      padding-top: clamp(32px, 4vw, 56px);
+      padding-bottom: clamp(48px, 6vw, 88px);
+      border-top: 1px solid var(--line);
+    }
+
+    .facts {
+      display: grid;
+      gap: 20px;
+      align-content: start;
+    }
+
+    .facts dt {
+      color: var(--soft);
+      font-size: 14px;
+    }
+
+    .facts dd {
+      margin-top: 4px;
+      font-size: 17px;
+      line-height: 1.45;
+    }
+
+    @media (min-width: 1100px) {
+      .project-body {
+        grid-template-columns: 240px minmax(0, 1fr);
+        gap: 80px;
+      }
+    }
+
+    @media (min-width: 721px) and (max-width: 1099px) {
+      .facts {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+  </style>
 </SiteLayout>

@@ -1,21 +1,156 @@
 ---
 import SiteLayout from "@layouts/SiteLayout.astro";
-import { getProjects, projectHref } from "@/lib/content";
+import BackdropHero from "@components/BackdropHero.astro";
+import poster from "@assets/redesign/bg/projects-loop.png";
+import { getProjects } from "@/lib/content";
 
 const projects = await getProjects();
 ---
 
-<SiteLayout title="Портфолио — @zapolyarny">
+<SiteLayout
+  title="Портфолио — @zapolyarny"
+  description="Проекты: Minecraft-инфраструктура, исследования, бэкенд и коммерческая работа."
+  current="projects"
+>
   <main>
-    <h1>Портфолио</h1>
-    <ul>
-      {
-        projects.map((project) => (
-          <li>
-            <a href={projectHref(project)}>{project.data.title}</a>
-          </li>
-        ))
-      }
-    </ul>
+    <BackdropHero name="projects" poster={poster}>
+      <h1 class="backdrop__title">Портфолио</h1>
+    </BackdropHero>
+
+    <section class="section works-page" aria-label="Проекты">
+      <ol class="wrap works">
+        {
+          projects.map((project, i) => (
+            <li class="work" data-reveal style={`--i: ${i}`}>
+              <a href={`/projects/${project.id}`}>
+                <span class="work__index">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span class="work__head">
+                  <span class="work__title">{project.data.title}</span>
+                  <span class="work__desc">{project.data.description}</span>
+                </span>
+                <span class="work__stack">
+                  {project.data.stack.join(" · ")}
+                </span>
+                <span class="work__arrow" aria-hidden="true">
+                  →
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
   </main>
+
+  <style is:global>
+    .works-page {
+      padding-top: clamp(24px, 3vw, 48px);
+    }
+
+    .works {
+      padding-block: 0;
+      list-style: none;
+    }
+
+    .work {
+      padding-block: 6px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .work:first-child {
+      border-top: 1px solid var(--line);
+    }
+
+    .work > a {
+      display: grid;
+      grid-template-columns:
+        clamp(40px, 7vw, 112px) minmax(0, 1fr) minmax(0, auto)
+        40px;
+      align-items: center;
+      column-gap: clamp(16px, 2.4vw, 40px);
+      margin-inline: -20px;
+      padding: clamp(20px, 2.2vw, 30px) 20px;
+      border-radius: 20px;
+      transition: background 0.2s var(--ease);
+    }
+
+    .work:hover > a,
+    .work > a:focus-visible {
+      background: rgb(47 91 255 / 0.06);
+    }
+
+    .work__head {
+      display: grid;
+      gap: 8px;
+    }
+
+    .work__desc {
+      max-width: 62ch;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.45;
+    }
+
+    .work__index {
+      color: var(--soft);
+      font-size: 15px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .work__title {
+      font-size: clamp(26px, 3vw, 44px);
+      font-weight: 500;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      transition: color 0.2s var(--ease);
+    }
+
+    .work__stack {
+      max-width: 36ch;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.4;
+      text-align: right;
+    }
+
+    .work__arrow {
+      justify-self: end;
+      color: var(--blue);
+      font-size: 22px;
+      transition: transform 0.2s var(--ease);
+    }
+
+    .work:hover .work__title,
+    .work:focus-within .work__title {
+      color: var(--blue);
+    }
+
+    .work:hover .work__arrow,
+    .work:focus-within .work__arrow {
+      transform: translateX(4px);
+    }
+
+    @media (max-width: 720px) {
+      .work > a {
+        grid-template-columns: minmax(0, 1fr) 28px;
+        row-gap: 8px;
+      }
+
+      .work__index {
+        display: none;
+      }
+
+      .work__stack {
+        grid-row: 2;
+        text-align: left;
+      }
+
+      .work__arrow {
+        grid-column: 2;
+        grid-row: 1;
+      }
+    }
+  </style>
 </SiteLayout>
