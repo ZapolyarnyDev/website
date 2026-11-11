@@ -45,6 +45,8 @@ jobs:
 
       - name: Build site
         run: pnpm run build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload dist artifact
         if: github.event_name != 'pull_request'
