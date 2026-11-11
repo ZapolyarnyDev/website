@@ -1,0 +1,207 @@
+---
+import "@styles/site.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  ogType?: "website" | "article" | "profile";
+  current?: "log" | "projects" | "about";
+  contacts?: boolean;
+}
+
+const {
+  title = "@zapolyarny — исследователь и разработчик",
+  description = "Личный сайт Павла, также известного как zapolyarny: Minecraft-инфраструктура, JVM-бэкенд, исследования.",
+  ogImage = "/og-image.png",
+  ogType = "website",
+  current,
+  contacts = true,
+} = Astro.props;
+
+const site = Astro.site ?? new URL("https://zapolyarnydev.ru");
+const canonicalUrl = new URL(Astro.url.pathname, site);
+const ogImageUrl = new URL(ogImage, site);
+
+const links = [
+  { id: "log", href: "/log", label: "Журнал" },
+  { id: "projects", href: "/projects", label: "Портфолио" },
+  { id: "about", href: "/about", label: "Обо мне" },
+] as const;
+
+const year = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#fdfffb" />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content="@zapolyarny" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl.href} />
+    <meta property="og:image" content={ogImageUrl.href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl.href} />
+
+    <title>{title}</title>
+
+    <link rel="canonical" href={canonicalUrl.href} />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="@zapolyarny — журнал"
+      href="/rss.xml"
+    />
+    <link rel="icon" href="/logo-universal.png?v=4" type="image/png" />
+    <link rel="shortcut icon" href="/logo-universal.png?v=4" type="image/png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,wght@0,400..700;1,400..700&display=swap"
+      rel="stylesheet"
+    />
+    <script is:inline>
+      document.documentElement.classList.add("js");
+    </script>
+  </head>
+  <body>
+    <header class="nav">
+      <button
+        class="burger"
+        type="button"
+        aria-expanded="false"
+        aria-controls="site-nav"
+        aria-label="Меню"
+        data-burger
+      >
+        <span aria-hidden="true"><i></i><i></i><i></i></span>
+      </button>
+      <a class="brand" href="/">@zapolyarny</a>
+      <nav id="site-nav" aria-label="Основная навигация">
+        {
+          links.map((link) => (
+            <a
+              href={link.href}
+              aria-current={current === link.id ? "page" : undefined}
+            >
+              {link.label}
+            </a>
+          ))
+        }
+      </nav>
+    </header>
+
+    <slot />
+
+    <footer class:list={["footer", { "footer--compact": !contacts }]}>
+      {
+        contacts && (
+          <div class="footer__inner" id="contacts">
+            <p class="eyebrow" data-reveal>
+              Контакты
+            </p>
+            <h2 class="footer__title" data-reveal>
+              Открыт к работе
+            </h2>
+            <div class="footer__links" data-reveal>
+              <a
+                class="button button--primary"
+                href="https://t.me/zapolyarny0"
+                target="_blank"
+                rel="noopener"
+              >
+                Telegram{" "}
+                <span class="arrow" aria-hidden="true">
+                  →
+                </span>
+              </a>
+              <a
+                class="button"
+                href="https://github.com/ZapolyarnyDev"
+                target="_blank"
+                rel="noopener"
+              >
+                GitHub{" "}
+                <span class="arrow" aria-hidden="true">
+                  →
+                </span>
+              </a>
+              <a class="button" href="/rss.xml">
+                RSS{" "}
+                <span class="arrow" aria-hidden="true">
+                  →
+                </span>
+              </a>
+            </div>
+          </div>
+        )
+      }
+      <div class="footer__bottom">
+        <span>© {year} @zapolyarny</span>
+        <span>Одобрено моей кошкой</span>
+      </div>
+    </footer>
+
+    <script>
+      const header = document.querySelector<HTMLElement>(".nav");
+      const burger = header?.querySelector<HTMLButtonElement>("[data-burger]");
+
+      if (header && burger) {
+        const setMenu = (open: boolean) => {
+          burger.setAttribute("aria-expanded", String(open));
+          header.classList.toggle("is-menu", open);
+          document.documentElement.classList.toggle("is-locked", open);
+        };
+        for (const link of header.querySelectorAll("nav a")) {
+          link.addEventListener("click", () => setMenu(false));
+        }
+        burger.addEventListener("click", () =>
+          setMenu(burger.getAttribute("aria-expanded") !== "true"),
+        );
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") setMenu(false);
+        });
+        matchMedia("(min-width: 721px)").addEventListener("change", () =>
+          setMenu(false),
+        );
+      }
+    </script>
+
+    <script>
+      const items = document.querySelectorAll<HTMLElement>("[data-reveal]");
+      const show = (item: Element) => item.classList.add("is-in");
+
+      if (
+        matchMedia("(prefers-reduced-motion: reduce)").matches ||
+        !("IntersectionObserver" in window)
+      ) {
+        items.forEach(show);
+      } else {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              show(entry.target);
+              observer.unobserve(entry.target);
+            }
+          },
+          { rootMargin: "0px 0px -8% 0px" },
+        );
+        items.forEach((item) => observer.observe(item));
+      }
+    </script>
+  </body>
+</html>

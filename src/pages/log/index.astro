@@ -1,46 +1,150 @@
 ---
-import BaseLayout from "@layouts/BaseLayout.astro";
-import Header from "@layouts/Header.astro";
-import Typography from "@components/ui/Typography.astro";
-import LogEntryCard from "@components/log/LogEntryCard.astro";
-import { getLog } from "@/lib/content";
+import SiteLayout from "@layouts/SiteLayout.astro";
+import BackdropHero from "@components/BackdropHero.astro";
+import poster from "@assets/redesign/bg/log-loop.png";
+import { getLog, isoDate, logTypeLabels, type LogEntry } from "@/lib/content";
 
 const entries = await getLog();
-const pageDescription =
-  "Журнал: заметки о разработке, лабораторные записи, кейсы и эссе.";
+const monthName = new Intl.DateTimeFormat("ru-RU", {
+  month: "long",
+  timeZone: "UTC",
+});
+
+const years = new Map<number, Map<number, LogEntry[]>>();
+for (const entry of entries) {
+  const year = entry.data.date.getUTCFullYear();
+  const month = entry.data.date.getUTCMonth();
+  const months = years.get(year) ?? new Map<number, LogEntry[]>();
+  months.set(month, [...(months.get(month) ?? []), entry]);
+  years.set(year, months);
+}
+
+const label = (month: number) => {
+  const name = monthName.format(new Date(Date.UTC(2000, month, 1)));
+  return name.charAt(0).toUpperCase() + name.slice(1);
+};
 ---
 
-<BaseLayout title="Журнал | ZapolyarnyDev" description={pageDescription}>
-  <Header currentPath="/log" />
+<SiteLayout
+  title="Журнал — @zapolyarny"
+  description="Статьи, лабораторные записи и кейсы: как я разбираюсь в системах и что из этого выходит."
+  current="log"
+  contacts={false}
+>
+  <main>
+    <BackdropHero name="log" poster={poster}>
+      <h1 class="backdrop__title">Журнал</h1>
+      <p class="backdrop__note">Записей: {entries.length}</p>
+    </BackdropHero>
 
-  <main class="brutal-page blog-page">
-    <div class="container blog-shell">
-      <section class="blog-hero" aria-labelledby="log-title">
-        <div class="blog-hero__copy">
-          <Typography variant="hero" as="h1" id="log-title">Журнал</Typography>
-
-          <Typography variant="lead" as="p">{pageDescription}</Typography>
-        </div>
-      </section>
-
-      <section class="blog-section" aria-labelledby="log-entries">
-        <header class="blog-section__header">
-          <Typography
-            variant="mono"
-            as="h2"
-            class="blog-section__title"
-            id="log-entries"
-          >
-            Все записи
-          </Typography>
-
-          <span class="content-section-count">{entries.length} материалов</span>
-        </header>
-
-        <div class="blog-section__articles">
-          {entries.map((entry) => <LogEntryCard entry={entry} />)}
-        </div>
-      </section>
-    </div>
+    {
+      [...years].map(([year, months]) => (
+        <section class="log-year" aria-label={`${year} год`}>
+          <div class="wrap log-year__grid">
+            <h2 class="log-year__label" data-reveal>
+              {year}
+            </h2>
+            <div class="log-year__months">
+              {[...months].map(([month, list]) => (
+                <section
+                  class="log-month"
+                  aria-label={`${label(month)} ${year}`}
+                >
+                  <h3 class="log-month__label" data-reveal>
+                    {label(month)}
+                  </h3>
+                  <ol class="rows">
+                    {list.map((entry, i) => (
+                      <li class="row" data-reveal style={`--i: ${i}`}>
+                        <a href={`/log/${entry.id}`}>
+                          <time
+                            class="row__aside"
+                            datetime={isoDate(entry.data.date)}
+                          >
+                            {entry.data.date.getUTCDate()}
+                          </time>
+                          <span class="row__title">{entry.data.title}</span>
+                          <span class="row__text">
+                            {entry.data.description}
+                          </span>
+                          <span class="row__meta">
+                            {[
+                              logTypeLabels[entry.data.type],
+                              ...entry.data.tags.slice(0, 3),
+                            ].join(" · ")}
+                          </span>
+                          <span class="row__arrow" aria-hidden="true">
+                            →
+                          </span>
+                        </a>
+                      </li>
+                    ))}
+                  </ol>
+                </section>
+              ))}
+            </div>
+          </div>
+        </section>
+      ))
+    }
   </main>
-</BaseLayout>
+
+  <style is:global>
+    .log-year {
+      padding-block: clamp(32px, 4vw, 56px);
+    }
+
+    .log-year + .log-year {
+      border-top: 1px solid var(--line);
+    }
+
+    .log-month + .log-month {
+      margin-top: clamp(36px, 4vw, 56px);
+    }
+
+    .log-month__label {
+      margin-bottom: 12px;
+      color: var(--muted);
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .log-year__grid {
+      display: grid;
+      grid-template-columns: minmax(0, 200px) minmax(0, 1fr);
+      gap: 24px 32px;
+      align-items: start;
+    }
+
+    .log-year__label {
+      position: sticky;
+      top: 96px;
+      color: var(--blue);
+      font-size: clamp(32px, 3.6vw, 48px);
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .log-year .row > a {
+      grid-template-columns: 56px minmax(0, 1fr) 40px;
+    }
+
+    @media (max-width: 900px) {
+      .log-year__grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .log-year__label {
+        position: static;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .log-year .row > a {
+        grid-template-columns: minmax(0, 1fr) 28px;
+      }
+    }
+  </style>
+</SiteLayout>

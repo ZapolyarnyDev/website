@@ -38,6 +38,7 @@ const redirects = {
 export default defineConfig({
   site: "https://zapolyarnydev.ru",
   integrations: [mdx(), sitemap()],
+  devToolbar: { enabled: false },
   redirects,
   vite: {
     build: {

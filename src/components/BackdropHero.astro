@@ -1,0 +1,207 @@
+---
+import { getImage } from "astro:assets";
+
+interface Props {
+  name: "log" | "projects";
+  poster: ImageMetadata;
+}
+
+const { name, poster } = Astro.props;
+
+const still = await getImage({
+  src: poster,
+  format: "webp",
+  width: 1600,
+  quality: 72,
+});
+---
+
+<section class="backdrop">
+  <video
+    class="backdrop__video"
+    muted
+    loop
+    playsinline
+    preload="none"
+    poster={still.src}
+    aria-hidden="true"
+    data-backdrop={name}
+  >
+  </video>
+  <div class="backdrop__content">
+    <slot />
+  </div>
+</section>
+
+<script>
+  const calm = matchMedia("(prefers-reduced-motion: reduce)");
+  const connection = (
+    navigator as Navigator & {
+      connection?: { saveData?: boolean; effectiveType?: string };
+    }
+  ).connection;
+  const posterOnly =
+    connection?.saveData === true ||
+    /(^|-)2g$/.test(connection?.effectiveType ?? "") ||
+    matchMedia("(prefers-reduced-data: reduce)").matches;
+
+  for (const video of document.querySelectorAll<HTMLVideoElement>(
+    "[data-backdrop]",
+  )) {
+    const section = video.parentElement;
+    if (!section) continue;
+    let inView = true;
+
+    const attach = () => {
+      if (video.childElementCount) return;
+      const small = matchMedia("(max-width: 900px)").matches;
+      const file = `${video.dataset.backdrop}${small ? "-720" : ""}`;
+      for (const [ext, type] of [
+        ["webm", 'video/webm; codecs="vp9"'],
+        ["mp4", "video/mp4"],
+      ] as const) {
+        const source = document.createElement("source");
+        source.src = `/media/${file}.${ext}`;
+        source.type = type;
+        video.append(source);
+      }
+      video.load();
+    };
+
+    const sync = () => {
+      if (posterOnly) return;
+      if (calm.matches || !inView || document.hidden) {
+        video.pause();
+        return;
+      }
+      attach();
+      void video.play().catch(() => undefined);
+    };
+
+    new IntersectionObserver(([entry]) => {
+      inView = entry?.isIntersecting ?? true;
+      sync();
+    }).observe(section);
+    calm.addEventListener("change", sync);
+    document.addEventListener("visibilitychange", sync);
+    sync();
+
+    let ticking = false;
+    const parallax = () => {
+      ticking = false;
+      if (!inView) return;
+      const y = calm.matches ? 0 : Math.min(scrollY, innerHeight) * 0.45;
+      video.style.transform = `translate3d(0, ${y}px, 0)`;
+    };
+    addEventListener(
+      "scroll",
+      () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(parallax);
+      },
+      { passive: true },
+    );
+    parallax();
+  }
+</script>
+
+<style is:global>
+  .backdrop {
+    position: relative;
+    isolation: isolate;
+    height: clamp(420px, 66vh, 780px);
+    height: clamp(420px, 66svh, 780px);
+    overflow: hidden;
+  }
+
+  .backdrop__video {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 50%;
+    pointer-events: none;
+    will-change: transform;
+    -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent);
+    mask-image: linear-gradient(to bottom, #000 70%, transparent);
+  }
+
+  @media (min-aspect-ratio: 7 / 6) {
+    .backdrop__video {
+      object-fit: contain;
+    }
+  }
+
+  .backdrop::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    -webkit-backdrop-filter: blur(9px);
+    backdrop-filter: blur(9px);
+    background: rgb(253 255 251 / 0.3);
+    pointer-events: none;
+  }
+
+  @media (hover: none) and (pointer: coarse) {
+    .backdrop::after {
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+
+    .backdrop__video {
+      inset: -24px;
+      width: calc(100% + 48px);
+      height: calc(100% + 48px);
+      filter: blur(9px);
+    }
+  }
+
+  .backdrop__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    height: 100%;
+    padding: 80px var(--gutter) 0;
+    text-align: center;
+  }
+
+  .backdrop__content > * {
+    opacity: 0;
+    transform: translateY(8px);
+    animation: rise 0.5s var(--ease) forwards;
+  }
+
+  .backdrop__content > :nth-child(2) {
+    animation-delay: 0.06s;
+  }
+
+  .backdrop__content > :nth-child(3) {
+    animation-delay: 0.12s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .backdrop__content > * {
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
+  }
+
+  .backdrop__title {
+    font-size: clamp(48px, 8vw, 120px);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+
+  .backdrop__note {
+    color: rgb(11 18 32 / 0.84);
+    font-size: clamp(17px, 1.6vw, 21px);
+  }
+</style>
