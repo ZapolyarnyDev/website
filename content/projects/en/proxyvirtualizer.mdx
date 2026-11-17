@@ -1,0 +1,47 @@
+---
+title: "ProxyVirtualizer"
+description: "A Velocity plugin for virtual Minecraft servers without separate backend servers"
+lang: en
+status: active
+order: 10
+repo: https://github.com/ZapolyarnyDev/ProxyVirtualizer
+stack:
+  - Java
+  - Minecraft
+  - Velocity
+  - Proxy
+  - Networking
+---
+
+You can explore the project here: [ZapolyarnyDev/ProxyVirtualizer](https://github.com/ZapolyarnyDev/ProxyVirtualizer).
+
+## Idea
+
+**ProxyVirtualizer** runs virtual Minecraft servers right inside Velocity (the proxy core). It lets you send a player to an artificial world outside the game servers and handle the necessary actions, then return them or redirect them to other servers
+
+The project was originally intended as a **temporary replacement for LimboAPI on a live project**, but ended up becoming a standalone plugin with an API
+
+## Features
+
+- starting and stopping virtual servers;
+- connecting a player to limbo and returning them to the previous or game server;
+- chat, title, action bar, keepalive and disconnect packets;
+- movement, look, chat and command signals;
+- limbo bootstrap for Minecraft 1.21.4 (support for more versions is planned).
+
+## API
+
+A virtual server can be started and used from another plugin:
+
+```java
+var api = ProxyVirtualizerApiProvider.require();
+var limbo = api.getLauncher().launch("verification");
+
+api.getConnector().connect(limbo, player);
+// After verification:
+api.getConnector().sendToGameServer(player);
+```
+
+The plugin is convenient for authentication, queues, anti-bot checks and technical screens
+
+> Expansion and reworking are planned soon

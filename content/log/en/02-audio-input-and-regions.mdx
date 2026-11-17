@@ -1,0 +1,83 @@
+---
+title: "How sound enters the field"
+description: "How a WAV or synthetic signal becomes a drive signal and enters the field's input region."
+date: 2026-06-01
+type: lab
+lang: en
+project: en/neuroacoustic-resonator
+tags:
+  - audio
+  - signal-processing
+  - research
+---
+
+## How sound enters the field
+
+After the initial idea, an uncomfortable question quickly came up: how should sound even enter such an
+environment?
+
+The simplest route would be to take audio and feed it directly into a response generator. But then
+the research quickly turns into an ordinary, boring audio effect. I wanted something a little different: sound should
+only act on the field, and the entire subsequent response should pass through the environment's internal
+dynamics.
+
+That's why the project gained an input drive signal layer (also known as drive).
+
+## Field regions
+
+The field is divided into three regions:
+
+- `input` — the left part of the field, where the external signal enters;
+- `assoc` — the central associative region;
+- `output` — the right part of the field, from which a response can later be read.
+
+This is a very rough scheme, but it is convenient for the first checks. If the signal really affects
+the environment, we can see whether a change appears not only in the input region but farther along:
+in the associative and output regions.
+
+At this stage, biological plausibility is not important to me. What matters is being able to test the entire scheme I came up with:
+information enters the input -> associative region -> reaches the output -> metrics are written to directories.
+
+## Synthetic input
+
+Before live audio, it is useful to have a controlled stimulus. That's what synthetic input is for:
+a sine wave, pulses or noise. Such a signal is easier to repeat, compare and debug.
+
+For example, pulse mode provides a clear scenario: the field warms up a little, then a stimulus is applied
+to the input region, and we can watch how far it travels.
+
+Without controlled input, it would be harder for me to tell whether the field responds to sound or its output is entirely independent of it.
+
+## WAV input
+
+For regular audio, the project extracts several features from a WAV:
+
+- RMS, meaning the frame's loudness;
+- onset, meaning abrupt changes in the spectrum;
+- spectral centroid, roughly speaking, the shift of energy toward higher or lower frequencies.
+
+These features are mixed into a single `drive` value. Then `drive` becomes a phase impulse
+applied to the input region.
+
+There is an important limitation here: the field does not receive words. It does not know where a syllable, word or command is.
+It receives only a numerical stimulus built from acoustic features.
+
+## Why a phase impulse
+
+This kind of input fits the oscillator model well. Each point has a phase, and an external signal can
+shift that phase slightly. Then neighboring couplings, local energy and plasticity determine
+whether the change stays local or starts to spread farther.
+
+I like this scheme because it is simple enough to debug, yet
+not entirely trivial. The same input can produce different results depending on the field's current
+state.
+
+## What needs to be checked here
+
+There are several practical questions for this part of the project:
+
+- how strong the drive signal should be;
+- whether the associative region needs additional excitation along with input;
+- how quickly the output region responds to input;
+- what changes with voice, silence and synthetic pulses;
+- whether the system turns into self-exciting noise too easily.

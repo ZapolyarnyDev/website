@@ -1,4 +1,5 @@
 import { getCollection, type CollectionEntry } from "astro:content";
+import { localizedPath, type Locale } from "./i18n";
 
 export type LogEntry = CollectionEntry<"log">;
 export type Project = CollectionEntry<"projects">;
@@ -18,8 +19,11 @@ export const projectStatusLabels: Record<Project["data"]["status"], string> = {
   parked: "На паузе",
 };
 
-export async function getLog(): Promise<LogEntry[]> {
-  const entries = await getCollection("log", ({ data }) => !data.draft);
+export async function getLog(locale: Locale = "ru"): Promise<LogEntry[]> {
+  const entries = await getCollection(
+    "log",
+    ({ data }) => !data.draft && data.lang === locale,
+  );
 
   return entries.sort(
     (a, b) =>
@@ -27,35 +31,45 @@ export async function getLog(): Promise<LogEntry[]> {
   );
 }
 
-export async function getProjects(): Promise<Project[]> {
-  const projects = await getCollection("projects");
+export async function getProjects(locale: Locale = "ru"): Promise<Project[]> {
+  const projects = await getCollection(
+    "projects",
+    ({ data }) => data.lang === locale,
+  );
 
   return projects.sort((a, b) => a.data.order - b.data.order);
 }
 
-export async function getProjectLog(projectId: string): Promise<LogEntry[]> {
-  const entries = await getLog();
+export async function getProjectLog(
+  projectId: string,
+  locale: Locale = "ru",
+): Promise<LogEntry[]> {
+  const entries = await getLog(locale);
 
   return entries.filter((entry) => entry.data.project?.id === projectId);
 }
 
 export function logHref(entry: LogEntry): string {
-  return `/log/${entry.id}`;
+  return localizedPath(
+    `/log/${entry.id.replace(/^en\//, "")}`,
+    entry.data.lang,
+  );
 }
 
 export function projectHref(project: Project): string {
-  return `/projects/${project.id}`;
+  return localizedPath(
+    `/projects/${project.id.replace(/^en\//, "")}`,
+    project.data.lang,
+  );
 }
 
-const dateFormat = new Intl.DateTimeFormat("ru-RU", {
-  day: "2-digit",
-  month: "long",
-  year: "numeric",
-  timeZone: "UTC",
-});
-
-export function formatDate(date: Date): string {
-  return dateFormat.format(date);
+export function formatDate(date: Date, locale: Locale = "ru"): string {
+  return new Intl.DateTimeFormat(locale === "ru" ? "ru-RU" : "en-GB", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(date);
 }
 
 export function isoDate(date: Date): string {

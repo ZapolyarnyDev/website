@@ -1,0 +1,52 @@
+---
+title: "Patient appointment system"
+description: "A self-hosted web system for online patient appointments and medical staff workflows"
+lang: en
+status: done
+order: 40
+repo: https://github.com/ZapolyarnyDev/medical-appointment-system
+stack:
+  - Java
+  - Spring Boot
+  - PostgreSQL
+  - Keycloak
+  - Docker
+  - REST API
+---
+
+## Task
+
+Develop a self-hosted patient appointment system for an organization, integrated with its corporate network
+
+## What the system can do
+
+- a patient can choose a doctor, specialty and available slot, then confirm the appointment in their personal account;
+- book patient appointments through the reception profile;
+- a doctor can see their appointments, change slot availability and complete an appointment;
+- manage schedules and staff accounts through the head physician's account.
+
+## Application structure
+
+The server side is built with Java and Spring Boot. HTTP controllers accept requests from the public and internal (corporate) interfaces and validate the data. The business logic checks slot availability and allows appointments to be created and canceled
+
+Data is stored in a PostgreSQL database. jOOQ is used for queries, and Flyway was used for migrations
+
+![ER diagram of patients, doctors, schedules and appointments](/images/portfolio/medical-appointment/data-model.png)
+
+Deployment includes a Dockerfile, Docker Compose and Caddy as a reverse proxy. The REST API is documented with OpenAPI; integration tests have been added for critical scenarios
+
+## Active Directory and Kerberos
+
+The application does not connect to Active Directory directly, but goes through Keycloak as an OIDC provider. Spring Security receives an OIDC/JWT token, converts roles and links the account to a local patient / staff profile.
+
+In _ad_ mode, Keycloak connects to Active Directory through LDAP federation. The configuration provides Kerberos as the preferred mechanism, so a Windows user on the domain network can sign in seamlessly with their domain account
+
+## Architecture
+
+The diagram shows four roles, the web interface, the REST layer, services, Keycloak and PostgreSQL
+
+![Diagram of interactions between roles, the web interface, API, Keycloak and PostgreSQL](/images/portfolio/medical-appointment/architecture.png)
+
+## Result
+
+The software can be found on GitHub: [medical-appointment-system](https://github.com/ZapolyarnyDev/medical-appointment-system)

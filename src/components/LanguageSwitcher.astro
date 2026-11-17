@@ -1,0 +1,213 @@
+---
+import { getLocale, localizedPath } from "@/lib/i18n";
+
+const locale = getLocale(Astro.url.pathname);
+---
+
+<div class="language" data-language>
+  <button
+    class="language__button"
+    type="button"
+    aria-label={locale === "ru" ? "Выбрать язык" : "Choose language"}
+    aria-expanded="false"
+    aria-controls="language-options"
+    data-language-toggle
+  >
+    {locale.toUpperCase()}
+  </button>
+  <div class="language__options" id="language-options">
+    {
+      (
+        [
+          ["ru", "Русский"],
+          ["en", "English"],
+        ] as const
+      ).map(([code, name]) => (
+        <a
+          class="language__option"
+          href={localizedPath(Astro.url.pathname, code)}
+          lang={code}
+          hreflang={code}
+          aria-current={locale === code ? "true" : undefined}
+          data-language-choice={code}
+        >
+          <span>{name}</span>
+          <span class="language__code">{code.toUpperCase()}</span>
+        </a>
+      ))
+    }
+  </div>
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-language]");
+  const toggle = root?.querySelector<HTMLButtonElement>(
+    "[data-language-toggle]",
+  );
+  const options = root?.querySelector<HTMLElement>(".language__options");
+  const choices = [
+    ...(root?.querySelectorAll<HTMLAnchorElement>("[data-language-choice]") ??
+      []),
+  ];
+
+  if (root && toggle && options) {
+    options.inert = true;
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute("aria-expanded", String(open));
+      options.inert = !open;
+      root.classList.toggle("is-open", open);
+    };
+    toggle.addEventListener("click", () =>
+      setOpen(toggle.getAttribute("aria-expanded") !== "true"),
+    );
+    toggle.addEventListener("keydown", (event) => {
+      if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+      event.preventDefault();
+      setOpen(true);
+      (event.key === "ArrowDown" ? choices[0] : choices.at(-1))?.focus();
+    });
+    root.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        toggle.focus();
+      }
+      if (!(event.target instanceof HTMLAnchorElement)) return;
+      const index = choices.indexOf(event.target);
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        choices[
+          (index + (event.key === "ArrowDown" ? 1 : -1) + choices.length) %
+            choices.length
+        ]?.focus();
+      }
+    });
+    document.addEventListener("click", (event) => {
+      if (event.target instanceof Node && !root.contains(event.target))
+        setOpen(false);
+    });
+    root.addEventListener("focusout", (event) => {
+      if (
+        !(event.relatedTarget instanceof Node) ||
+        !root.contains(event.relatedTarget)
+      )
+        setOpen(false);
+    });
+    for (const choice of choices) {
+      choice.addEventListener("click", (event) => {
+        const target = new URL(choice.href);
+        target.search = location.search;
+        target.searchParams.delete("lang");
+        try {
+          localStorage.setItem(
+            "site-language",
+            choice.dataset.languageChoice ?? "en",
+          );
+        } catch {
+          target.searchParams.set(
+            "lang",
+            choice.dataset.languageChoice ?? "en",
+          );
+        }
+        if (location.hash === "#contacts") target.hash = location.hash;
+        event.preventDefault();
+        location.assign(target.href);
+      });
+    }
+  }
+</script>
+
+<style>
+  .language {
+    position: relative;
+    margin-left: auto;
+    padding-left: 20px;
+  }
+  .language__button {
+    display: grid;
+    place-items: center;
+    min-width: 48px;
+    min-height: 44px;
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ink);
+    font:
+      500 14px/1 "Google Sans",
+      system-ui,
+      sans-serif;
+    cursor: pointer;
+    box-shadow: none;
+    transition:
+      border-color 0.2s var(--ease),
+      background 0.2s var(--ease);
+  }
+  .language__button:hover,
+  .language__button[aria-expanded="true"] {
+    border-color: rgb(11 18 32 / 0.28);
+    background: rgb(11 18 32 / 0.04);
+  }
+  .language__options {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 208px;
+    padding: 6px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: var(--bg);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px) scale(0.98);
+    transform-origin: top right;
+    transition:
+      opacity 0.2s var(--ease),
+      transform 0.25s var(--ease),
+      visibility 0s linear 0.25s;
+  }
+  .is-open .language__options {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition-delay: 0s;
+  }
+  .language__option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    min-height: 44px;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 15px;
+    line-height: 1.4;
+    transition: background 0.2s var(--ease);
+  }
+  .language__code {
+    font-size: 12px;
+  }
+  .language__option:hover {
+    background: rgb(11 18 32 / 0.04);
+  }
+  .language__option[aria-current="true"] {
+    background: rgb(47 91 255 / 0.1);
+  }
+  @media (max-width: 720px) {
+    .language {
+      padding-left: 8px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .language__button,
+    .language__options,
+    .language__option {
+      transition: none;
+      transform: none;
+    }
+  }
+  :global(html:not(.js)) .language:focus-within .language__options {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+</style>

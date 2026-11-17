@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
@@ -25,6 +25,14 @@ const bodies = {
   essay: "",
   note: "",
   case: "## Задача\n\n## Решение\n\n## Результат\n",
+};
+
+const englishBodies = {
+  devlog: "## Done\n\n## Broke / learned\n\n## Next\n",
+  lab: "## Question\n\n## What I did\n\n## What I saw\n\n## What's next\n",
+  essay: "",
+  note: "",
+  case: "## Task\n\n## Solution\n\n## Result\n",
 };
 
 const translit = {
@@ -146,8 +154,14 @@ if (type === "devlog" && !values.project) fail("devlog needs --project.");
 const slug = slugify(title);
 if (!slug) fail("Title produces an empty slug.");
 
-const file = join(logDir, `${slug}.mdx`);
-if (existsSync(file)) fail(`Already exists: content/log/${slug}.mdx`);
+const languageDir = values.lang === "en" ? join(logDir, "en") : logDir;
+const relativeFile = `content/log/${values.lang === "en" ? "en/" : ""}${slug}.mdx`;
+const file = join(languageDir, `${slug}.mdx`);
+if (existsSync(file)) fail(`Already exists: ${relativeFile}`);
+const projectId =
+  values.project && values.lang === "en"
+    ? `en/${values.project.replace(/^en\//, "")}`
+    : values.project;
 
 const frontmatter = [
   "---",
@@ -156,7 +170,7 @@ const frontmatter = [
   `date: ${today()}`,
   `type: ${type}`,
   `lang: ${values.lang}`,
-  ...(values.project ? [`project: ${values.project}`] : []),
+  ...(projectId ? [`project: ${projectId}`] : []),
   "tags: []",
   "draft: true",
   "---",
@@ -167,7 +181,7 @@ let commitsNote = "";
 if (type === "devlog") {
   const repoPath = values.repo
     ? resolve(values.repo)
-    : projectRepoPath(values.project);
+    : projectRepoPath(projectId);
   const commits = recentCommits(repoPath, Number(values.days));
 
   if (!repoPath) {
@@ -178,18 +192,23 @@ if (type === "devlog") {
     process.stderr.write(`No git repository found at ${repoPath}\n`);
   } else {
     commitsNote = `\n${mdxComments([
-      `Коммиты ${values.project} за ${values.days} дн., удалить перед публикацией:`,
-      ...(commits.length > 0 ? commits : ["нет коммитов"]),
+      values.lang === "en"
+        ? `Commits for ${values.project} over ${values.days} days, remove before publishing:`
+        : `Коммиты ${values.project} за ${values.days} дн., удалить перед публикацией:`,
+      ...(commits.length > 0
+        ? commits
+        : [values.lang === "en" ? "no commits" : "нет коммитов"]),
     ])}\n`;
   }
 } else if (values.project) {
-  projectRepoPath(values.project);
+  projectRepoPath(projectId);
 }
 
+mkdirSync(languageDir, { recursive: true });
 writeFileSync(
   file,
-  `${frontmatter.join("\n")}\n\n${bodies[type]}${commitsNote}`,
+  `${frontmatter.join("\n")}\n\n${(values.lang === "en" ? englishBodies : bodies)[type]}${commitsNote}`,
   "utf8",
 );
 
-process.stdout.write(`Created content/log/${slug}.mdx\n`);
+process.stdout.write(`Created ${relativeFile}\n`);

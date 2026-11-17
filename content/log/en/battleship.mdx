@@ -1,0 +1,94 @@
+---
+title: "Battleship on Cristalix"
+description: "A short case study of how I developed the game mode."
+date: 2026-06-04
+type: case
+lang: en
+project: en/cristalix
+tags:
+  - Cristalix
+  - Gamedev
+  - Minecraft
+---
+
+## Task
+
+Battleship was my first task on the project.
+
+The main goal was simple: bring the original board game to Cristalix. The game was to become part of a separate mode called “Board Games”.
+
+## How the mode was built
+
+I decided to develop it in stages. Overall, the stages are fairly typical of any client-server game:
+
+- set up the project;
+- connect the libraries;
+- implement the core logic;
+- collect feedback from the testing team;
+- polish the mode;
+- get it to release.
+
+But things turned out to be more interesting from the codebase perspective. It's important to remember that the work was already taking place within an existing game, rather than an empty project.
+
+I had to solve many tasks:
+
+- display content correctly for players, opponents and spectators: ships must not be visible to those who shouldn't see them;
+- show destroyed and damaged ships in a way that makes sense from a UX perspective;
+- preserve the original game's rules without losing the nuances of developing for Minecraft;
+- account for players who might not place their ships or make a move in time;
+- test the mode both as an active player and as a spectator.
+
+## Interesting technical solutions
+
+In my traumatic experience, emulating an opponent's actions for debugging is extremely difficult in games like these. Especially when you need to check not only the mechanics but also the visual state on the other side.
+
+To solve this problem, I almost immediately wrote a bot for the board game's DEV mode. Its actions were simple: place ships, fire at different times and sometimes use random projectiles.
+
+### How did it help?
+
+This solution made it convenient to check:
+
+- purchasable shots from the opponent's perspective: the bot alternated between different shot effects;
+- the full cycle of stages from waiting to results;
+- the display of the opponent's models;
+- the state of the board when a game runs without constant manual participation from a second player.
+
+Of all the solutions, this probably made my life easier the most.
+
+## What was hardest
+
+The most noticeable difficulty was the readability of the arena and controls.
+
+Battleship is built on precision: the player must understand which cell they are choosing, which button they can press and what happened after an action. If a visual effect is beautiful but makes the board harder to read, it works against the gameplay experience and quickly drives players away.
+
+The second difficulty was the player's own state and the content assigned to them. This isn't ordinary PvP where the player simply runs around the map.
+
+In our mode, the player needs to be carefully guided through waiting, placement, combat, results, leaving and spectator mode, which is available through the lobby. Each transition can leave behind extra UI, an incorrect state or accidentally reveal the location of relevant objects to the opponent.
+
+The third difficulty was feedback. A shot should feel like an event without overloading the content. After an action, the player should understand the result almost instantly. In my view, such actions should quickly become part of the user's muscle memory.
+
+## Polishing
+
+Toward the end, the work shifted to small details:
+
+- improving combat effects;
+- match results;
+- small interface adjustments to fit the design system;
+- refactoring parts that had become too tightly coupled. Hello to the class with 1.5k lines of code :)
+
+This is one of the most enjoyable parts of development: sometimes a few changes make the mode noticeably more appealing to a potential player.
+
+## Outcome
+
+Development gave me many skills:
+
+- working with internal libraries and exploring an existing codebase;
+- working with client state and optimizing it;
+- a more precise understanding of what data should be sent, to whom and when;
+- debugging and testing a client-server game mode.
+
+## Screenshots
+
+![Gameplay of the Battleship mode](/images/portfolio/battleship/gameplay-1.webp)
+
+![Gameplay of the Battleship mode during a match](/images/portfolio/battleship/gameplay-2.webp)

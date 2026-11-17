@@ -31,6 +31,7 @@ const projects = defineCollection({
     title: z.string(),
     description: z.string(),
     status: z.enum(PROJECT_STATUSES),
+    lang: z.enum(["ru", "en"]).default("ru"),
     order: z.number(),
     repo: z.url().optional(),
     url: z.url().optional(),

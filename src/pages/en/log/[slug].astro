@@ -1,0 +1,17 @@
+---
+import Page from "@components/pages/LogEntryPage.astro";
+import { getLog } from "@/lib/content";
+export async function getStaticPaths() {
+  const entries = await getLog("en");
+  return entries.map((entry, index) => ({
+    params: { slug: entry.id.replace(/^en\//, "") },
+    props: {
+      entry,
+      olderEntry: entries[index + 1],
+      newerEntry: entries[index - 1],
+    },
+  }));
+}
+---
+
+<Page {...Astro.props} />
