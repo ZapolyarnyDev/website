@@ -1,11 +1,13 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { runInNewContext } from "node:vm";
+import { readdirSync, readFileSync } from "node:fs";
 import {
   contentSlug,
   detectLocale,
   getLocale,
   localizedPath,
+  translations,
 } from "../src/lib/i18n.ts";
 import {
   defaultLocale,
@@ -117,7 +119,7 @@ test("works when browser storage is disabled", () => {
   assert.equal(visit({ blocked: true, search: "?lang=ru" }), undefined);
 });
 
-test("recognizes RTL languages and explicit script direction without enabling languages", () => {
+test("recognizes enabled RTL languages, legacy Hebrew locales and explicit script direction", () => {
   for (const tag of [
     "ar",
     "ar-SA",
@@ -134,33 +136,93 @@ test("recognizes RTL languages and explicit script direction without enabling la
   for (const tag of ["ru", "en", "ar-Latn", "az-Latn", "unknown"]) {
     assert.equal(getTextDirection(tag), "ltr", tag);
   }
-  assert.deepEqual(localeCodes, ["ru", "en"]);
-  assert.equal(detectLocale(["ar-SA"]), "en");
-  assert.equal(detectLocale(["he-IL"]), "en");
-  assert.equal(visit({ saved: "ar" }), "/en/log/colonist/");
-  assert.equal(visit({ saved: "he" }), "/en/log/colonist/");
+  assert.deepEqual(localeCodes, ["ru", "en", "ar", "he"]);
+  assert.equal(detectLocale(["ar-SA"]), "ar");
+  assert.equal(detectLocale(["he-IL"]), "he");
+  assert.equal(detectLocale(["iw-IL"]), "he");
+  assert.equal(detectLocale(["ar-KZ"]), "ar");
+  assert.equal(detectLocale(["ru-IL"]), "ru");
+  assert.equal(visit({ saved: "ar" }), "/ar/log/colonist/");
+  assert.equal(visit({ saved: "he" }), "/he/log/colonist/");
+  assert.equal(visit({ language: "ar-SA" }), "/ar/log/colonist/");
+  assert.equal(visit({ language: "he-IL" }), "/he/log/colonist/");
   assert.equal(contentSlug("en/colonist"), "colonist");
-  assert.equal(contentSlug("ar/colonist"), "ar/colonist");
+  assert.equal(contentSlug("ar/colonist"), "colonist");
+  assert.equal(contentSlug("he/colonist"), "colonist");
 });
 
-test("URL generation and initial navigation accept a future RTL locale through configuration", () => {
-  const definitions = {
-    ...locales,
-    ar: {
-      label: "Arabic",
-      direction: "rtl",
-      prefix: "/ar",
-      dateLocale: "ar-SA",
-      ogLocale: "ar_SA",
-    },
-  };
-  assert.equal(
-    localizedPath("/en/log/colonist/", "ar", definitions),
-    "/ar/log/colonist/",
-  );
-  assert.equal(
-    localizedPath("/ar/log/colonist/", "en", definitions),
-    "/en/log/colonist/",
-  );
-  assert.equal(visit({ saved: "ar", definitions }), "/ar/log/colonist/");
+test("all languages share page identities and retain their configured direction", () => {
+  for (const locale of localeCodes) {
+    const path = localizedPath("/en/log/colonist/", locale);
+    assert.equal(getLocale(path), locale);
+    assert.equal(localizedPath(path, "en"), "/en/log/colonist/");
+    assert.equal(locales[locale].direction, getTextDirection(locale));
+    assert.equal(
+      new Intl.DateTimeFormat(locales[locale].dateLocale).resolvedOptions()
+        .calendar,
+      "gregory",
+    );
+  }
+});
+
+test("Arabic and Hebrew UI dictionaries cover every English translation", () => {
+  const keys = Object.keys(translations.en).sort();
+  for (const locale of ["ar", "he"]) {
+    assert.deepEqual(Object.keys(translations[locale]).sort(), keys, locale);
+    for (const text of Object.values(translations[locale]))
+      assert.ok(text.trim());
+  }
+});
+
+test("translated content retains entries, structure, examples and language-specific project references", () => {
+  const read = (url) => readFileSync(url, "utf8");
+  const blocks = (text) =>
+    [...text.matchAll(/```[^\n]*\n([\s\S]*?)```/g)].map((match) =>
+      match[1].replace(/^\s*\/\/.*$/gm, "").trim(),
+    );
+  for (const collection of ["log", "projects"]) {
+    const base = new URL(`../content/${collection}/en/`, import.meta.url);
+    const files = readdirSync(base)
+      .filter((file) => file.endsWith(".mdx"))
+      .sort();
+    for (const locale of ["ar", "he"]) {
+      const translatedBase = new URL(
+        `../content/${collection}/${locale}/`,
+        import.meta.url,
+      );
+      assert.deepEqual(
+        readdirSync(translatedBase)
+          .filter((file) => file.endsWith(".mdx"))
+          .sort(),
+        files,
+      );
+      for (const file of files) {
+        const source = read(new URL(file, base));
+        const translated = read(new URL(file, translatedBase));
+        assert.match(translated, new RegExp(`^lang: ${locale}$`, "m"));
+        assert.doesNotMatch(translated, /[А-Яа-яЁё]/u, `${locale}/${file}`);
+        for (const pattern of [/^#{2,3} /gm, /^- /gm, /^\d+\. /gm]) {
+          assert.equal(
+            [...translated.matchAll(pattern)].length,
+            [...source.matchAll(pattern)].length,
+            `${locale}/${file} structure`,
+          );
+        }
+        assert.deepEqual(
+          blocks(translated),
+          blocks(source),
+          `${locale}/${file} code examples`,
+        );
+        const project = source.match(/^project: en\/(.+)$/m)?.[1];
+        if (project)
+          assert.match(
+            translated,
+            new RegExp(`^project: ${locale}/${project}$`, "m"),
+          );
+        const sourceDate = source.match(/^date: (.+)$/m)?.[1];
+        if (sourceDate)
+          assert.match(translated, new RegExp(`^date: ${sourceDate}$`, "m"));
+      }
+    }
+  }
 });

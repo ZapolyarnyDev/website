@@ -14,7 +14,7 @@ Types: devlog, lab, essay, note, case
 
 Options:
   --project <id>   project from content/projects (required for devlog)
-  --lang <ru|en>   entry language (default: ru)
+  --lang <ru|en|ar|he>   entry language (default: ru)
   --days <n>       commit window for devlog (default: 7)
   --repo <path>    project repository (default: ../<repo name from project>)
 `;
@@ -33,6 +33,25 @@ const englishBodies = {
   essay: "",
   note: "",
   case: "## Task\n\n## Solution\n\n## Result\n",
+};
+
+const localizedBodies = {
+  ru: bodies,
+  en: englishBodies,
+  ar: {
+    devlog: "## ما أُنجز\n\n## ما تعطل / ما تعلّمته\n\n## التالي\n",
+    lab: "## السؤال\n\n## ما فعلته\n\n## ما لاحظته\n\n## ما التالي\n",
+    essay: "",
+    note: "",
+    case: "## المهمة\n\n## الحل\n\n## النتيجة\n",
+  },
+  he: {
+    devlog: "## מה נעשה\n\n## מה נשבר / מה למדתי\n\n## בהמשך\n",
+    lab: "## השאלה\n\n## מה עשיתי\n\n## מה ראיתי\n\n## מה הלאה\n",
+    essay: "",
+    note: "",
+    case: "## המשימה\n\n## הפתרון\n\n## התוצאה\n",
+  },
 };
 
 const translit = {
@@ -80,7 +99,7 @@ function slugify(title) {
   return [...title.toLowerCase()]
     .map((char) => translit[char] ?? char)
     .join("")
-    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/[^\p{L}\p{N}\p{M}]+/gu, "-")
     .replace(/^-+|-+$/g, "");
 }
 
@@ -148,19 +167,20 @@ const [type, title] = positionals;
 
 if (!type || !title) fail("Type and title are required.");
 if (!(type in bodies)) fail(`Unknown type: ${type}`);
-if (!["ru", "en"].includes(values.lang)) fail(`Unknown lang: ${values.lang}`);
+if (!Object.hasOwn(localizedBodies, values.lang))
+  fail(`Unknown lang: ${values.lang}`);
 if (type === "devlog" && !values.project) fail("devlog needs --project.");
 
 const slug = slugify(title);
 if (!slug) fail("Title produces an empty slug.");
 
-const languageDir = values.lang === "en" ? join(logDir, "en") : logDir;
-const relativeFile = `content/log/${values.lang === "en" ? "en/" : ""}${slug}.mdx`;
+const languageDir = values.lang === "ru" ? logDir : join(logDir, values.lang);
+const relativeFile = `content/log/${values.lang === "ru" ? "" : `${values.lang}/`}${slug}.mdx`;
 const file = join(languageDir, `${slug}.mdx`);
 if (existsSync(file)) fail(`Already exists: ${relativeFile}`);
 const projectId =
-  values.project && values.lang === "en"
-    ? `en/${values.project.replace(/^en\//, "")}`
+  values.project && values.lang !== "ru"
+    ? `${values.lang}/${values.project.replace(/^(?:en|ar|he)\//, "")}`
     : values.project;
 
 const frontmatter = [
@@ -192,12 +212,22 @@ if (type === "devlog") {
     process.stderr.write(`No git repository found at ${repoPath}\n`);
   } else {
     commitsNote = `\n${mdxComments([
-      values.lang === "en"
-        ? `Commits for ${values.project} over ${values.days} days, remove before publishing:`
-        : `Коммиты ${values.project} за ${values.days} дн., удалить перед публикацией:`,
+      {
+        ru: `Коммиты ${values.project} за ${values.days} дн., удалить перед публикацией:`,
+        en: `Commits for ${values.project} over ${values.days} days, remove before publishing:`,
+        ar: `تعديلات ${values.project} خلال ${values.days} أيام، تُحذف قبل النشر:`,
+        he: `קומיטים של ${values.project} במהלך ${values.days} ימים, להסיר לפני הפרסום:`,
+      }[values.lang],
       ...(commits.length > 0
         ? commits
-        : [values.lang === "en" ? "no commits" : "нет коммитов"]),
+        : [
+            {
+              ru: "нет коммитов",
+              en: "no commits",
+              ar: "لا توجد تعديلات",
+              he: "אין קומיטים",
+            }[values.lang],
+          ]),
     ])}\n`;
   }
 } else if (values.project) {
@@ -207,7 +237,7 @@ if (type === "devlog") {
 mkdirSync(languageDir, { recursive: true });
 writeFileSync(
   file,
-  `${frontmatter.join("\n")}\n\n${(values.lang === "en" ? englishBodies : bodies)[type]}${commitsNote}`,
+  `${frontmatter.join("\n")}\n\n${localizedBodies[values.lang][type]}${commitsNote}`,
   "utf8",
 );
 

@@ -4,6 +4,8 @@ import {
   type Locale,
   type LocaleDefinition,
 } from "./locales.ts";
+import { arabic } from "./translations/ar.ts";
+import { hebrew } from "./translations/he.ts";
 export type { Locale } from "./locales.ts";
 
 export function getLocale(pathname: string): Locale {
@@ -73,6 +75,8 @@ export function detectLocale(languages: readonly string[]): Locale {
   if (!primary) return "en";
   const parts = primary.trim().replaceAll("_", "-").split("-");
   const language = parts[0].toLowerCase();
+  if (language === "ar") return "ar";
+  if (language === "he" || language === "iw") return "he";
   const region = parts.slice(1).find((part) => /^[a-z]{2}$/i.test(part));
   return russianLanguages.has(language) ||
     (region && russianRegions.has(region.toUpperCase()))
@@ -81,6 +85,11 @@ export function detectLocale(languages: readonly string[]): Locale {
 }
 
 const english: Record<string, string> = {
+  Devlog: "Devlog",
+  "Open source": "Open source",
+  "ZapolyarnyDev — журнал": "ZapolyarnyDev — journal",
+  "Заметки о разработке, лабораторные записи, кейсы и эссе.":
+    "Development notes, lab entries, case studies and essays.",
   "Выбрать язык": "Choose language",
   Новее: "Newer",
   Раньше: "Older",
@@ -181,9 +190,16 @@ const english: Record<string, string> = {
   "На паузе": "On hold",
 };
 
+export const translations: Record<
+  Exclude<Locale, "ru">,
+  Record<string, string>
+> = {
+  en: english,
+  ar: arabic,
+  he: hebrew,
+};
+
 export function translator(locale: Locale) {
-  const translations: Partial<Record<Locale, Record<string, string>>> = {
-    en: english,
-  };
-  return (text: string): string => translations[locale]?.[text] ?? text;
+  return (text: string): string =>
+    locale === "ru" ? text : (translations[locale][text] ?? text);
 }

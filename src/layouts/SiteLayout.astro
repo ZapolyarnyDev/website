@@ -97,6 +97,22 @@ const year = new Date().getFullYear();
       href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,wght@0,400..700;1,400..700&display=swap"
       rel="stylesheet"
     />
+    {
+      locale === "ar" && (
+        <link
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400..700&display=swap"
+          rel="stylesheet"
+        />
+      )
+    }
+    {
+      locale === "he" && (
+        <link
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@400..700&display=swap"
+          rel="stylesheet"
+        />
+      )
+    }
   </head>
   <body>
     <header class="nav">
@@ -172,7 +188,7 @@ const year = new Date().getFullYear();
         )
       }
       <div class="footer__bottom">
-        <span>© {year} @zapolyarny</span>
+        <span dir="ltr">© {year} @zapolyarny</span>
         <span>{t("Одобрено моей кошкой")}</span>
       </div>
     </footer>

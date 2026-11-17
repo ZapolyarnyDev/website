@@ -1,0 +1,52 @@
+---
+title: "نظام حجز مواعيد المرضى"
+description: "نظام ويب ذاتي الاستضافة لحجز مواعيد المرضى عبر الإنترنت وعمل الطاقم الطبي"
+lang: ar
+status: done
+order: 40
+repo: https://github.com/ZapolyarnyDev/medical-appointment-system
+stack:
+  - Java
+  - Spring Boot
+  - PostgreSQL
+  - Keycloak
+  - Docker
+  - REST API
+---
+
+## المهمة
+
+تطوير نظام ذاتي الاستضافة لحجز مواعيد المرضى لمؤسسة، مع التكامل مع شبكة الشركة
+
+## ما يستطيع النظام فعله
+
+- يمكن للمريض اختيار الطبيب والتخصص والموعد المتاح، ثم تأكيد الحجز في حسابه الشخصي؛
+- حجز مواعيد المرضى عبر حساب الاستقبال؛
+- يرى الطبيب مواعيده ويغيّر إتاحة المواعيد وينهي الزيارة؛
+- إدارة الجداول وحسابات الموظفين عبر حساب رئيس الأطباء.
+
+## بنية التطبيق
+
+بُني جانب الخادم باستخدام Java وSpring Boot. تستقبل متحكمات HTTP الطلبات من الواجهتين العامة والداخلية التابعة للشركة، وتتحقق من صحة البيانات. يتحقق منطق الأعمال من إتاحة الموعد، ويتيح إنشاء الحجوزات وإلغاءها
+
+تُخزّن البيانات في قاعدة PostgreSQL. تُستخدم jOOQ للاستعلامات، واستُخدمت Flyway لترحيل قاعدة البيانات
+
+![مخطط العلاقات بين المرضى والأطباء والجداول والحجوزات](/images/portfolio/medical-appointment/data-model.png)
+
+يتضمن النشر Dockerfile وDocker Compose وCaddy بوصفه خادمًا وكيلاً عكسيًا. وُثّقت واجهة REST API باستخدام OpenAPI؛ وأُضيفت اختبارات تكامل للسيناريوهات الحساسة
+
+## Active Directory وKerberos
+
+لا يتصل التطبيق مباشرةً بـActive Directory، بل يمر عبر Keycloak بوصفه مزوّد OIDC. يتلقى Spring Security رمز OIDC/JWT، ويحوّل الأدوار ويربط الحساب بملف محلي للمريض أو الموظف.
+
+في وضع _ad_ يتصل Keycloak بـActive Directory عبر LDAP federation. يوفّر الإعداد Kerberos آليةً مفضّلة، بحيث يمكن لمستخدم Windows داخل شبكة النطاق تسجيل الدخول بسلاسة باستخدام حساب النطاق
+
+## المعمارية
+
+يوضح المخطط أربعة أدوار وواجهة الويب وطبقة REST والخدمات وKeycloak وPostgreSQL
+
+![مخطط التفاعل بين الأدوار وواجهة الويب وAPI وKeycloak وPostgreSQL](/images/portfolio/medical-appointment/architecture.png)
+
+## النتيجة
+
+يمكن العثور على البرنامج على GitHub: [medical-appointment-system](https://github.com/ZapolyarnyDev/medical-appointment-system)

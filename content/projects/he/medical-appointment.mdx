@@ -1,0 +1,52 @@
+---
+title: "מערכת לקביעת תורים למטופלים"
+description: "מערכת ווב באירוח עצמי לקביעת תורים מקוונת למטופלים ולעבודת הצוות הרפואי"
+lang: he
+status: done
+order: 40
+repo: https://github.com/ZapolyarnyDev/medical-appointment-system
+stack:
+  - Java
+  - Spring Boot
+  - PostgreSQL
+  - Keycloak
+  - Docker
+  - REST API
+---
+
+## המשימה
+
+לפתח מערכת באירוח עצמי לקביעת תורים למטופלים עבור ארגון, עם שילוב ברשת הארגונית
+
+## מה המערכת יודעת לעשות
+
+- מטופל יכול לבחור רופא, תחום וזמן פנוי, ואז לאשר את התור בחשבון האישי;
+- לקבוע תורים למטופלים דרך חשבון הקבלה;
+- רופא רואה את התורים שלו, משנה את זמינותם ומסיים את הביקור;
+- לנהל את לוח הזמנים ואת חשבונות העובדים דרך חשבון הרופא הראשי.
+
+## מבנה היישום
+
+צד השרת בנוי ב-Java וב-Spring Boot. בקרי HTTP מקבלים בקשות מהממשק הציבורי ומהממשק הפנימי הארגוני, ומאמתים את הנתונים. הלוגיקה העסקית בודקת אם התור זמין ומאפשרת ליצור ולבטל הזמנות
+
+הנתונים נשמרים במסד נתונים PostgreSQL. לביצוע שאילתות משמש jOOQ, ו-Flyway שימש למיגרציות
+
+![תרשים ישויות וקשרים של מטופלים, רופאים, לוחות זמנים ותורים](/images/portfolio/medical-appointment/data-model.png)
+
+לפריסה נכללים Dockerfile, Docker Compose ו-Caddy כשרת פרוקסי הפוך. ה-REST API מתועד באמצעות OpenAPI; לתרחישים קריטיים נוספו בדיקות אינטגרציה
+
+## Active Directory ו-Kerberos
+
+היישום לא מתחבר ישירות ל-Active Directory, אלא עובר דרך Keycloak כספק OIDC. ‏Spring Security מקבל אסימון OIDC/JWT, ממיר תפקידים ומקשר את החשבון לפרופיל מקומי של מטופל או עובד.
+
+במצב _ad_, ‏Keycloak מתחבר ל-Active Directory דרך LDAP federation. התצורה כוללת Kerberos כמנגנון המועדף, כך שמשתמש Windows ברשת הדומיין יכול להתחבר באופן שקוף עם חשבון הדומיין שלו
+
+## ארכיטקטורה
+
+התרשים מציג ארבעה תפקידים, ממשק ווב, שכבת REST, שירותים, Keycloak ו-PostgreSQL
+
+![תרשים האינטראקציה בין התפקידים, ממשק הווב, API, ‏Keycloak ו-PostgreSQL](/images/portfolio/medical-appointment/architecture.png)
+
+## התוצאה
+
+אפשר למצוא את התוכנה ב-GitHub: [medical-appointment-system](https://github.com/ZapolyarnyDev/medical-appointment-system)

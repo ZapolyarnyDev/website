@@ -23,6 +23,20 @@ export const locales = {
     dateLocale: "en-GB",
     ogLocale: "en_US",
   },
+  ar: {
+    label: "العربية",
+    direction: "rtl",
+    prefix: "/ar",
+    dateLocale: "ar-u-ca-gregory",
+    ogLocale: "ar_AR",
+  },
+  he: {
+    label: "עברית",
+    direction: "rtl",
+    prefix: "/he",
+    dateLocale: "he-IL",
+    ogLocale: "he_IL",
+  },
 } as const satisfies Record<string, LocaleDefinition>;
 
 export type Locale = keyof typeof locales;
