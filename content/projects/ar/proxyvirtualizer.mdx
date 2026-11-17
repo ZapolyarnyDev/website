@@ -1,0 +1,47 @@
+---
+title: "ProxyVirtualizer"
+description: "إضافة لـVelocity لإنشاء خوادم Minecraft افتراضية دون خوادم خلفية منفصلة"
+lang: ar
+status: active
+order: 10
+repo: https://github.com/ZapolyarnyDev/ProxyVirtualizer
+stack:
+  - Java
+  - Minecraft
+  - Velocity
+  - Proxy
+  - Networking
+---
+
+يمكن الاطلاع على المشروع هنا: [ZapolyarnyDev/ProxyVirtualizer](https://github.com/ZapolyarnyDev/ProxyVirtualizer).
+
+## الفكرة
+
+يشغّل **ProxyVirtualizer** خوادم Minecraft افتراضية داخل Velocity مباشرةً (نواة الخادم الوكيل). يتيح إرسال اللاعب إلى عالم اصطناعي خارج خوادم اللعب، ومعالجة الإجراءات المطلوبة، ثم إعادته أو توجيهه إلى خوادم أخرى
+
+كان المشروع مخصّصًا في البداية ليكون **بديلاً مؤقتًا لـLimboAPI في مشروع قائم**، لكنه أصبح في النهاية إضافة مستقلة ذات API
+
+## الإمكانات
+
+- تشغيل الخوادم الافتراضية وإيقافها؛
+- توصيل اللاعب بـlimbo وإعادته إلى الخادم السابق أو خادم اللعب؛
+- حزم chat وtitle وaction bar وkeepalive وdisconnect؛
+- إشارات الحركة والنظر والدردشة والأوامر؛
+- تهيئة limbo لـMinecraft 1.21.4 (يُخطّط لدعم إصدارات إضافية).
+
+## API
+
+يمكن تشغيل خادم افتراضي واستخدامه من إضافة أخرى:
+
+```java
+var api = ProxyVirtualizerApiProvider.require();
+var limbo = api.getLauncher().launch("verification");
+
+api.getConnector().connect(limbo, player);
+// بعد التحقق:
+api.getConnector().sendToGameServer(player);
+```
+
+يمكن استخدام الإضافة بسهولة للمصادقة وقوائم الانتظار وفحوص مكافحة الروبوتات والشاشات التقنية
+
+> يُخطّط لتوسيع المشروع وإعادة العمل عليه قريبًا

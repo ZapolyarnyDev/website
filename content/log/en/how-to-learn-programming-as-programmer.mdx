@@ -1,0 +1,265 @@
+---
+title: "My view on learning programming"
+description: "My recommendations on learning through code, tasks and analyzing your own mistakes"
+date: 2026-06-13
+type: essay
+lang: en
+tags:
+  - learning
+  - programming
+  - practice
+---
+
+## Main idea
+
+The first simple thought, already established in the community: you can't properly learn programming just by watching courses,
+reading documentation or following tutorials. All of this is useful, but it doesn't make someone a programmer on its own.
+
+I'll go further: learning in the form of “I'll learn the language basics now, and then maybe write a TODO app with a framework” will hold a future specialist back.
+
+In my view, the best gain for a programmer is to take an unfamiliar, preferably very difficult task and turn it into small, understandable steps.
+From my experience, that's when the most tedious cycle begins: code -> lots of mistakes -> figure it out -> improve the solution.
+
+The goal of this kind of learning is not simply to get a finished product or learn the syntax of the language we're studying, but to remember the path to solving the task
+or, say, learning a new framework.
+
+Very briefly:
+
+- don't learn a language separately from tasks;
+- don't copy code without explaining every line;
+- don't try to write perfectly from the start;
+- read other people's code regularly;
+- rewrite your solutions after understanding every stage;
+- be sure to draw conclusions about how we arrived at the solution and what got in the way before;
+- record mistakes as material for growth.
+
+## Learning should happen through small, complete programs
+
+It's extremely poor practice to study for some amount of time and then immediately try to write a large program.
+I recommend learning through small programs that can be finished in one evening:
+
+- a player experience calculator;
+- a simple socket chat;
+- a user list filter (this is where I managed to learn StreamAPI);
+- a match timer;
+- a schedule generator;
+- a simple inventory system;
+- asynchronous generation of a set of worlds / game items.
+
+The program should be small, but perform enough actions to produce the required result.
+What helped me most was developing mini-apps / game mods with a typical data flow:
+
+1. Input.
+2. Information processing.
+3. Fault tolerance and error responses.
+4. Output.
+
+For example, not just:
+
+```java
+int level = 10;
+System.out.println(level);
+```
+
+But this:
+
+```java
+public final class ExperienceCalculator {
+  public int experienceForNextLevel(int level) {
+    if (level < 1)
+      throw new IllegalArgumentException("Level must be positive");
+
+    return 100 + (level - 1) * 35;
+  }
+}
+```
+
+There is already behavior here that the developer understands:
+
+- what exactly counts as invalid input;
+- where we calculate the value;
+- how to name the method so it explains its purpose;
+- what happens if the code is called in a way other than intended.
+
+I often see beginners wondering when they run a program: “How will my code work?” This happens because the program's behavior wasn't thought through in advance.
+
+## Learn through questions rather than topics
+
+I used to simply set myself a goal. For example: “learn collections”.
+
+A programmer's question would sound different: “How do I store a list of players so I can quickly find a player by name?”
+
+These are different ways of thinking. In the first case, a person memorizes class names. In the second, they choose a tool for the task and understand the underlying reasons for that choice.
+
+For example:
+
+```java
+Map<String, PlayerProfile> profilesByName = new HashMap<>();
+
+profilesByName.put("ZapolyarnyDev", new PlayerProfile("ZapolyarnyDev", 67));
+
+PlayerProfile profile = profilesByName.get("ZapolyarnyDev");
+```
+
+After implementing this, it's worth asking yourself:
+
+- why use `Map` here rather than a simple list;
+- what happens if the name isn't there;
+- whether the key can be stored in a different case;
+- what breaks if two players have the same name;
+- where it's best to check empty and invalid values.
+
+This way, we can understand the code's shortcomings and explain its behavior instead of retelling the documentation.
+
+## Mistakes aren't bad
+
+One of the most important habits is not simply fixing an error, but understanding how it happens.
+
+A bad scenario:
+
+1. Got an error.
+2. Copied the text into search.
+3. Pasted the first solution.
+4. The code worked.
+5. Moved on.
+
+And that's exactly what I did during my first two years of programming :D
+
+A more acceptable scenario:
+
+1. Got an error.
+2. Read the entire message or log.
+3. Found the line where it occurred.
+4. Described the cause in my own words.
+5. Fixed it.
+6. Wrote down a short conclusion.
+
+For example:
+
+```java
+String rawName = null;
+String normalized = rawName.trim().toLowerCase();
+```
+
+The error here isn't the language's fault. The cause is that the code assumes a string exists, but that assumption isn't protected anywhere. These are the places a programmer should take care of.
+
+A fix might look like this:
+
+```java
+public String normalizeName(String rawName) {
+  if (rawName == null || rawName.isBlank())
+    throw new IllegalArgumentException("Name must not be empty");
+
+  return rawName.trim().toLowerCase();
+}
+```
+
+After that, it's important to remember a more general principle, rather than just that we “protected a call from a null value”:
+
+> If a method cannot work without a value, it must explicitly validate its input or accept a type that forbids an empty state.
+
+Now that's learning.
+
+## Don't be afraid to rewrite code
+
+The first solution is almost always messy. That's normal. What's more, trying to write it “correctly” right away can often be harmful.
+
+The danger begins when someone considers the first working solution final. Code can work while still being inconvenient,
+fragile or unclear.
+
+An example of a first solution:
+
+```java
+if (command.equals("start"))
+  startGame();
+else if (command.equals("stop"))
+  stopGame();
+else if (command.equals("reload"))
+  reloadGame();
+else
+  sendUnknownCommand();
+```
+
+This is fine for three commands. For thirty, it will become difficult to maintain and extend.
+
+A more convenient version might look like this:
+
+```java
+Map<String, Runnable> commands = Map.of(
+  "start", this::startGame,
+  "stop", this::stopGame,
+  "reload", this::reloadGame
+);
+
+commands.getOrDefault(command, this::sendUnknownCommand).run();
+```
+
+But even here, you need to think rather than just write pretty solutions.
+The second version is shorter, but not always clearer to a beginner. A good programmer learns to ask: has the solution become easier to change in the future?
+
+Code should always be written so that most data and operations are predictable during execution.
+
+## Read other people's code actively
+
+> Reading other people's code helps you take a broader view of how to implement a task.
+
+For example, we come across the following method:
+
+```java
+public MatchResult finishMatch(Player winner, Player loser) {
+  ratingService.addWin(winner);
+  ratingService.addLoss(loser);
+  rewardService.giveReward(winner);
+
+  return new MatchResult(winner.id(), loser.id());
+}
+```
+
+Before drawing conclusions, it's better to ask yourself a few more questions:
+
+- can the method be called twice;
+- where is it checked that the match is actually active;
+- should the loser get a consolation reward;
+- should we consider the context in which this method is called;
+- who saves the result.
+
+This can train the ability to better understand how most technologies work and their subtleties.
+
+## Mini-projects should grow
+
+We've already discussed learning projects above. A good learning project doesn't have to be large, but it should gradually gain requirements and goals.
+
+For example, the most typical learning task: “make a TODO app”.
+
+v0.1:
+
+- add a task;
+- display a list of tasks;
+- mark a task as done.
+
+v0.2:
+
+- save tasks to a file;
+- add a deadline;
+- filter completed tasks;
+- handle empty input.
+
+v0.3:
+
+- cover the main operations with tests;
+- separate storage from logic;
+- add import and export;
+- make a simple interface.
+
+This kind of growth teaches you to think through a program's / application's architecture much better than trying to write everything on the first attempt.
+
+## How to study every day
+
+My learning sessions usually took 60–90 minutes and looked roughly like this:
+
+1. Choose one desired result.
+2. Write the code “as is”.
+3. Run it and test it with lots of invalid inputs.
+4. Fix the errors found.
+5. Gradually rewrite the program in parts, more correctly.
+6. Write down three conclusions.

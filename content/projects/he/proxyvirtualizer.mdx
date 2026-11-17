@@ -1,0 +1,47 @@
+---
+title: "ProxyVirtualizer"
+description: "תוסף ל-Velocity לשרתי Minecraft וירטואליים ללא שרתי backend נפרדים"
+lang: he
+status: active
+order: 10
+repo: https://github.com/ZapolyarnyDev/ProxyVirtualizer
+stack:
+  - Java
+  - Minecraft
+  - Velocity
+  - Proxy
+  - Networking
+---
+
+אפשר להכיר את הפרויקט כאן: [ZapolyarnyDev/ProxyVirtualizer](https://github.com/ZapolyarnyDev/ProxyVirtualizer).
+
+## הרעיון
+
+**ProxyVirtualizer** מפעיל שרתי Minecraft וירטואליים ישירות בתוך Velocity (ליבת הפרוקסי). הוא מאפשר לשלוח שחקן לעולם מלאכותי מחוץ לשרתי המשחק ולטפל בפעולות הנדרשות, ואז להחזיר אותו או להפנות אותו לשרתים אחרים
+
+הפרויקט נועד במקור להיות **תחליף זמני ל-LimboAPI בפרויקט פעיל**, ובסופו של דבר הפך לתוסף עצמאי עם API
+
+## יכולות
+
+- הפעלה ועצירה של שרתים וירטואליים;
+- חיבור שחקן ל-limbo והחזרתו לשרת הקודם או לשרת המשחק;
+- חבילות chat, title, action bar, keepalive ו-disconnect;
+- אותות תנועה, מבט, צ'אט ופקודות;
+- אתחול limbo עבור Minecraft 1.21.4 (מתוכננת תמיכה בגרסאות נוספות).
+
+## API
+
+אפשר להפעיל שרת וירטואלי ולהשתמש בו מתוך תוסף אחר:
+
+```java
+var api = ProxyVirtualizerApiProvider.require();
+var limbo = api.getLauncher().launch("verification");
+
+api.getConnector().connect(limbo, player);
+// אחרי האימות:
+api.getConnector().sendToGameServer(player);
+```
+
+התוסף נוח לשימוש לצורכי אימות, תורים, בדיקות נגד בוטים ומסכים טכניים
+
+> מתוכננים הרחבה ועיבוד מחדש בקרוב
