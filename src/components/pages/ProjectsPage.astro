@@ -119,10 +119,11 @@ const projects = await getProjects(locale);
       color: var(--muted);
       font-size: 15px;
       line-height: 1.4;
-      text-align: right;
+      text-align: end;
     }
 
     .work__arrow {
+      transform: scaleX(var(--inline-sign));
       justify-self: end;
       color: var(--blue);
       font-size: 22px;
@@ -136,7 +137,8 @@ const projects = await getProjects(locale);
 
     .work:hover .work__arrow,
     .work:focus-within .work__arrow {
-      transform: translateX(4px);
+      transform: translateX(calc(4px * var(--inline-sign)))
+        scaleX(var(--inline-sign));
     }
 
     @media (max-width: 720px) {
@@ -151,7 +153,7 @@ const projects = await getProjects(locale);
 
       .work__stack {
         grid-row: 2;
-        text-align: left;
+        text-align: start;
       }
 
       .work__arrow {

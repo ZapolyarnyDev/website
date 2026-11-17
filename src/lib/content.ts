@@ -1,5 +1,6 @@
 import { getCollection, type CollectionEntry } from "astro:content";
-import { localizedPath, type Locale } from "./i18n";
+import { contentSlug, localizedPath, type Locale } from "./i18n";
+import { defaultLocale, locales } from "./locales";
 
 export type LogEntry = CollectionEntry<"log">;
 export type Project = CollectionEntry<"projects">;
@@ -19,7 +20,9 @@ export const projectStatusLabels: Record<Project["data"]["status"], string> = {
   parked: "На паузе",
 };
 
-export async function getLog(locale: Locale = "ru"): Promise<LogEntry[]> {
+export async function getLog(
+  locale: Locale = defaultLocale,
+): Promise<LogEntry[]> {
   const entries = await getCollection(
     "log",
     ({ data }) => !data.draft && data.lang === locale,
@@ -31,7 +34,9 @@ export async function getLog(locale: Locale = "ru"): Promise<LogEntry[]> {
   );
 }
 
-export async function getProjects(locale: Locale = "ru"): Promise<Project[]> {
+export async function getProjects(
+  locale: Locale = defaultLocale,
+): Promise<Project[]> {
   const projects = await getCollection(
     "projects",
     ({ data }) => data.lang === locale,
@@ -42,7 +47,7 @@ export async function getProjects(locale: Locale = "ru"): Promise<Project[]> {
 
 export async function getProjectLog(
   projectId: string,
-  locale: Locale = "ru",
+  locale: Locale = defaultLocale,
 ): Promise<LogEntry[]> {
   const entries = await getLog(locale);
 
@@ -50,21 +55,18 @@ export async function getProjectLog(
 }
 
 export function logHref(entry: LogEntry): string {
-  return localizedPath(
-    `/log/${entry.id.replace(/^en\//, "")}`,
-    entry.data.lang,
-  );
+  return localizedPath(`/log/${contentSlug(entry.id)}`, entry.data.lang);
 }
 
 export function projectHref(project: Project): string {
   return localizedPath(
-    `/projects/${project.id.replace(/^en\//, "")}`,
+    `/projects/${contentSlug(project.id)}`,
     project.data.lang,
   );
 }
 
-export function formatDate(date: Date, locale: Locale = "ru"): string {
-  return new Intl.DateTimeFormat(locale === "ru" ? "ru-RU" : "en-GB", {
+export function formatDate(date: Date, locale: Locale = defaultLocale): string {
+  return new Intl.DateTimeFormat(locales[locale].dateLocale, {
     day: "2-digit",
     month: "long",
     year: "numeric",

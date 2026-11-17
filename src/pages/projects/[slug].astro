@@ -1,10 +1,11 @@
 ---
+import { contentSlug } from "@/lib/i18n";
 import Page from "@components/pages/ProjectPage.astro";
 import { getProjects } from "@/lib/content";
 export async function getStaticPaths() {
   const projects = await getProjects("ru");
   return projects.map((project) => ({
-    params: { slug: project.id.replace(/^en\//, "") },
+    params: { slug: contentSlug(project.id) },
     props: { project },
   }));
 }

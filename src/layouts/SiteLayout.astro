@@ -1,6 +1,7 @@
 ---
 import { detectLocale, getLocale, localizedPath, translator } from "@/lib/i18n";
 import { initializeLanguage } from "@/lib/language-init";
+import { defaultLocale, locales, localeCodes } from "@/lib/locales";
 import LanguageSwitcher from "@components/LanguageSwitcher.astro";
 import "@styles/site.css";
 
@@ -42,12 +43,12 @@ const year = new Date().getFullYear();
 ---
 
 <!doctype html>
-<html lang={locale}>
+<html lang={locale} dir={locales[locale].direction}>
   <head>
     <meta charset="UTF-8" />
     <script
       is:inline
-      set:html={`(${initializeLanguage.toString()})(${detectLocale.toString()}, ${localizedPath.toString()});`}
+      set:html={`(${initializeLanguage.toString()})(${detectLocale.toString()}, ${localizedPath.toString()}, ${JSON.stringify(locales)}, ${JSON.stringify(defaultLocale)});`}
     />
     <meta
       name="viewport"
@@ -57,7 +58,7 @@ const year = new Date().getFullYear();
     <meta name="theme-color" content="#fdfffb" />
 
     <meta property="og:type" content={ogType} />
-    <meta property="og:locale" content={locale === "ru" ? "ru_RU" : "en_US"} />
+    <meta property="og:locale" content={locales[locale].ogLocale} />
     <meta property="og:site_name" content="@zapolyarny" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -74,7 +75,7 @@ const year = new Date().getFullYear();
 
     <link rel="canonical" href={canonicalUrl.href} />
     {
-      (["ru", "en"] as const).map((language) => (
+      localeCodes.map((language) => (
         <link
           rel="alternate"
           hreflang={language}
@@ -109,7 +110,7 @@ const year = new Date().getFullYear();
       >
         <span aria-hidden="true"><i></i><i></i><i></i></span>
       </button>
-      <a class="brand" href={href("/")}>@zapolyarny</a>
+      <a class="brand" href={href("/")} dir="ltr">@zapolyarny</a>
       <nav id="site-nav" aria-label={t("Основная навигация")}>
         {
           links.map((link) => (

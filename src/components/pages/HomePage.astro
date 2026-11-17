@@ -1,7 +1,7 @@
 ---
 import { projectHref } from "@/lib/content";
 import { logHref } from "@/lib/content";
-import { getLocale, localizedPath, translator } from "@/lib/i18n";
+import { contentSlug, getLocale, localizedPath, translator } from "@/lib/i18n";
 import { getImage, Image } from "astro:assets";
 import SiteLayout from "@layouts/SiteLayout.astro";
 import portrait from "@assets/images/portrait.png";
@@ -29,7 +29,7 @@ const poster = await getImage({
 });
 
 const projects = await getProjects(locale);
-const current = projects.find((p) => p.id.replace(/^en\//, "") === "cristalix");
+const current = projects.find((p) => contentSlug(p.id) === "cristalix");
 const latest = (await getLog(locale)).slice(0, 4);
 
 const pullRequests = await getMergedPullRequests();
@@ -421,7 +421,7 @@ const pullRequests = await getMergedPullRequests();
 
     .current {
       position: absolute;
-      left: max(var(--gutter), env(safe-area-inset-left));
+      inset-inline-start: max(var(--gutter), var(--safe-inline-start));
       bottom: clamp(28px, 6vh, 56px);
       bottom: clamp(28px, 6svh, 56px);
       z-index: 2;

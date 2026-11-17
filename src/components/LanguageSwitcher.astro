@@ -1,28 +1,26 @@
 ---
-import { getLocale, localizedPath } from "@/lib/i18n";
+import { getLocale, localizedPath, translator } from "@/lib/i18n";
+import { locales, localeCodes } from "@/lib/locales";
 
 const locale = getLocale(Astro.url.pathname);
+const t = translator(locale);
 ---
 
 <div class="language" data-language>
   <button
     class="language__button"
     type="button"
-    aria-label={locale === "ru" ? "Выбрать язык" : "Choose language"}
+    aria-label={t("Выбрать язык")}
     aria-expanded="false"
     aria-controls="language-options"
     data-language-toggle
+    dir="ltr"
   >
     {locale.toUpperCase()}
   </button>
   <div class="language__options" id="language-options">
     {
-      (
-        [
-          ["ru", "Русский"],
-          ["en", "English"],
-        ] as const
-      ).map(([code, name]) => (
+      localeCodes.map((code) => (
         <a
           class="language__option"
           href={localizedPath(Astro.url.pathname, code)}
@@ -31,8 +29,10 @@ const locale = getLocale(Astro.url.pathname);
           aria-current={locale === code ? "true" : undefined}
           data-language-choice={code}
         >
-          <span>{name}</span>
-          <span class="language__code">{code.toUpperCase()}</span>
+          <bdi dir={locales[code].direction}>{locales[code].label}</bdi>
+          <bdi class="language__code" dir="ltr">
+            {code.toUpperCase()}
+          </bdi>
         </a>
       ))
     }
@@ -119,8 +119,8 @@ const locale = getLocale(Astro.url.pathname);
 <style>
   .language {
     position: relative;
-    margin-left: auto;
-    padding-left: 20px;
+    margin-inline-start: auto;
+    padding-inline-start: 20px;
   }
   .language__button {
     display: grid;
@@ -150,7 +150,7 @@ const locale = getLocale(Astro.url.pathname);
   .language__options {
     position: absolute;
     top: calc(100% + 10px);
-    right: 0;
+    inset-inline-end: 0;
     width: 208px;
     padding: 6px;
     border: 1px solid var(--line);
@@ -170,6 +170,9 @@ const locale = getLocale(Astro.url.pathname);
     visibility: visible;
     transform: none;
     transition-delay: 0s;
+  }
+  :global(html[dir="rtl"]) .language__options {
+    transform-origin: top left;
   }
   .language__option {
     display: flex;
@@ -194,7 +197,7 @@ const locale = getLocale(Astro.url.pathname);
   }
   @media (max-width: 720px) {
     .language {
-      padding-left: 8px;
+      padding-inline-start: 8px;
     }
   }
   @media (prefers-reduced-motion: reduce) {

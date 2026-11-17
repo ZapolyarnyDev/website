@@ -1,6 +1,7 @@
 ---
 import { logHref } from "@/lib/content";
 import { getLocale, translator } from "@/lib/i18n";
+import { locales } from "@/lib/locales";
 import SiteLayout from "@layouts/SiteLayout.astro";
 import BackdropHero from "@components/BackdropHero.astro";
 import poster from "@assets/redesign/bg/log-loop.png";
@@ -10,7 +11,7 @@ const locale = getLocale(Astro.url.pathname);
 const t = translator(locale);
 
 const entries = await getLog(locale);
-const monthName = new Intl.DateTimeFormat(locale === "ru" ? "ru-RU" : "en-GB", {
+const monthName = new Intl.DateTimeFormat(locales[locale].dateLocale, {
   month: "long",
   timeZone: "UTC",
 });

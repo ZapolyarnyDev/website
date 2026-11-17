@@ -1,12 +1,43 @@
-export type Locale = "ru" | "en";
+import {
+  defaultLocale,
+  locales,
+  type Locale,
+  type LocaleDefinition,
+} from "./locales.ts";
+export type { Locale } from "./locales.ts";
 
 export function getLocale(pathname: string): Locale {
-  return /^\/en(?:\/|$)/.test(pathname) ? "en" : "ru";
+  return (
+    (Object.entries(locales).find(
+      ([, definition]) =>
+        definition.prefix &&
+        (pathname === definition.prefix ||
+          pathname.startsWith(`${definition.prefix}/`)),
+    )?.[0] as Locale | undefined) ?? defaultLocale
+  );
 }
 
-export function localizedPath(pathname: string, locale: Locale): string {
-  const path = pathname.replace(/^\/en(?=\/|$)/, "") || "/";
-  return locale === "en" ? `/en${path}` : path;
+export function localizedPath(
+  pathname: string,
+  locale: Locale,
+  definitions: Record<string, LocaleDefinition> = locales,
+): string {
+  const prefix =
+    Object.values(definitions).find(
+      (definition) =>
+        definition.prefix &&
+        (pathname === definition.prefix ||
+          pathname.startsWith(`${definition.prefix}/`)),
+    )?.prefix ?? "";
+  const path = pathname.slice(prefix.length) || "/";
+  return `${definitions[locale].prefix}${path}`;
+}
+
+export function contentSlug(id: string): string {
+  const [prefix, ...segments] = id.split("/");
+  return Object.hasOwn(locales, prefix) && segments.length
+    ? segments.join("/")
+    : id;
 }
 
 export function detectLocale(languages: readonly string[]): Locale {
@@ -50,6 +81,9 @@ export function detectLocale(languages: readonly string[]): Locale {
 }
 
 const english: Record<string, string> = {
+  "Выбрать язык": "Choose language",
+  Новее: "Newer",
+  Раньше: "Older",
   "@zapolyarny — исследователь и разработчик":
     "@zapolyarny — researcher and developer",
   "Личный сайт Павла, также известного как zapolyarny: Minecraft-инфраструктура, JVM-бэкенд, исследования.":
@@ -148,6 +182,8 @@ const english: Record<string, string> = {
 };
 
 export function translator(locale: Locale) {
-  return (text: string): string =>
-    locale === "en" ? (english[text] ?? text) : text;
+  const translations: Partial<Record<Locale, Record<string, string>>> = {
+    en: english,
+  };
+  return (text: string): string => translations[locale]?.[text] ?? text;
 }

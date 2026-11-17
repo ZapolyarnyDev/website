@@ -1,7 +1,18 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { runInNewContext } from "node:vm";
-import { detectLocale, getLocale, localizedPath } from "../src/lib/i18n.ts";
+import {
+  contentSlug,
+  detectLocale,
+  getLocale,
+  localizedPath,
+} from "../src/lib/i18n.ts";
+import {
+  defaultLocale,
+  locales,
+  localeCodes,
+  getTextDirection,
+} from "../src/lib/locales.ts";
 import { initializeLanguage } from "../src/lib/language-init.ts";
 
 test("uses the primary browser locale, including CIS regions and language-only locales", () => {
@@ -50,11 +61,12 @@ function visit({
   search = "",
   hash = "",
   blocked = false,
+  definitions = locales,
 } = {}) {
   let redirected;
   const classes = new Set();
   runInNewContext(
-    `(${initializeLanguage.toString()})(${detectLocale.toString()}, ${localizedPath.toString()})`,
+    `(${initializeLanguage.toString()})(${detectLocale.toString()}, ${localizedPath.toString()}, ${JSON.stringify(definitions)}, ${JSON.stringify(defaultLocale)})`,
     {
       URLSearchParams,
       document: {
@@ -103,4 +115,52 @@ test("manual choice overrides browser detection and survives reloads", () => {
 test("works when browser storage is disabled", () => {
   assert.equal(visit({ blocked: true }), "/en/log/colonist/");
   assert.equal(visit({ blocked: true, search: "?lang=ru" }), undefined);
+});
+
+test("recognizes RTL languages and explicit script direction without enabling languages", () => {
+  for (const tag of [
+    "ar",
+    "ar-SA",
+    "ar-u-nu-latn",
+    "he-IL",
+    "iw-IL",
+    "fa",
+    "ur",
+    "az-Arab",
+    "ku_Arab",
+  ]) {
+    assert.equal(getTextDirection(tag), "rtl", tag);
+  }
+  for (const tag of ["ru", "en", "ar-Latn", "az-Latn", "unknown"]) {
+    assert.equal(getTextDirection(tag), "ltr", tag);
+  }
+  assert.deepEqual(localeCodes, ["ru", "en"]);
+  assert.equal(detectLocale(["ar-SA"]), "en");
+  assert.equal(detectLocale(["he-IL"]), "en");
+  assert.equal(visit({ saved: "ar" }), "/en/log/colonist/");
+  assert.equal(visit({ saved: "he" }), "/en/log/colonist/");
+  assert.equal(contentSlug("en/colonist"), "colonist");
+  assert.equal(contentSlug("ar/colonist"), "ar/colonist");
+});
+
+test("URL generation and initial navigation accept a future RTL locale through configuration", () => {
+  const definitions = {
+    ...locales,
+    ar: {
+      label: "Arabic",
+      direction: "rtl",
+      prefix: "/ar",
+      dateLocale: "ar-SA",
+      ogLocale: "ar_SA",
+    },
+  };
+  assert.equal(
+    localizedPath("/en/log/colonist/", "ar", definitions),
+    "/ar/log/colonist/",
+  );
+  assert.equal(
+    localizedPath("/ar/log/colonist/", "en", definitions),
+    "/en/log/colonist/",
+  );
+  assert.equal(visit({ saved: "ar", definitions }), "/ar/log/colonist/");
 });

@@ -36,7 +36,10 @@ const host = (href: string) => new URL(href).host.replace(/^www\./, "");
 >
   <main>
     <header class="page-head wrap">
-      <a class="back" href={href("/projects")} data-reveal>{t("← Портфолио")}</a
+      <a class="back" href={href("/projects")} data-reveal
+        ><span class="directional-arrow" aria-hidden="true">←</span>{
+          t("Портфолио")
+        }</a
       >
       <h1 class="page-title" data-reveal>{title}</h1>
       <p class="lead" data-reveal>{description}</p>

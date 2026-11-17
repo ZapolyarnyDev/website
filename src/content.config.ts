@@ -1,6 +1,7 @@
 import { defineCollection, reference } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
+import { defaultLocale, localeCodes } from "./lib/locales";
 
 export const LOG_TYPES = ["devlog", "lab", "essay", "note", "case"] as const;
 export const PROJECT_STATUSES = [
@@ -18,7 +19,7 @@ const log = defineCollection({
     date: z.coerce.date(),
     updated: z.coerce.date().optional(),
     type: z.enum(LOG_TYPES),
-    lang: z.enum(["ru", "en"]).default("ru"),
+    lang: z.enum(localeCodes).default(defaultLocale),
     project: reference("projects").optional(),
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
@@ -31,7 +32,7 @@ const projects = defineCollection({
     title: z.string(),
     description: z.string(),
     status: z.enum(PROJECT_STATUSES),
-    lang: z.enum(["ru", "en"]).default("ru"),
+    lang: z.enum(localeCodes).default(defaultLocale),
     order: z.number(),
     repo: z.url().optional(),
     url: z.url().optional(),

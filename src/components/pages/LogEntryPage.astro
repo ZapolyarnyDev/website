@@ -42,7 +42,11 @@ const minutes = Math.max(1, Math.round(words / 180));
 >
   <main class="article">
     <header class="page-head wrap article__head">
-      <a class="back" href={href("/log")} data-reveal>{t("← Журнал")}</a>
+      <a class="back" href={href("/log")} data-reveal
+        ><span class="directional-arrow" aria-hidden="true">←</span>{
+          t("Журнал")
+        }</a
+      >
       <p class="meta" data-reveal>
         <time datetime={isoDate(date)}>{formatDate(date, locale)}</time>
         <span>{t(logTypeLabels[type])}</span>
@@ -93,7 +97,12 @@ const minutes = Math.max(1, Math.round(words / 180));
         {
           newerEntry ? (
             <a class="pager__link" href={logHref(newerEntry)}>
-              <span>{t("← Новее")}</span>
+              <span>
+                <span class="directional-arrow" aria-hidden="true">
+                  ←
+                </span>{" "}
+                {t("Новее")}
+              </span>
               <strong>{newerEntry.data.title}</strong>
             </a>
           ) : (
@@ -103,7 +112,12 @@ const minutes = Math.max(1, Math.round(words / 180));
         {
           olderEntry && (
             <a class="pager__link pager__link--next" href={logHref(olderEntry)}>
-              <span>{t("Раньше →")}</span>
+              <span>
+                {t("Раньше")}{" "}
+                <span class="directional-arrow" aria-hidden="true">
+                  →
+                </span>
+              </span>
               <strong>{olderEntry.data.title}</strong>
             </a>
           )
@@ -191,7 +205,7 @@ const minutes = Math.max(1, Math.round(words / 180));
     .toc a {
       display: block;
       padding: 6px 0 6px 16px;
-      border-left: 1px solid var(--line);
+      border-inline-start: 1px solid var(--line);
       color: var(--muted);
       line-height: 1.35;
       transition:
@@ -260,7 +274,7 @@ const minutes = Math.max(1, Math.round(words / 180));
 
     .pager__link--next {
       grid-column: 2;
-      text-align: right;
+      text-align: end;
     }
 
     .pager__link span {
@@ -286,7 +300,7 @@ const minutes = Math.max(1, Math.round(words / 180));
 
       .pager__link--next {
         grid-column: 1;
-        text-align: left;
+        text-align: start;
         border-top: 1px solid var(--line);
       }
     }
