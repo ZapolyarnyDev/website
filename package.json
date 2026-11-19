@@ -14,6 +14,7 @@
     "prepare": "husky",
     "check": "pnpm run typecheck && pnpm run lint && pnpm run format:check",
     "typecheck": "astro check",
+    "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "lint": "eslint . --ext .js,.mjs,.cjs,.ts,.mts,.cts,.astro,.mdx",
     "lint:fix": "eslint . --fix --ext .js,.mjs,.cjs,.ts,.mts,.cts,.astro,.mdx",
     "format": "prettier . --write",
@@ -30,17 +31,17 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
     "@eslint/js": "^10.0.1",
-    "eslint": "^10.14.0",
+    "eslint": "^10.15.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-astro": "^1.7.0",
-    "eslint-plugin-mdx": "^3.9.1",
+    "eslint-plugin-mdx": "^3.9.5",
     "globals": "^17.14.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
-    "prettier": "^3.9.10",
+    "prettier": "^3.10.1",
     "prettier-plugin-astro": "^0.14.1",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.72.1"
+    "typescript-eslint": "^8.72.2"
   },
   "lint-staged": {
     "*": "prettier --ignore-unknown --write"

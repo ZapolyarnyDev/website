@@ -1,0 +1,68 @@
+---
+title: "Colonists (Catan) on Cristalix"
+description: "Bringing Catan Universe from Steam to Cristalix with fully functional game bots"
+date: 2026-09-20
+type: case
+lang: en
+project: en/cristalix
+tags:
+  - Cristalix
+  - Gamedev
+  - Minecraft
+---
+
+## Task
+
+Colonists became my second task on Cristalix after the release of Battleship. I needed to bring the familiar Catan mechanics to the server and integrate them into the group of board game modes
+
+I used the provided specification and [Catan Universe on Steam](https://store.steampowered.com/app/544730/Catan_Universe/) as a basis. The goal was not simply to reproduce the original rules, but to adapt the game to our project's existing infrastructure, its interfaces and match format
+
+The result was to be a mode where players collect resources, build settlements and roads, trade and compete for victory points
+
+## How the mode works
+
+It is built around a clear gameplay loop:
+
+- players receive resources from active cells on the board;
+- use them to build roads, settlements and cities;
+- trade resources with one another;
+- develop their part of the island and earn victory points;
+- react to opponents' actions and change their strategy during the match
+
+The main challenge here lies in the large number of connected states rather than individual buttons. One action changes the resource balance, available buildings, points, board state and other players' options. So each rule had to be implemented to work the same way for the client, server, spectator and game bot
+
+## Bots for development and testing
+
+As with [Battleship](/en/log/battleship/), I used a developer bot system. During a demonstration, the team noticed that this tool could be turned into a fully functional game opponent, and I was asked to implement bots specifically for Colonists
+
+The bot can react to match events and make its own decisions based on mathematical calculations. It doesn't simply press random buttons, but follows the same gameplay loop as a real player: it receives resources, chooses available actions, builds and accounts for the consequences of its decisions
+
+> Game bots made it possible to run complete games without constantly controlling a second player manually
+
+This noticeably sped up development. I could quickly check the start of a match, trading, building, stage transitions and the final game state. At the same time, it became easier to find bugs that are hard to reproduce in a short manual test
+
+![Gameplay of the Colonists mode](/images/portfolio/colonist/gameplay-1.webp)
+
+## What was hardest
+
+### State synchronization
+
+The mode has a lot of data that must be updated consistently: players' resources, available buildings, occupied plots, the current turn phase and action results. A bug in one place quickly turns into an unfair advantage or blocks the match
+
+That's why important checks must be performed on the server, while the client needs to display the result correctly. This is especially important for trading and building: the player must immediately understand why an action is available or why the server rejected it
+
+### A clear interface
+
+The player needs to keep track of the board, resources, building costs, opponents' turns and their own development options at the same time. If important information is hidden too deeply, the match slows down. If everything is shown at once, the interface starts competing with the game itself
+
+I built the interface around the player's current decision: what can be done right now, how much it costs and what it will lead to. This approach helps players get into the match faster and avoid spending time learning unnecessary screens
+
+### Testing different scenarios
+
+Board games are especially sensitive to rare combinations of actions. Testing must cover not only a successful match, but also cancellations, insufficient resources, disputed trades, plot ownership changes and the end of a game with different point combinations
+
+Here, bots became a working development tool rather than a separate demonstration feature. They made it possible to run repeatable scenarios and find logic problems faster
+
+## What came out of it
+
+The result was a fully functional mode for Cristalix's board game group, adapted to Minecraft itself and the project's server architecture

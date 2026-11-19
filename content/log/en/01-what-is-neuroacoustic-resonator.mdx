@@ -1,0 +1,87 @@
+---
+title: "What is Neuroacoustic Resonator"
+description: "Why an oscillator environment is needed, why it isn't a chatbot, and what hypothesis the project tests"
+date: 2026-06-01
+type: lab
+lang: en
+project: en/neuroacoustic-resonator
+tags:
+  - audio
+  - oscillators
+  - research
+---
+
+## Explanation
+
+Neuroacoustic Resonator is my experiment with a self-organizing acoustic environment.
+Very briefly: I want to test whether a field of coupled oscillators can
+receive live sound, change its state and generate a sound response without a dictionary,
+a language model or prewritten lines (without pretraining).
+
+So this isn't a chatbot or an attempt to build another talking assistant.
+It's more like a small dynamic environment where sound acts on the field, and the response
+emerges from the state of that field.
+
+It sounds a little crazy, yes. But that's exactly why it caught my interest.
+
+## Main idea
+
+The project is based on a two-dimensional field of oscillators. Each point in the field has several key
+states:
+
+- phase;
+- natural frequency;
+- local energy, which I call metabolite;
+- coupling strength with neighbors;
+- activity trace.
+
+Each simulation step updates the field: phases move, neighboring regions affect one another,
+energy is consumed and restored, and the activity trace gradually changes the environment's behavior.
+The result is not a single “input -> output” formula, but a system that can accumulate
+local changes.
+
+This is an important part of the project. I don't want to put word meanings into the system in advance. I want to see
+whether even a weak but measurable structure of response to sound can emerge without linguistic annotation.
+
+## Why not a neural network
+
+A neural network typically learns from data, has parameters, is optimized for a task and then
+produces a result. The approach here is different: the environment starts without a dictionary, a dataset or an objective
+function for the “correct answer”.
+
+The incoming sound is not recognized as text. It is turned into an influence on part of the field. After that,
+I look at how the state spreads through the environment and what appears in the output region.
+
+The project doesn't prove any magic, of course. I treat it as a research testbed:
+I still can't shake the thought that it might produce sounds that are merely beautiful but useless for the result.
+
+## What do I want to test?
+
+The main question is this: can stable acoustic patterns emerge in a field of coupled
+phase oscillators if local energy, plasticity, an activity trace and
+audio input are added?
+
+For the first stage, I care about more mundane and useful things rather than bold conclusions:
+
+- whether the field responds to the input signal;
+- whether the change reaches the output region from the input region;
+- whether the response to voice differs from the response to silence;
+- whether the response changes when a similar signal is presented again;
+- whether the output region's state can be turned into sound that is not simply a copy of the input.
+
+## What the project currently consists of
+
+There are currently several layers in the repository:
+
+- the field simulation core;
+- configurations for different run modes;
+- audio input processing;
+- output sound generation;
+- visualization;
+- probes and metrics for checking the response.
+
+The most important point: calling this “understanding” or “memory” in a strong sense is _COMPLETELY OUT OF THE QUESTION_.
+A more accurate description is probably this: the environment demonstrates state changes under acoustic stimulation,
+and then we need to see how stable, repeatable and useful those changes are.
+
+And that's where my series of suffering and overengineering begins (agree? sound familiar?)

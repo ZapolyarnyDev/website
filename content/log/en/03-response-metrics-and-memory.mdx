@@ -1,0 +1,106 @@
+---
+title: "How to measure the resonator's response"
+description: "Field response metrics: signal propagation, output activity, comparing voice with silence and response repeatability"
+date: 2026-06-01
+type: lab
+lang: en
+project: en/neuroacoustic-resonator
+tags:
+  - metrics
+  - audio
+  - research
+---
+
+## How to measure the resonator's response
+
+The most dangerous part of experiments like these is my favorite: “Oh!! It looks like it works”.
+The field moves, the visualization is beautiful, there is sound, and then the brain fills in what isn't there yet.
+
+If I want to research the resonator honestly, I need metrics. LOTS OF METRICS, I'M SERIOUS.
+
+## What can be measured
+
+There are already several useful quantities inside the field:
+
+- global synchronization;
+- local synchronization;
+- mean and minimum metabolite;
+- activity trace;
+- activity of individual regions;
+- the output region's response relative to its default behavior.
+
+Regional metrics are calculated separately for `input`, `assoc` and `output`, which I mentioned in the previous part.
+This lets us look at both the entire field and the signal's route from input to output.
+
+## Propagation test
+
+The first test is pulse propagation.
+
+The scenario is simple:
+
+- warm up the field for a few steps;
+- measure the baseline;
+- apply a phase impulse to the input region;
+- watch how input, assoc and output change;
+- save a CSV, a JSON summary and a plot.
+
+Delays and peaks matter here. If the output region doesn't respond at all, the current field configuration
+conducts the signal poorly. If it responds instantly and too strongly, the input may simply
+punch through the entire environment. The intermediate zone is the most interesting: the signal gets through without destroying
+the field's local dynamics.
+
+## Voice VS silence: FIGHT
+
+The second test is to compare voice with silence of the same duration.
+
+This is a very useful check against self-deception. If the field “responds” to voice but responds almost the same way
+to a zero-valued WAV, then I am measuring internal drift or beautiful generation rather than a response to audio.
+
+So we run two scenarios:
+
+- a real WAV with voice;
+- silence of the same duration and format.
+
+Then we compare output activity peaks, the event counter, response speed and overall drift. This still doesn't
+prove understanding, but it helps a lot in avoiding being fooled by what ordinary field dynamics produce.
+
+## Repeatability and weak memory
+
+The third test is to play the same signal through one field two or more times.
+
+I asked: will the second response resemble the first, or has the environment
+changed noticeably after the first pass?
+
+The project has a dedicated script for this. It warms up the field, plays the signal, pauses,
+plays the signal a second time and compares:
+
+- response correlation;
+- RMSE (Root Mean Square Error) between repetitions;
+- changes in peaks;
+- response speed;
+- the event counter.
+
+This can be called “weak memory” because it is not memory in the human sense.
+More accurately: the field can retain a trace of a previous stimulus, and that trace can change the response
+to repeated input.
+
+## Where it's easy to make a mistake
+
+There are plenty of pitfalls here:
+
+- You can confuse a response to input with the field's natural drift;
+- You can set the drive signal too high and deliver a crude blow to the oscillators' phases;
+- A few times, unfortunately, I mistook a beautiful visualization for proof of a previously proposed hypothesis;
+- You can tune a configuration for one successful example and get stuck on it;
+- You can start using overly grand words too early.
+
+The last one was most often a little problem, because I want the project to remain research, and things like that are often tempting in their beauty. (I fell for it :(. BUT I FIXED IT!)
+
+## What's next
+
+I want to put together several runs described in the same way:
+
+- a synthetic pulse;
+- the difference between silence and incoming voice;
+- repeated voice;
+- different drive signal levels.

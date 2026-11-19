@@ -1,0 +1,14 @@
+---
+import { contentSlug } from "@/lib/i18n";
+import Page from "@components/pages/ProjectPage.astro";
+import { getProjects } from "@/lib/content";
+export async function getStaticPaths() {
+  const projects = await getProjects("ar");
+  return projects.map((project) => ({
+    params: { slug: contentSlug(project.id) },
+    props: { project },
+  }));
+}
+---
+
+<Page {...Astro.props} />

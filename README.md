@@ -28,6 +28,14 @@ pnpm new lab|essay|note|case "Title" [--project <id>] [--lang en]
 
 A devlog draft lists the project's commits from the last 7 days (`--days <n>`) as MDX comments.
 
+Russian pages use the existing URLs; English pages use `/en/`. Translations live in
+`content/log/en/` and `content/projects/en/`, with the same filename as the Russian
+entry and `lang: en`. English log entries reference projects as `en/<id>`.
+`pnpm new ... --lang en` creates a draft in the English directory.
+
+The primary browser locale determines the initial language. A manual choice is
+saved in the browser and takes priority. Run `pnpm test` to check language selection.
+
 ## Backdrops
 
 The looping 3D backgrounds are rendered in Blender (EEVEE) and live in `public/media/`, posters in `src/assets/redesign/bg/`.
