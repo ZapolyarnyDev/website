@@ -30,6 +30,7 @@ const host = (href: string) => new URL(href).host.replace(/^www\./, "");
 ---
 
 <SiteLayout
+  seo={project.data.seo}
   title={`${title} — ${t("Портфолио")} @zapolyarny`}
   description={description}
   current="projects"

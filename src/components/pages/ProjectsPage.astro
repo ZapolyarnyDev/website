@@ -2,6 +2,7 @@
 import { projectHref } from "@/lib/content";
 import { getLocale, translator } from "@/lib/i18n";
 import SiteLayout from "@layouts/SiteLayout.astro";
+import { pageSeo } from "@/lib/page-seo";
 import BackdropHero from "@components/BackdropHero.astro";
 import poster from "@assets/redesign/bg/projects-loop.png";
 import { getProjects } from "@/lib/content";
@@ -13,6 +14,7 @@ const projects = await getProjects(locale);
 ---
 
 <SiteLayout
+  seo={pageSeo[locale]?.["/projects"]}
   title={t("Портфолио — @zapolyarny")}
   description={t(
     "Проекты: Minecraft-инфраструктура, исследования, бэкенд и коммерческая работа.",
