@@ -1,7 +1,7 @@
 ---
 import { detectLocale, getLocale, localizedPath, translator } from "@/lib/i18n";
 import { initializeLanguage } from "@/lib/language-init";
-import { defaultLocale, locales, localeCodes } from "@/lib/locales";
+import { locales, localeCodes } from "@/lib/locales";
 import type { SeoMetadata } from "@/lib/page-seo";
 import LanguageSwitcher from "@components/LanguageSwitcher.astro";
 import "@styles/site.css";
@@ -54,7 +54,7 @@ const year = new Date().getFullYear();
     <meta charset="UTF-8" />
     <script
       is:inline
-      set:html={`(${initializeLanguage.toString()})(${detectLocale.toString()}, ${localizedPath.toString()}, ${JSON.stringify(locales)}, ${JSON.stringify(defaultLocale)});`}
+      set:html={`(${initializeLanguage.toString()})(${detectLocale.toString()}, ${localizedPath.toString()}, ${JSON.stringify(locales)});`}
     />
     <meta
       name="viewport"
