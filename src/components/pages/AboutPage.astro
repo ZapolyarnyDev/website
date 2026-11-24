@@ -2,6 +2,7 @@
 import { getLocale, localizedPath, translator } from "@/lib/i18n";
 import { Image } from "astro:assets";
 import SiteLayout from "@layouts/SiteLayout.astro";
+import { pageSeo } from "@/lib/page-seo";
 import portrait from "@assets/images/portrait.png";
 import cristalixLogo from "@assets/images/c7x-logo.png";
 
@@ -98,6 +99,7 @@ const stack = [
 ---
 
 <SiteLayout
+  seo={pageSeo[locale]?.["/about"]}
   title={t("Обо мне — @zapolyarny")}
   description={t(
     "Павел, также известный как zapolyarny: разработчик с исследовательским складом ума.",

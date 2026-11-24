@@ -4,6 +4,7 @@ import { logHref } from "@/lib/content";
 import { contentSlug, getLocale, localizedPath, translator } from "@/lib/i18n";
 import { getImage, Image } from "astro:assets";
 import SiteLayout from "@layouts/SiteLayout.astro";
+import { pageSeo } from "@/lib/page-seo";
 import portrait from "@assets/images/portrait.png";
 import cristalixLogo from "@assets/images/c7x-logo.png";
 import heroPoster from "@assets/redesign/bg/hero-loop.png";
@@ -36,6 +37,7 @@ const pullRequests = await getMergedPullRequests();
 ---
 
 <SiteLayout
+  seo={pageSeo[locale]?.["/"]}
   description={t(
     "Павел, также известный как zapolyarny: исследователь и разработчик. Minecraft-инфраструктура, JVM-бэкенд, исследования.",
   )}

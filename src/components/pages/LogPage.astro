@@ -3,6 +3,7 @@ import { logHref } from "@/lib/content";
 import { getLocale, translator } from "@/lib/i18n";
 import { locales } from "@/lib/locales";
 import SiteLayout from "@layouts/SiteLayout.astro";
+import { pageSeo } from "@/lib/page-seo";
 import BackdropHero from "@components/BackdropHero.astro";
 import poster from "@assets/redesign/bg/log-loop.png";
 import { getLog, isoDate, logTypeLabels, type LogEntry } from "@/lib/content";
@@ -32,6 +33,7 @@ const label = (month: number) => {
 ---
 
 <SiteLayout
+  seo={pageSeo[locale]?.["/log"]}
   title={t("Журнал — @zapolyarny")}
   description={t(
     "Статьи, лабораторные записи и кейсы: как я разбираюсь в системах и что из этого выходит.",

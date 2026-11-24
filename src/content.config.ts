@@ -11,11 +11,19 @@ export const PROJECT_STATUSES = [
   "parked",
 ] as const;
 
+const seo = z
+  .strictObject({
+    title: z.string().trim().min(1).optional(),
+    description: z.string().trim().min(1).optional(),
+  })
+  .optional();
+
 const log = defineCollection({
   loader: glob({ pattern: "**/*.mdx", base: "./content/log" }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
+    seo,
     date: z.coerce.date(),
     updated: z.coerce.date().optional(),
     type: z.enum(LOG_TYPES),
@@ -31,6 +39,7 @@ const projects = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string(),
+    seo,
     status: z.enum(PROJECT_STATUSES),
     lang: z.enum(localeCodes).default(defaultLocale),
     order: z.number(),

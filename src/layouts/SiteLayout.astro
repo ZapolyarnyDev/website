@@ -2,12 +2,14 @@
 import { detectLocale, getLocale, localizedPath, translator } from "@/lib/i18n";
 import { initializeLanguage } from "@/lib/language-init";
 import { defaultLocale, locales, localeCodes } from "@/lib/locales";
+import type { SeoMetadata } from "@/lib/page-seo";
 import LanguageSwitcher from "@components/LanguageSwitcher.astro";
 import "@styles/site.css";
 
 interface Props {
   title?: string;
   description?: string;
+  seo?: SeoMetadata;
   ogImage?: string;
   ogType?: "website" | "article" | "profile";
   current?: "log" | "projects" | "about";
@@ -19,15 +21,19 @@ const t = translator(locale);
 const href = (path: string) => localizedPath(path, locale);
 
 const {
-  title = t("@zapolyarny — исследователь и разработчик"),
-  description = t(
+  title: defaultTitle = t("@zapolyarny — исследователь и разработчик"),
+  description: defaultDescription = t(
     "Личный сайт Павла, также известного как zapolyarny: Minecraft-инфраструктура, JVM-бэкенд, исследования.",
   ),
+  seo,
   ogImage = "/og-image.png",
   ogType = "website",
   current,
   contacts = true,
 } = Astro.props;
+
+const title = seo?.title?.trim() || defaultTitle;
+const description = seo?.description?.trim() || defaultDescription;
 
 const site = Astro.site ?? new URL("https://zapolyarnydev.ru");
 const canonicalUrl = new URL(Astro.url.pathname, site);
