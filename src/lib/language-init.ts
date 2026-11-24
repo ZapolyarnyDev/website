@@ -5,9 +5,10 @@ export function initializeLanguage(
   detect: typeof detectLocale,
   path: typeof localizedPath,
   definitions: Record<string, LocaleDefinition>,
-  rootLocale: Locale,
 ) {
   document.documentElement.classList.add("js");
+  if (location.pathname !== "/") return;
+
   const explicit = new URLSearchParams(location.search).get("lang");
   let saved: string | null;
   try {
@@ -21,13 +22,11 @@ export function initializeLanguage(
   const current = document.documentElement.lang;
   const locale = available(preferred)
     ? preferred
-    : available(current) && current !== rootLocale
-      ? current
-      : detect(
-          navigator.languages?.length
-            ? navigator.languages
-            : [navigator.language],
-        );
+    : detect(
+        navigator.languages?.length
+          ? navigator.languages
+          : [navigator.language],
+      );
   if (locale !== current) {
     location.replace(
       path(location.pathname, locale, definitions) +

@@ -9,12 +9,7 @@ import {
   localizedPath,
   translations,
 } from "../src/lib/i18n.ts";
-import {
-  defaultLocale,
-  locales,
-  localeCodes,
-  getTextDirection,
-} from "../src/lib/locales.ts";
+import { locales, localeCodes, getTextDirection } from "../src/lib/locales.ts";
 import { initializeLanguage } from "../src/lib/language-init.ts";
 
 test("uses the primary browser locale, including CIS regions and language-only locales", () => {
@@ -59,7 +54,7 @@ test("switches the locale without changing a page's identity", () => {
 function visit({
   language = "en-US",
   saved = null,
-  pathname = "/log/colonist/",
+  pathname = "/",
   search = "",
   hash = "",
   blocked = false,
@@ -68,7 +63,7 @@ function visit({
   let redirected;
   const classes = new Set();
   runInNewContext(
-    `(${initializeLanguage.toString()})(${detectLocale.toString()}, ${localizedPath.toString()}, ${JSON.stringify(definitions)}, ${JSON.stringify(defaultLocale)})`,
+    `(${initializeLanguage.toString()})(${detectLocale.toString()}, ${localizedPath.toString()}, ${JSON.stringify(definitions)})`,
     {
       URLSearchParams,
       document: {
@@ -98,24 +93,36 @@ function visit({
   return redirected;
 }
 
-test("initial navigation preserves the deep link, query and fragment", () => {
+test("home page language detection preserves the query and fragment", () => {
   assert.equal(
     visit({ search: "?from=profile", hash: "#task" }),
-    "/en/log/colonist/?from=profile#task",
+    "/en/?from=profile#task",
   );
   assert.equal(visit({ language: "kk-KZ" }), undefined);
-  assert.equal(visit({ pathname: "/en/log/colonist/" }), undefined);
 });
 
-test("manual choice overrides browser detection and survives reloads", () => {
+test("saved language overrides browser detection on the home page", () => {
   assert.equal(visit({ saved: "ru" }), undefined);
-  assert.equal(visit({ language: "ru-RU", saved: "en" }), "/en/log/colonist/");
-  assert.equal(visit({ pathname: "/en/about", saved: "ru" }), "/about");
-  assert.equal(visit({ saved: "invalid" }), "/en/log/colonist/");
+  assert.equal(visit({ language: "ru-RU", saved: "en" }), "/en/");
+  assert.equal(visit({ saved: "invalid" }), "/en/");
+});
+
+test("direct links retain their URL language", () => {
+  for (const locale of localeCodes) {
+    const pathname = localizedPath("/log/battleship/", locale);
+    const otherLocale = locale === "en" ? "ru" : "en";
+    assert.equal(visit({ pathname }), undefined);
+    assert.equal(visit({ pathname, saved: otherLocale }), undefined);
+    assert.equal(
+      visit({ pathname, search: `?lang=${otherLocale}` }),
+      undefined,
+    );
+  }
+  assert.equal(visit({ pathname: "/en/", saved: "ru" }), undefined);
 });
 
 test("works when browser storage is disabled", () => {
-  assert.equal(visit({ blocked: true }), "/en/log/colonist/");
+  assert.equal(visit({ blocked: true }), "/en/");
   assert.equal(visit({ blocked: true, search: "?lang=ru" }), undefined);
 });
 
@@ -142,10 +149,10 @@ test("recognizes enabled RTL languages, legacy Hebrew locales and explicit scrip
   assert.equal(detectLocale(["iw-IL"]), "he");
   assert.equal(detectLocale(["ar-KZ"]), "ar");
   assert.equal(detectLocale(["ru-IL"]), "ru");
-  assert.equal(visit({ saved: "ar" }), "/ar/log/colonist/");
-  assert.equal(visit({ saved: "he" }), "/he/log/colonist/");
-  assert.equal(visit({ language: "ar-SA" }), "/ar/log/colonist/");
-  assert.equal(visit({ language: "he-IL" }), "/he/log/colonist/");
+  assert.equal(visit({ saved: "ar" }), "/ar/");
+  assert.equal(visit({ saved: "he" }), "/he/");
+  assert.equal(visit({ language: "ar-SA" }), "/ar/");
+  assert.equal(visit({ language: "he-IL" }), "/he/");
   assert.equal(contentSlug("en/colonist"), "colonist");
   assert.equal(contentSlug("ar/colonist"), "colonist");
   assert.equal(contentSlug("he/colonist"), "colonist");
